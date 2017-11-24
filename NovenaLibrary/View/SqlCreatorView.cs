@@ -17,7 +17,7 @@ namespace NovenaLibrary.View
         {
             InitializeComponent();
             ISqlCreatorPresenter presenter = new SqlCreatorPresenter(this);
-            this.Attach(presenter);
+            presenter.Initialize();
         }
 
         public List<string> AvailableColumns
