@@ -16,8 +16,8 @@ namespace NovenaLibrary.View
         BindingList<string> AvailableColumns { get; set; }
         BindingList<string> SelectedColumns { get; set; }
         BindingList<string> HighlightedAvailableColumns { get; }
-        AppConfig AppConfig { get; }
-        WorkbookPropertiesConfig WorkbookPropertiesConfig { get; }
+        AppConfig AppConfig { get; set; }
+        WorkbookPropertiesConfig WorkbookPropertiesConfig { get; set; }
         // add dgv eventually, but it is a complex type
     }
 }

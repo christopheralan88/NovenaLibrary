@@ -27,9 +27,17 @@ namespace NovenaLibrary.View
             HighlightedAvailableColumns.AllowNew = true;
         }
 
-        public AppConfig AppConfig { get { return _appConfig; } }
+        public AppConfig AppConfig
+        {
+            get { return _appConfig; }
+            set { _appConfig = value; }
+        }
 
-        public WorkbookPropertiesConfig WorkbookPropertiesConfig { get { return _workbookPropertiesConfig; } }
+        public WorkbookPropertiesConfig WorkbookPropertiesConfig
+        {
+            get { return _workbookPropertiesConfig; }
+            set { _workbookPropertiesConfig = value; }
+        }
 
         public BindingList<string> AvailableColumns
         {
