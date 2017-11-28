@@ -32,7 +32,6 @@
             this.cbox_table = new System.Windows.Forms.ComboBox();
             this.but_down = new System.Windows.Forms.Button();
             this.but_up = new System.Windows.Forms.Button();
-            this.lbox_selected_columns = new System.Windows.Forms.CheckedListBox();
             this.lbox_available_columns = new System.Windows.Forms.ListBox();
             this.lbl_selected_columns = new System.Windows.Forms.Label();
             this.lbl_available_columns = new System.Windows.Forms.Label();
@@ -54,6 +53,7 @@
             this.Operator = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.Filter = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.EndParenthesis = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.lbox_selected_columns = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.datagrid_criteria)).BeginInit();
             this.SuspendLayout();
             // 
@@ -92,16 +92,6 @@
             this.but_up.Text = "Up";
             this.but_up.UseVisualStyleBackColor = true;
             // 
-            // lbox_selected_columns
-            // 
-            this.lbox_selected_columns.CheckOnClick = true;
-            this.lbox_selected_columns.FormattingEnabled = true;
-            this.lbox_selected_columns.HorizontalScrollbar = true;
-            this.lbox_selected_columns.Location = new System.Drawing.Point(250, 129);
-            this.lbox_selected_columns.Name = "lbox_selected_columns";
-            this.lbox_selected_columns.Size = new System.Drawing.Size(154, 349);
-            this.lbox_selected_columns.TabIndex = 65;
-            // 
             // lbox_available_columns
             // 
             this.lbox_available_columns.FormattingEnabled = true;
@@ -115,7 +105,7 @@
             // lbl_selected_columns
             // 
             this.lbl_selected_columns.AutoSize = true;
-            this.lbl_selected_columns.Location = new System.Drawing.Point(286, 146);
+            this.lbl_selected_columns.Location = new System.Drawing.Point(284, 106);
             this.lbl_selected_columns.Name = "lbl_selected_columns";
             this.lbl_selected_columns.Size = new System.Drawing.Size(92, 13);
             this.lbl_selected_columns.TabIndex = 63;
@@ -309,11 +299,20 @@
             this.EndParenthesis.Visible = false;
             this.EndParenthesis.Width = 20;
             // 
+            // lbox_selected_columns
+            // 
+            this.lbox_selected_columns.FormattingEnabled = true;
+            this.lbox_selected_columns.Location = new System.Drawing.Point(256, 131);
+            this.lbox_selected_columns.Name = "lbox_selected_columns";
+            this.lbox_selected_columns.Size = new System.Drawing.Size(148, 355);
+            this.lbox_selected_columns.TabIndex = 78;
+            // 
             // SqlCreatorView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1102, 561);
+            this.Controls.Add(this.lbox_selected_columns);
             this.Controls.Add(this.but_add_row);
             this.Controls.Add(this.txt_box_limit);
             this.Controls.Add(this.lbl_limit);
@@ -326,7 +325,6 @@
             this.Controls.Add(this.datagrid_criteria);
             this.Controls.Add(this.but_down);
             this.Controls.Add(this.but_up);
-            this.Controls.Add(this.lbox_selected_columns);
             this.Controls.Add(this.lbox_available_columns);
             this.Controls.Add(this.lbl_selected_columns);
             this.Controls.Add(this.lbl_available_columns);
@@ -348,7 +346,6 @@
         internal System.Windows.Forms.ComboBox cbox_table;
         internal System.Windows.Forms.Button but_down;
         internal System.Windows.Forms.Button but_up;
-        internal System.Windows.Forms.CheckedListBox lbox_selected_columns;
         internal System.Windows.Forms.ListBox lbox_available_columns;
         internal System.Windows.Forms.Label lbl_selected_columns;
         internal System.Windows.Forms.Label lbl_available_columns;
@@ -370,5 +367,6 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn Operator;
         private System.Windows.Forms.DataGridViewTextBoxColumn Filter;
         private System.Windows.Forms.DataGridViewTextBoxColumn EndParenthesis;
+        private System.Windows.Forms.ListBox lbox_selected_columns;
     }
 }

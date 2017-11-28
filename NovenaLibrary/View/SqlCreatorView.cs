@@ -8,27 +8,47 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NovenaLibrary.Presenter;
+using NovenaLibrary.Config;
 
 namespace NovenaLibrary.View
 {
     public partial class SqlCreatorView : Form, ISqlCreatorView
     {
-        public SqlCreatorView()
+        private AppConfig _appConfig;
+        private WorkbookPropertiesConfig _workbookPropertiesConfig;
+
+        public SqlCreatorView(AppConfig appConfig, WorkbookPropertiesConfig workbookPropertiesConfig)
         {
             InitializeComponent();
+            _appConfig = appConfig;
+            _workbookPropertiesConfig = workbookPropertiesConfig;
             ISqlCreatorPresenter presenter = new SqlCreatorPresenter(this);
             presenter.Initialize();
+            HighlightedAvailableColumns.AllowNew = true;
         }
 
-        public List<string> AvailableColumns
+        public AppConfig AppConfig { get { return _appConfig; } }
+
+        public WorkbookPropertiesConfig WorkbookPropertiesConfig { get { return _workbookPropertiesConfig; } }
+
+        public BindingList<string> AvailableColumns
         {
-            get { return (List<string>)lbox_available_columns.DataSource; }
+            get { return (BindingList<string>)lbox_available_columns.DataSource; }
             set { lbox_available_columns.DataSource = value; }
         }
 
-        public List<string> AvailableTables
+        public BindingList<string> HighlightedAvailableColumns
         {
-            get { return (List<string>)cbox_table.DataSource; }
+            get
+            {
+                lbox_selected_columns.DataSource = null;
+                return ConvertSelectedObjectCollectionToList(lbox_available_columns.SelectedItems);
+            }
+        }
+
+        public BindingList<string> AvailableTables
+        {
+            get { return (BindingList<string>)cbox_table.DataSource; }
             set { cbox_table.DataSource = value; }
         }
 
@@ -38,9 +58,9 @@ namespace NovenaLibrary.View
             set { cbox_table.Text = value; }
         }
 
-        public List<string> SelectedColumns
+        public BindingList<string> SelectedColumns
         {
-            get { return (List<string>)lbox_selected_columns.DataSource; }
+            get { return (BindingList<string>)lbox_selected_columns.DataSource; }
             set { lbox_selected_columns.DataSource = value; }
         }
 
@@ -53,7 +73,18 @@ namespace NovenaLibrary.View
             but_down.Click += (sender, e) => callback.OnMoveSelectedColumnDown();
             but_column_items.Click += (sender, e) => callback.OnColumnItemsClick();
             but_add_row.Click += (sender, e) => callback.OnAddRow();
-            but_delete_row.Click += (sender, e) => callback.OnDeleteRow();  
+            but_delete_row.Click += (sender, e) => callback.OnDeleteRow();
+            this.Load += (sender, e) => callback.OnLoad();
+        }
+
+        private BindingList<string> ConvertSelectedObjectCollectionToList(ListBox.SelectedObjectCollection collection)
+        {
+            var list = new BindingList<string>();
+            foreach (var item in collection)
+            {
+                list.Add(item.ToString());
+            }
+            return list;
         }
     }
 }

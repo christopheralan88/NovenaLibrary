@@ -4,15 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NovenaLibrary.Presenter;
+using System.ComponentModel;
+using NovenaLibrary.Config;
 
 namespace NovenaLibrary.View
 {
     public interface ISqlCreatorView : IView<ISqlCreatorPresenterCallbacks>
     {
-        List<string> AvailableTables { get; set; }
+        BindingList<string> AvailableTables { get; set; }
         string AvailableTablesText { get; set; }
-        List<string> AvailableColumns { get; set; }
-        List<string> SelectedColumns { get; set; }
-        // add dgv eventuall, but it is a complex type
+        BindingList<string> AvailableColumns { get; set; }
+        BindingList<string> SelectedColumns { get; set; }
+        BindingList<string> HighlightedAvailableColumns { get; }
+        AppConfig AppConfig { get; }
+        WorkbookPropertiesConfig WorkbookPropertiesConfig { get; }
+        // add dgv eventually, but it is a complex type
     }
 }
