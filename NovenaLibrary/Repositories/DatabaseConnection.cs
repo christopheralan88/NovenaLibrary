@@ -9,25 +9,23 @@ using NovenaLibrary.Config;
 
 namespace NovenaLibrary.Repositories
 {
-    public class DatabaseConnection
+    public class DatabaseConnection : IDatabaseConnection
     {
         private DbConnection dbConnection;
         private IDbCommand dbCommand;
-        private AppConfig appConfig;
 
 
-        public DatabaseConnection(DbConnection dbConnection, IDbCommand dbCommand, AppConfig appConfig)
+        public DatabaseConnection(DbConnection dbConnection, IDbCommand dbCommand)
         {
             this.dbConnection = dbConnection;
             this.dbCommand = dbCommand;
-            this.appConfig = appConfig;
         }
 
         public DataTable query(string sql)
         {
             try
             {
-                dbConnection.ConnectionString = appConfig.ConnectionString;
+                //dbConnection.ConnectionString = appConfig.ConnectionString;
                 dbConnection.Open();
 
                 dbCommand.CommandText = sql;
@@ -53,7 +51,7 @@ namespace NovenaLibrary.Repositories
         {
             try
             {
-                dbConnection.ConnectionString = appConfig.ConnectionString;
+                //dbConnection.ConnectionString = appConfig.ConnectionString;
                 dbConnection.Open();
             }
             catch (Exception)
@@ -70,7 +68,7 @@ namespace NovenaLibrary.Repositories
         {
             try
             {
-                dbConnection.ConnectionString = appConfig.ConnectionString;
+                //dbConnection.ConnectionString = appConfig.ConnectionString;
                 dbConnection.Open();
 
                 return dbConnection.GetSchema("Columns", new string[4] { null, null, tableName, null });

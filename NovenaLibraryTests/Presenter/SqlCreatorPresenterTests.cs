@@ -1,15 +1,11 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NovenaLibrary.Presenter;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Rhino.Mocks;
 using NovenaLibrary.View;
 using NovenaLibrary.Config;
 using System.ComponentModel;
-using System.Windows.Forms;
+using NovenaLibrary.Repositories;
+using System.Data;
+using Npgsql;
 
 namespace NovenaLibrary.Presenter.Tests
 {
@@ -20,6 +16,7 @@ namespace NovenaLibrary.Presenter.Tests
         public SqlCreatorPresenter presenter;
         public AppConfig appConfig;
         public WorkbookPropertiesConfig workbookPropertiesConfig;
+        public IDatabaseConnection dbConnection;
 
         [TestInitialize]
         public void run_before_each_test_method()
@@ -27,7 +24,7 @@ namespace NovenaLibrary.Presenter.Tests
             appConfig = new AppConfig();
             appConfig.Username = "chris";
             appConfig.Password = "novena-dev";
-            appConfig.ConnectionString = "Server=novena-dev.csggfzanp0wj.us-west-2.rds.amazonaws.com;Port=5432;Database=novena_dev;Username={0};Password={1};SSL Mode=Prefer;Trust Server Certificate=true;CommandTimeout=180";
+            appConfig.ConnectionString = "Server=novena-dev.csggfzanp0wj.us-west-2.rds.amazonaws.com;Port=5432;Database=novena_dev;Username=chris;Password=novena-dev;SSL Mode=Prefer;Trust Server Certificate=true;CommandTimeout=180";
             appConfig.DatabaseType = DatabaseType.PostgreSQL;
 
             workbookPropertiesConfig = new WorkbookPropertiesConfig();
@@ -35,9 +32,10 @@ namespace NovenaLibrary.Presenter.Tests
             view = MockRepository.GenerateStub<ISqlCreatorView>();
             view.AppConfig = appConfig;
             view.WorkbookPropertiesConfig = workbookPropertiesConfig;
-            
-            presenter = new SqlCreatorPresenter(view);
 
+            dbConnection = MockRepository.GenerateStub<IDatabaseConnection>();
+            
+            presenter = new SqlCreatorPresenter(view, dbConnection);
         }
 
         [TestMethod]
@@ -89,7 +87,13 @@ namespace NovenaLibrary.Presenter.Tests
         [TestMethod]
         public void OnCBoxTableIndexChangedTest()
         {
-            Assert.Fail();
+            view.AvailableTablesText = "table1";
+            view.AvailableColumns = new BindingList<string>();
+            dbConnection.Stub(x => x.getSchema("table1")).Return(DataTableBuilder());
+
+            presenter.OnCBoxTableIndexChanged();
+
+            Assert.IsTrue(view.AvailableColumns.Count > 0);
         }
 
         [TestMethod]
@@ -132,6 +136,24 @@ namespace NovenaLibrary.Presenter.Tests
         public void OnLoadTest()
         {
             Assert.Fail();
+        }
+
+        private DataTable DataTableBuilder()
+        {
+            //IDatabaseConnection dbConnection = new DatabaseConnection(new NpgsqlConnection(appConfig.ConnectionString), new NpgsqlCommand());
+            //return dbConnection.getSchema("county_spending");
+            DataTable dt = new DataTable();
+            dt.Columns.Add("COLUMN_NAME");
+            dt.Columns.Add("col2");
+            dt.Columns.Add("col3");
+            dt.Columns.Add("col4");
+            dt.Columns.Add("col5");
+            dt.Columns.Add("col6");
+            dt.Columns.Add("col7");
+            dt.Columns.Add("DATA_TYPE");
+            dt.Rows.Add(new object[] { "fund", null, null, null, null, null, null, "text" });
+
+            return dt;
         }
     }
 }

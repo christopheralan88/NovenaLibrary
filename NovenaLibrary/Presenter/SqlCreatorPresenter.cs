@@ -14,12 +14,12 @@ namespace NovenaLibrary.Presenter
     public class SqlCreatorPresenter : ISqlCreatorPresenter, ISqlCreatorPresenterCallbacks
     {
         private ISqlCreatorView _view;
-        private DatabaseConnection dbConnection;
+        private IDatabaseConnection dbConnection;
 
-        public SqlCreatorPresenter(ISqlCreatorView view)
+        public SqlCreatorPresenter(ISqlCreatorView view, IDatabaseConnection dbConnection)
         {
             _view = view;
-            dbConnection = new DatabaseConnectionFactory().createDbConnection(_view.AppConfig);
+            this.dbConnection = dbConnection;
         }
 
         public object UI

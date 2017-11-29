@@ -22,7 +22,7 @@ namespace NovenaLibrary.View
             InitializeComponent();
             _appConfig = appConfig;
             _workbookPropertiesConfig = workbookPropertiesConfig;
-            ISqlCreatorPresenter presenter = new SqlCreatorPresenter(this);
+            ISqlCreatorPresenter presenter = new SqlCreatorPresenter(this, new DatabaseConnectionFactory().CreateDbConnection(appConfig));
             presenter.Initialize();
             HighlightedAvailableColumns.AllowNew = true;
         }

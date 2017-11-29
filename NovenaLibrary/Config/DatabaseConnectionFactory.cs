@@ -19,39 +19,40 @@ namespace NovenaLibrary.Config
     {
         public DatabaseConnectionFactory() { }
 
-        public DatabaseConnection createDbConnection(AppConfig appConfig)
+        public DatabaseConnection CreateDbConnection(AppConfig appConfig)
         {
             var databaseType = appConfig.DatabaseType;
+            var connectionString = appConfig.ConnectionString;
 
             try
             {
                 if (databaseType.Equals(DatabaseType.PostgreSQL))
                 {
-                    return new DatabaseConnection(new NpgsqlConnection(), new NpgsqlCommand(), appConfig);
+                    return new DatabaseConnection(new NpgsqlConnection(connectionString), new NpgsqlCommand());
                 }
                 else if (databaseType.Equals(DatabaseType.MySql))
                 {
-                    return new DatabaseConnection(new MySqlConnection(), new MySqlCommand(), appConfig);
+                    return new DatabaseConnection(new MySqlConnection(connectionString), new MySqlCommand());
                 }
                 else if (databaseType.Equals(DatabaseType.Oracle))
                 {
-                    return new DatabaseConnection(new OracleConnection(), new OracleCommand(), appConfig);
+                    return new DatabaseConnection(new OracleConnection(connectionString), new OracleCommand());
                 }
                 else if (databaseType.Equals(DatabaseType.MsSqlServer))
                 {
-                    return new DatabaseConnection(new SqlConnection(), new SqlCommand(), appConfig);
+                    return new DatabaseConnection(new SqlConnection(connectionString), new SqlCommand());
                 }
                 else if (databaseType.Equals(DatabaseType.Sqlite))
                 {
-                    return new DatabaseConnection(new SQLiteConnection(), new SQLiteCommand(), appConfig);
+                    return new DatabaseConnection(new SQLiteConnection(connectionString), new SQLiteCommand());
                 }
                 else if (databaseType.Equals(DatabaseType.Redshift))
                 {
-                    return new DatabaseConnection(new OdbcConnection(), new OdbcCommand(), appConfig);
+                    return new DatabaseConnection(new OdbcConnection(connectionString), new OdbcCommand());
                 }
                 else if (databaseType.Equals(DatabaseType.MsAccess))
                 {
-                    return new DatabaseConnection(new OleDbConnection(), new OleDbCommand(), appConfig);
+                    return new DatabaseConnection(new OleDbConnection(connectionString), new OleDbCommand());
                 }
                 else
                 {
