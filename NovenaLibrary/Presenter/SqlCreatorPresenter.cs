@@ -30,7 +30,6 @@ namespace NovenaLibrary.Presenter
         public void Initialize()
         {
             _view.Attach(this);
-
         }
 
         public void OnAddRow()

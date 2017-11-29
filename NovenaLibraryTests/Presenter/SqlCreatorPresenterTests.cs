@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using Rhino.Mocks;
 using NovenaLibrary.View;
 using NovenaLibrary.Config;
+using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace NovenaLibrary.Presenter.Tests
 {
@@ -39,15 +41,13 @@ namespace NovenaLibrary.Presenter.Tests
         }
 
         [TestMethod]
-        public void SqlCreatorPresenterTest()
+        public void Initialize_CallsViewsAttachMethod()
         {
-            Assert.Fail();
-        }
+            view.Expect(x => x.Attach(presenter));
 
-        [TestMethod]
-        public void InitializeTest()
-        {
-            Assert.Fail();
+            presenter.Initialize();
+
+            view.VerifyAllExpectations();
         }
 
         [TestMethod]
@@ -57,9 +57,27 @@ namespace NovenaLibrary.Presenter.Tests
         }
 
         [TestMethod]
-        public void OnAddSelectedColumnTest()
+        public void OnAddSelectedColumn_AddingMulitpleColumns()
         {
-            Assert.Fail();
+            view.SelectedColumns = new BindingList<string>(); // so that property is not null
+            BindingList<string> selectedAvailableColumns = new BindingList<string>() { "column1", "column2" };
+            view.Stub(x => x.HighlightedAvailableColumns).Return(selectedAvailableColumns);
+
+            presenter.OnAddSelectedColumn();
+
+            Assert.IsTrue(view.SelectedColumns.Count == selectedAvailableColumns.Count);
+        }
+
+        [TestMethod]
+        public void OnAddSelectedColumn_AddingNoColumns()
+        {
+            view.SelectedColumns = new BindingList<string>() { "column1", "column2" }; // so that property is not null
+            BindingList<string> selectedAvailableColumns = new BindingList<string>();
+            view.Stub(x => x.HighlightedAvailableColumns).Return(selectedAvailableColumns);
+
+            presenter.OnAddSelectedColumn();
+
+            Assert.IsTrue(view.SelectedColumns.Count == 2);
         }
 
         [TestMethod]
