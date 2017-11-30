@@ -72,6 +72,16 @@ namespace NovenaLibrary.View
             set { lbox_selected_columns.DataSource = value; }
         }
 
+        public int HighlightedSelectedColumnIndex
+        {
+            get { return lbox_selected_columns.SelectedIndex; }
+        }
+
+        public string HighlightedSelectedColumn
+        {
+            get { return lbox_selected_columns.SelectedItem.ToString(); }
+        }
+
         public void Attach(ISqlCreatorPresenterCallbacks callback)
         {
             cbox_table.SelectedIndexChanged += (sender, e) => callback.OnCBoxTableIndexChanged();

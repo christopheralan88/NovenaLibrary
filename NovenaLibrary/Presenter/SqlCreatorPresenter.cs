@@ -73,12 +73,28 @@ namespace NovenaLibrary.Presenter
 
         public void OnMoveSelectedColumnDown()
         {
-            throw new NotImplementedException();
+            var currentIndex = _view.HighlightedSelectedColumnIndex;
+            var currentColumn = _view.HighlightedSelectedColumn;
+
+            // if item is not last item in bindinglist
+            if (currentIndex != _view.SelectedColumns.Count - 1)
+            {
+                _view.SelectedColumns.Insert(currentIndex + 2, currentColumn);
+               _view.SelectedColumns.RemoveAt(currentIndex);
+            }
         }
 
         public void OnMoveSelectedColumnUp()
         {
-            throw new NotImplementedException();
+            var currentIndex = _view.HighlightedSelectedColumnIndex;
+            var currentColumn = _view.HighlightedSelectedColumn;
+
+            // if item is not first item in bindinglist
+            if (currentIndex != 0)
+            {
+                _view.SelectedColumns.Insert(currentIndex - 1, currentColumn);
+                _view.SelectedColumns.RemoveAt(currentIndex + 1);
+            }
         }
 
         public void OnOk()
@@ -88,7 +104,7 @@ namespace NovenaLibrary.Presenter
 
         public void OnRemoveSelectedColumn()
         {
-            throw new NotImplementedException();
+            _view.SelectedColumns.RemoveAt(_view.HighlightedSelectedColumnIndex);
         }
 
         public void OnLoad()

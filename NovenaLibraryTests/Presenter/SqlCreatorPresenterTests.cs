@@ -22,9 +22,9 @@ namespace NovenaLibrary.Presenter.Tests
         public void run_before_each_test_method()
         {
             appConfig = new AppConfig();
-            appConfig.Username = "chris";
-            appConfig.Password = "novena-dev";
-            appConfig.ConnectionString = "Server=novena-dev.csggfzanp0wj.us-west-2.rds.amazonaws.com;Port=5432;Database=novena_dev;Username=chris;Password=novena-dev;SSL Mode=Prefer;Trust Server Certificate=true;CommandTimeout=180";
+            appConfig.Username = "username";
+            appConfig.Password = "password";
+            appConfig.ConnectionString = "fake connection string";
             appConfig.DatabaseType = DatabaseType.PostgreSQL;
 
             workbookPropertiesConfig = new WorkbookPropertiesConfig();
@@ -85,7 +85,7 @@ namespace NovenaLibrary.Presenter.Tests
         }
    
         [TestMethod]
-        public void OnCBoxTableIndexChangedTest()
+        public void OnCBoxTableIndexChanged_AvailableColumnsAreUpdatedWithOneColumn()
         {
             view.AvailableTablesText = "table1";
             view.AvailableColumns = new BindingList<string>();
@@ -109,15 +109,67 @@ namespace NovenaLibrary.Presenter.Tests
         }
 
         [TestMethod]
-        public void OnMoveSelectedColumnDownTest()
+        public void OnMoveSelectedColumnDown_ColumnIsNotLastColumn()
         {
-            Assert.Fail();
+            var selectedColumnIndex = 1;
+            view.SelectedColumns = new BindingList<string>() { "column1", "column2", "column3" };
+            view.Stub(x => x.HighlightedSelectedColumnIndex).Return(selectedColumnIndex);
+            view.Stub(x => x.HighlightedSelectedColumn).Return(view.SelectedColumns[selectedColumnIndex]);
+
+            presenter.OnMoveSelectedColumnDown();
+
+            Assert.IsTrue(view.SelectedColumns[0] == "column1");
+            Assert.IsTrue(view.SelectedColumns[1] == "column3");
+            Assert.IsTrue(view.SelectedColumns[2] == "column2");
+            Assert.IsTrue(view.SelectedColumns.Count == 3);
         }
 
         [TestMethod]
-        public void OnMoveSelectedColumnUpTest()
+        public void OnMoveSelectedColumnDown_ColumnIsLastColumn()
         {
-            Assert.Fail();
+            var selectedColumnIndex = 2;
+            view.SelectedColumns = new BindingList<string>() { "column1", "column2", "column3" };
+            view.Stub(x => x.HighlightedSelectedColumnIndex).Return(selectedColumnIndex);
+            view.Stub(x => x.HighlightedSelectedColumn).Return(view.SelectedColumns[selectedColumnIndex]);
+
+            presenter.OnMoveSelectedColumnDown();
+
+            Assert.IsTrue(view.SelectedColumns[0] == "column1");
+            Assert.IsTrue(view.SelectedColumns[1] == "column2");
+            Assert.IsTrue(view.SelectedColumns[2] == "column3");
+            Assert.IsTrue(view.SelectedColumns.Count == 3);
+        }
+
+        [TestMethod]
+        public void OnMoveSelectedColumnUp_ColumnIsNotFirstColumn()
+        {
+            var selectedColumnIndex = 1;
+            view.SelectedColumns = new BindingList<string>() { "column1", "column2", "column3" };
+            view.Stub(x => x.HighlightedSelectedColumnIndex).Return(selectedColumnIndex);
+            view.Stub(x => x.HighlightedSelectedColumn).Return(view.SelectedColumns[selectedColumnIndex]);
+
+            presenter.OnMoveSelectedColumnUp();
+
+            Assert.IsTrue(view.SelectedColumns[0] == "column2");
+            Assert.IsTrue(view.SelectedColumns[1] == "column1");
+            Assert.IsTrue(view.SelectedColumns[2] == "column3");
+            Assert.IsTrue(view.SelectedColumns.Count == 3);
+        }
+
+        [TestMethod]
+        public void OnMoveSelectedColumnUp_ColumnIsFirstColumn()
+        {
+            var selectedColumnIndex = 0;
+            view.SelectedColumns = new BindingList<string>() { "column1", "column2", "column3" };
+            view.Stub(x => x.HighlightedSelectedColumnIndex).Return(selectedColumnIndex);
+            view.Stub(x => x.HighlightedSelectedColumn).Return(view.SelectedColumns[selectedColumnIndex]);
+
+            presenter.OnMoveSelectedColumnUp();
+
+            Assert.IsTrue(view.SelectedColumns[0] == "column1");
+            Assert.IsTrue(view.SelectedColumns[1] == "column2");
+            Assert.IsTrue(view.SelectedColumns[2] == "column3");
+            Assert.IsTrue(view.SelectedColumns.Count == 3);
         }
 
         [TestMethod]
@@ -127,9 +179,16 @@ namespace NovenaLibrary.Presenter.Tests
         }
 
         [TestMethod]
-        public void OnRemoveSelectedColumnTest()
+        public void OnRemoveSelectedColumn_RemovingOneColumn()
         {
-            Assert.Fail();
+            view.SelectedColumns = new BindingList<string>() { "column1", "column2", "column3" };
+            view.Stub(x => x.HighlightedSelectedColumnIndex).Return(1);
+
+            presenter.OnRemoveSelectedColumn();
+
+            Assert.IsTrue(view.SelectedColumns[0] == "column1");
+            Assert.IsTrue(view.SelectedColumns[1] == "column3");
+            Assert.IsTrue(view.SelectedColumns.Count == 2);
         }
 
         [TestMethod]

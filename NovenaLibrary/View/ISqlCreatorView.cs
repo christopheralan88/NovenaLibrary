@@ -18,6 +18,8 @@ namespace NovenaLibrary.View
         BindingList<string> HighlightedAvailableColumns { get; }
         AppConfig AppConfig { get; set; }
         WorkbookPropertiesConfig WorkbookPropertiesConfig { get; set; }
+        int HighlightedSelectedColumnIndex { get; }
+        string HighlightedSelectedColumn { get; }
         // add dgv eventually, but it is a complex type
     }
 }
