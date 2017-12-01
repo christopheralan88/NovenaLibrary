@@ -16,11 +16,12 @@ namespace NovenaLibrary.Config
         public string EndParenthesis { get; set; }
 
 
-        public Criteria()
-        {
-        }
+        //public Criteria()
+        //{
+        //}
 
-        public Criteria(string AndOr, string FrontParenthesis, string Column, string Operator, string Filter, string EndParenthesis, bool Locked)
+        public Criteria(string AndOr = "", string FrontParenthesis = "", string Column = "", 
+            string Operator = "", string Filter = "", string EndParenthesis = "", bool Locked = false)
         {
             this.AndOr = AndOr;
             this.FrontParenthesis = FrontParenthesis;

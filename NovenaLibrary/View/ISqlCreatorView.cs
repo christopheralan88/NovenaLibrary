@@ -20,6 +20,9 @@ namespace NovenaLibrary.View
         WorkbookPropertiesConfig WorkbookPropertiesConfig { get; set; }
         int HighlightedSelectedColumnIndex { get; }
         string HighlightedSelectedColumn { get; }
+        BindingList<string> AvailableColumnDGV { get; set; }
+        BindingList<Criteria> Criteria { get; set; }
+        int? HighlightedCriteriaIndex { get; }
         // add dgv eventually, but it is a complex type
     }
 }

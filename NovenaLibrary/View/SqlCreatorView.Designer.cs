@@ -231,6 +231,7 @@
             this.Filter,
             this.EndParenthesis});
             this.datagrid_criteria.Location = new System.Drawing.Point(478, 106);
+            this.datagrid_criteria.MultiSelect = false;
             this.datagrid_criteria.Name = "datagrid_criteria";
             this.datagrid_criteria.Size = new System.Drawing.Size(612, 379);
             this.datagrid_criteria.TabIndex = 68;

@@ -82,6 +82,23 @@ namespace NovenaLibrary.View
             get { return lbox_selected_columns.SelectedItem.ToString(); }
         }
 
+        public BindingList<string> AvailableColumnDGV
+        {
+            get { return (BindingList<string>)Column.DataSource; }
+            set { Column.DataSource = value; }
+        }
+
+        public BindingList<Criteria> Criteria
+        {
+            get { return (BindingList<Criteria>)datagrid_criteria.DataSource; }
+            set { datagrid_criteria.DataSource = value; }
+        }
+
+        public int? HighlightedCriteriaIndex
+        {
+            get { return datagrid_criteria.SelectedRows[0].Index; }
+        }
+
         public void Attach(ISqlCreatorPresenterCallbacks callback)
         {
             cbox_table.SelectedIndexChanged += (sender, e) => callback.OnCBoxTableIndexChanged();

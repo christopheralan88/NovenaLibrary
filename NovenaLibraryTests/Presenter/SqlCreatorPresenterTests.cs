@@ -6,6 +6,7 @@ using System.ComponentModel;
 using NovenaLibrary.Repositories;
 using System.Data;
 using Npgsql;
+using System.Collections.Generic;
 
 namespace NovenaLibrary.Presenter.Tests
 {
@@ -49,9 +50,45 @@ namespace NovenaLibrary.Presenter.Tests
         }
 
         [TestMethod]
-        public void OnAddRowTest()
+        public void OnAddRow_NoEqualCriteria()
         {
-            Assert.Fail();
+            var criteria1 = new Criteria("And", "", "column1", "=", "abc", "", false);
+            var criteria2 = new Criteria("And", "", "column2", "Like", "def%", "", false);
+            var criteria3 = new Criteria("And", "", "column3", "Not Like", "%gef", "", false);
+            BindingList<Criteria> criteria = new BindingList<Criteria>();
+            criteria.Add(criteria1);
+            criteria.Add(criteria2);
+            criteria.Add(criteria3);
+            view.Criteria = criteria;
+
+            presenter.OnAddRow();
+
+            Assert.IsTrue(view.Criteria[0] == criteria1);
+            Assert.IsTrue(view.Criteria[1] == criteria2);
+            Assert.IsTrue(view.Criteria[2] == criteria3);
+            Assert.IsTrue(view.Criteria[3].Equals(new Criteria()));
+            Assert.IsTrue(view.Criteria.Count == 4);
+        }
+
+        [TestMethod]
+        public void OnAddRow_ExistingEqualCriteria()
+        {
+            var criteria1 = new Criteria("And", "", "column1", "=", "abc", "", false);
+            var criteria2 = new Criteria("And", "", "column2", "Like", "def%", "", false);
+            var criteria3 = new Criteria();
+            BindingList<Criteria> criteria = new BindingList<Criteria>();
+            criteria.Add(criteria1);
+            criteria.Add(criteria2);
+            criteria.Add(criteria3);
+            view.Criteria = criteria;
+
+            presenter.OnAddRow();
+
+            Assert.IsTrue(view.Criteria[0] == criteria1);
+            Assert.IsTrue(view.Criteria[1] == criteria2);
+            Assert.IsTrue(view.Criteria[2] == criteria3);
+            Assert.IsTrue(view.Criteria[3].Equals(new Criteria()));
+            Assert.IsTrue(view.Criteria.Count == 4);
         }
 
         [TestMethod]
@@ -103,9 +140,41 @@ namespace NovenaLibrary.Presenter.Tests
         }
 
         [TestMethod]
-        public void OnDeleteRowTest()
+        public void OnDeleteRow_RowIsSelected()
         {
-            Assert.Fail();
+            var criteria1 = new Criteria("And", "", "column1", "=", "abc", "", false);
+            var criteria2 = new Criteria("And", "", "column2", "Like", "def%", "", false);
+            var criteria3 = new Criteria("And", "", "column3", "Not Like", "%gef", "", false);
+            BindingList<Criteria> criteria = new BindingList<Criteria>();
+            criteria.Add(criteria1);
+            criteria.Add(criteria2);
+            criteria.Add(criteria3);
+            view.Criteria = criteria;
+            view.Stub(x => x.HighlightedCriteriaIndex).Return(1);
+
+            presenter.OnDeleteRow();
+
+            Assert.IsTrue(view.Criteria[0] == criteria1);
+            Assert.IsTrue(view.Criteria[1] == criteria3);
+            Assert.IsTrue(view.Criteria.Count == 2);
+        }
+
+        [TestMethod]
+        public void OnDeleteRow_NoRowSelected()
+        {
+            var criteria1 = new Criteria("And", "", "column1", "=", "abc", "", false);
+            var criteria2 = new Criteria("And", "", "column2", "Like", "def%", "", false);
+            var criteria3 = new Criteria("And", "", "column3", "Not Like", "%gef", "", false);
+            BindingList<Criteria> criteria = new BindingList<Criteria>();
+            criteria.Add(criteria1);
+            criteria.Add(criteria2);
+            criteria.Add(criteria3);
+            view.Criteria = criteria;
+            view.Stub(x => x.HighlightedCriteriaIndex).Return(null);
+
+            presenter.OnDeleteRow();
+
+            Assert.IsTrue(view.Criteria.Count == 3);
         }
 
         [TestMethod]

@@ -8,6 +8,7 @@ using NovenaLibrary.Repositories;
 using NovenaLibrary.Config;
 using System.Data;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace NovenaLibrary.Presenter
 {
@@ -15,6 +16,7 @@ namespace NovenaLibrary.Presenter
     {
         private ISqlCreatorView _view;
         private IDatabaseConnection dbConnection;
+        private readonly string DELETE_ROW_MESSAGE = "You must select a row to delete";
 
         public SqlCreatorPresenter(ISqlCreatorView view, IDatabaseConnection dbConnection)
         {
@@ -34,7 +36,7 @@ namespace NovenaLibrary.Presenter
 
         public void OnAddRow()
         {
-            
+            _view.Criteria.Add(new Criteria());
         }
 
         public void OnAddSelectedColumn()
@@ -68,7 +70,15 @@ namespace NovenaLibrary.Presenter
 
         public void OnDeleteRow()
         {
-            throw new NotImplementedException();
+            var highlightedCriteriaIndex = _view.HighlightedCriteriaIndex;
+            if (highlightedCriteriaIndex != null)
+            {
+                _view.Criteria.RemoveAt((int)highlightedCriteriaIndex);
+            }
+            else
+            {
+                ShowMessage(DELETE_ROW_MESSAGE);
+            }
         }
 
         public void OnMoveSelectedColumnDown()
@@ -119,20 +129,25 @@ namespace NovenaLibrary.Presenter
             // set available tables' combo box text to selected table
             _view.AvailableTablesText = _view.WorkbookPropertiesConfig.selectedTable;
 
-            // set available columns list box
+            // set available columns list box and Column combo box in dgv
             var dtAvailableColumns = dbConnection.getSchema(_view.AvailableTablesText);
 
             var availableColumnsList = (from row in dtAvailableColumns.AsEnumerable()
                                         select row.Field<string>("COLUMN_NAME")).ToList();
 
             _view.AvailableColumns = new BindingList<string>(availableColumnsList);
+            _view.AvailableColumnDGV = new BindingList<string>(availableColumnsList);
 
             // set selected columns list box values to selected columns
             _view.SelectedColumns = new BindingList<string>(_view.WorkbookPropertiesConfig.selectedColumns);
 
-            // set Column combo box in dgv to available columns bindinglist
-
             // set criteria for dgv
+            _view.Criteria = new BindingList<Criteria>(_view.WorkbookPropertiesConfig.criteria);
+        }
+
+        private void ShowMessage(string message)
+        {
+            MessageBox.Show(message);
         }
     }
 }
