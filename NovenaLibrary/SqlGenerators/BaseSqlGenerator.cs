@@ -3,25 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NovenaLibrary.Repositories;
 using NovenaLibrary.Config;
+using System.Data;
 
 namespace NovenaLibrary.SqlGenerators
 {
     public abstract class BaseSqlGenerator
     {
-        public Dictionary<string, bool> typeMappings = new Dictionary<string, bool>();
-        public char openingColumnMark;
-        public char closingColumnMark;
+        protected Dictionary<string, bool> typeMappings = new Dictionary<string, bool>();
+        protected char openingColumnMark;
+        protected char closingColumnMark;
+        protected DataTable tableSchema;
 
 
         public BaseSqlGenerator()
         {
         }
 
-        public abstract string createSql(bool distinct, string[] columns, string table, string[,] criteria, string[] groupBy, string[] orderBy, string limit, string offset, bool asc);
+        public abstract string CreateSql(DataTable tableSchema, bool distinct = false, List<string> columns = null, string table = null, List<Criteria> criteria = null, 
+            bool groupBy = false, bool orderBy = false, string limit = null, string offset = null, bool asc = false);
 
-        protected virtual StringBuilder createSELECTClause(bool distinct, string[] columns)
+        protected virtual StringBuilder CreateSELECTClause(bool distinct, List<string> columns)
         {
             if (columns == null) return null;
 
@@ -35,7 +37,7 @@ namespace NovenaLibrary.SqlGenerators
             return sql.Replace("  ", " ");
         }
 
-        protected virtual StringBuilder createFROMClause(string table)
+        protected virtual StringBuilder CreateFROMClause(string table)
         {
             if (table == null) return null;
 
@@ -44,41 +46,41 @@ namespace NovenaLibrary.SqlGenerators
             return sql.Replace("  ", " ");
         }
 
-        protected virtual StringBuilder createWHEREClause(string[,] criteria)
+        protected virtual StringBuilder CreateWHEREClause(List<Criteria> criteria)
         {
             if (criteria == null) return null;
 
-            if (criteria.Length > 0)
+            if (criteria.Count > 0)
             {
                 //set first cell to blank since we don't need an "And" or "Or" there.
-                criteria[0, 0] = "";
+                criteria.First().AndOr = "";
 
                 StringBuilder sql = new StringBuilder(" WHERE ");
 
                 //for each row
-                for (int r = 0; r < criteria.GetLength(0); r++)
+                foreach (var theCriteria in criteria)
                 {
-                    //for each column
-                    for (int c = 0; c < criteria.GetLength(1); c++)
-                    {
-                        object currentItem = criteria[r, c];
-                        if (currentItem != null) sql.Append(string.Format(" {0} ", currentItem));
-                    }
+                    sql.Append(theCriteria.AndOr == null ? null : $" {theCriteria.AndOr} ");
+                    sql.Append(theCriteria.FrontParenthesis == null ? null : $" {theCriteria.FrontParenthesis} ");
+                    sql.Append(theCriteria.Column == null ? null : $" {theCriteria.Column} ");
+                    sql.Append(theCriteria.Operator == null ? null : $" {theCriteria.Operator} ");
+                    sql.Append(theCriteria.Filter == null ? null : $" {theCriteria.Filter} ");
+                    sql.Append(theCriteria.EndParenthesis == null ? null : $" {theCriteria.EndParenthesis} ");
                 }
-                //replace all double spaces with a single space
+
                 return sql.Replace("  ", " ");
             }
             return null;
         }
 
-        protected virtual StringBuilder createGROUPBYCluase(string[] groupBy)
+        protected virtual StringBuilder CreateGROUPBYCluase(bool groupBy, List<string> columns)
         {
-            if (groupBy == null) return null;
+            if (groupBy == false) return null;
 
-            if (groupBy.Length > 0)
+            if (columns.Count > 0)
             {
                 StringBuilder sql = new StringBuilder(" GROUP BY ");
-                foreach (string item in groupBy)
+                foreach (string item in columns)
                 {
                     sql.Append(string.Format("{0}{1}{2}, ", openingColumnMark, item, closingColumnMark));
                 }
@@ -88,35 +90,34 @@ namespace NovenaLibrary.SqlGenerators
             return null;
         }
 
-        protected virtual StringBuilder createORDERBYCluase(string[] orderBy, bool asc)
+        protected virtual StringBuilder CreateORDERBYCluase(bool orderBy, List<string> columns, bool asc)
         {
-            if (orderBy == null) return null;
+            if (orderBy == false) return null;
 
-            if (orderBy.Length > 0)
+            if (columns.Count > 0)
             {
                 StringBuilder sql = new StringBuilder(" ORDER BY ");
-                foreach (string item in orderBy)
+                foreach (string item in columns)
                 {
                     sql.Append(string.Format("{0}{1}{2}, ", openingColumnMark, item, closingColumnMark));
                 }
                 sql.Remove(sql.Length - 2, 2).Append(" ");
                 return (asc == true) ? sql.Append(" ASC ").Replace("  ", " ") : sql.Append(" DESC ").Replace("  ", " ");
-                //return sql.Replace("  ", " ");
             }
             return null;
         }
 
-        protected virtual StringBuilder createLimitClause(string limit)
+        protected virtual StringBuilder CreateLimitClause(string limit)
         {
             return (limit == null) ? null : new StringBuilder(" LIMIT " + limit).Replace("  ", " ");
         }
 
-        protected virtual StringBuilder createOffsetClause(string offset)
+        protected virtual StringBuilder CreateOffsetClause(string offset)
         {
             return (offset == null) ? null : new StringBuilder(" OFFSET " + offset).Replace("  ", " ");
         }
 
-        public bool isQuotedTest(string columnDataType)
+        public bool IsColumnQuoted(string columnDataType)
         {
             try
             {

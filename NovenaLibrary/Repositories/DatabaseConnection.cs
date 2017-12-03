@@ -25,7 +25,6 @@ namespace NovenaLibrary.Repositories
         {
             try
             {
-                //dbConnection.ConnectionString = appConfig.ConnectionString;
                 dbConnection.Open();
 
                 dbCommand.CommandText = sql;
@@ -51,7 +50,6 @@ namespace NovenaLibrary.Repositories
         {
             try
             {
-                //dbConnection.ConnectionString = appConfig.ConnectionString;
                 dbConnection.Open();
             }
             catch (Exception)
@@ -68,7 +66,6 @@ namespace NovenaLibrary.Repositories
         {
             try
             {
-                //dbConnection.ConnectionString = appConfig.ConnectionString;
                 dbConnection.Open();
 
                 return dbConnection.GetSchema("Columns", new string[4] { null, null, tableName, null });

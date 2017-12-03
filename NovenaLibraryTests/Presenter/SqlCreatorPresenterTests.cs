@@ -7,6 +7,7 @@ using NovenaLibrary.Repositories;
 using System.Data;
 using Npgsql;
 using System.Collections.Generic;
+using NovenaLibrary.SqlGenerators;
 
 namespace NovenaLibrary.Presenter.Tests
 {
@@ -18,6 +19,7 @@ namespace NovenaLibrary.Presenter.Tests
         public AppConfig appConfig;
         public WorkbookPropertiesConfig workbookPropertiesConfig;
         public IDatabaseConnection dbConnection;
+        public BaseSqlGenerator sqlGenerator;
 
         [TestInitialize]
         public void run_before_each_test_method()
@@ -35,8 +37,10 @@ namespace NovenaLibrary.Presenter.Tests
             view.WorkbookPropertiesConfig = workbookPropertiesConfig;
 
             dbConnection = MockRepository.GenerateStub<IDatabaseConnection>();
+
+            sqlGenerator = MockRepository.GenerateStub<BaseSqlGenerator>();
             
-            presenter = new SqlCreatorPresenter(view, dbConnection);
+            presenter = new SqlCreatorPresenter(view, dbConnection, sqlGenerator);
         }
 
         [TestMethod]
@@ -126,7 +130,7 @@ namespace NovenaLibrary.Presenter.Tests
         {
             view.AvailableTablesText = "table1";
             view.AvailableColumns = new BindingList<string>();
-            dbConnection.Stub(x => x.getSchema("table1")).Return(DataTableBuilder());
+            dbConnection.Stub(x => x.getSchema("table1")).Return(MultiColumnDataTableBuilder());
 
             presenter.OnCBoxTableIndexChanged();
 
@@ -244,7 +248,20 @@ namespace NovenaLibrary.Presenter.Tests
         [TestMethod]
         public void OnOkTest()
         {
-            Assert.Fail();
+            BindingList<string> columns = new BindingList<string>() { "column1", "column2", "column3" };
+            string table = "table1";
+            var criteria1 = new Criteria("And", "", "column1", "=", "abc", "", false);
+            var criteria2 = new Criteria("And", "", "column2", "Like", "def%", "", false);
+            var criteria3 = new Criteria("And", "", "column3", "Not Like", "%gef", "", false);
+            BindingList<Criteria> criteria = new BindingList<Criteria>();
+            criteria.Add(criteria1);
+            criteria.Add(criteria2);
+            criteria.Add(criteria3);
+            view.Stub(x => x.SelectedColumns).Return(columns);
+            view.Stub(x => x.AvailableTablesText).Return(table);
+            view.Stub(x => x.Criteria).Return(criteria);
+            view.Stub(x => x.GroupBy).Return(false);
+            view.Stub(x => x.Limit).Return(null);
         }
 
         [TestMethod]
@@ -261,15 +278,44 @@ namespace NovenaLibrary.Presenter.Tests
         }
 
         [TestMethod]
-        public void OnLoadTest()
+        public void OnLoad_QueriesReturnDataTables()
         {
-            Assert.Fail();
+            var sql = "SELECT table_name FROM information_schema.table_privileges WHERE grantee = 'username' AND privilege_type = 'SELECT';";
+            dbConnection.Stub(x => x.query(sql)).Return(SingleColumnDataTableBuilder());
+            List<string> tableList = new List<string>() { "column1", "column2", "column3" };
+            workbookPropertiesConfig.selectedTable = "table1";
+            dbConnection.Stub(x => x.getSchema(workbookPropertiesConfig.selectedTable)).Return(MultiColumnDataTableBuilder());
+            workbookPropertiesConfig.selectedColumns = new List<string>() { "column1", "column3" };
+            var criteria1 = new Criteria("And", "", "column1", "=", "abc", "", false);
+            var criteria2 = new Criteria("And", "", "column2", "Like", "def%", "", false);
+            var criteria3 = new Criteria("And", "", "column3", "Not Like", "%gef", "", false);
+            List<Criteria> criteria = new List<Criteria>();
+            criteria.Add(criteria1);
+            criteria.Add(criteria2);
+            criteria.Add(criteria3);
+            workbookPropertiesConfig.criteria = criteria;
+
+            presenter.OnLoad();
+
+            Assert.IsTrue(view.AvailableTables.Count == tableList.Count);
+            Assert.IsTrue(view.AvailableTables[0] == tableList[0]);
+            Assert.IsTrue(view.AvailableTables[1] == tableList[1]);
+            Assert.IsTrue(view.AvailableTables[2] == tableList[2]);
+
+            Assert.IsTrue(view.AvailableTablesText == workbookPropertiesConfig.selectedTable);
+
+            Assert.IsTrue(view.AvailableColumns.Count == 1);
+            Assert.IsTrue(view.AvailableColumnDGV.Count == 1);
+
+            Assert.IsTrue(view.SelectedColumns.Count == workbookPropertiesConfig.selectedColumns.Count);
+            Assert.IsTrue(view.AvailableTables[0] == tableList[0]);
+            Assert.IsTrue(view.AvailableTables[1] == tableList[1]);
+
+            Assert.IsTrue(view.Criteria.Count == workbookPropertiesConfig.criteria.Count);
         }
 
-        private DataTable DataTableBuilder()
+        private DataTable MultiColumnDataTableBuilder()
         {
-            //IDatabaseConnection dbConnection = new DatabaseConnection(new NpgsqlConnection(appConfig.ConnectionString), new NpgsqlCommand());
-            //return dbConnection.getSchema("county_spending");
             DataTable dt = new DataTable();
             dt.Columns.Add("COLUMN_NAME");
             dt.Columns.Add("col2");
@@ -280,6 +326,17 @@ namespace NovenaLibrary.Presenter.Tests
             dt.Columns.Add("col7");
             dt.Columns.Add("DATA_TYPE");
             dt.Rows.Add(new object[] { "fund", null, null, null, null, null, null, "text" });
+
+            return dt;
+        }
+
+        private DataTable SingleColumnDataTableBuilder()
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("table_name");
+            dt.Rows.Add(new object[] { "column1" });
+            dt.Rows.Add(new object[] { "column2" });
+            dt.Rows.Add(new object[] { "column3" });
 
             return dt;
         }

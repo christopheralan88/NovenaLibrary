@@ -91,9 +91,11 @@
     <Compile Include="Config\Criteria.cs" />
     <Compile Include="Config\DatabaseConnectionFactory.cs" />
     <Compile Include="Config\DatabaseType.cs" />
+    <Compile Include="Config\SqlGeneratorFactory.cs" />
     <Compile Include="Config\WorkbookPropertiesConfig.cs" />
     <Compile Include="Exceptions\DatabaseTypeNotRecognizedException.cs" />
     <Compile Include="Exceptions\IncorrectCriteriaCountException.cs" />
+    <Compile Include="Exceptions\PropertyAlreadySetException.cs" />
     <Compile Include="Presenter\IPresenter.cs" />
     <Compile Include="Presenter\ISqlCreatorPresenterCallbacks.cs" />
     <Compile Include="Presenter\ISqlCreatorPresenter.cs" />

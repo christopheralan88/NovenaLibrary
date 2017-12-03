@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NovenaLibrary.Presenter;
 using NovenaLibrary.Config;
+using NovenaLibrary.Exceptions;
 
 namespace NovenaLibrary.View
 {
@@ -16,15 +17,35 @@ namespace NovenaLibrary.View
     {
         private AppConfig _appConfig;
         private WorkbookPropertiesConfig _workbookPropertiesConfig;
+        private DataTable _sqlResult;
 
         public SqlCreatorView(AppConfig appConfig, WorkbookPropertiesConfig workbookPropertiesConfig)
         {
             InitializeComponent();
             _appConfig = appConfig;
             _workbookPropertiesConfig = workbookPropertiesConfig;
-            ISqlCreatorPresenter presenter = new SqlCreatorPresenter(this, new DatabaseConnectionFactory().CreateDbConnection(appConfig));
+            ISqlCreatorPresenter presenter = new SqlCreatorPresenter(
+                this, 
+                new DatabaseConnectionFactory().CreateDbConnection(appConfig),
+                new SqlGeneratorFactory().CreateSqlGenerator(AppConfig.DatabaseType));
             presenter.Initialize();
             HighlightedAvailableColumns.AllowNew = true;
+        }
+
+        public DataTable SQLResult
+        {
+            get { return _sqlResult; }
+            set
+            {
+                if (_sqlResult == null)
+                {
+                    _sqlResult = value;
+                }
+                else
+                {
+                    throw new PropertyAlreadySetException();
+                }
+            }
         }
 
         public AppConfig AppConfig
@@ -97,6 +118,16 @@ namespace NovenaLibrary.View
         public int? HighlightedCriteriaIndex
         {
             get { return datagrid_criteria.SelectedRows[0].Index; }
+        }
+
+        public bool GroupBy { get { return ckbox_groupBy.Checked; } }
+
+        public string Limit { get { return txt_box_limit.Text; } }
+
+        public void CloseForm()
+        {
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         public void Attach(ISqlCreatorPresenterCallbacks callback)

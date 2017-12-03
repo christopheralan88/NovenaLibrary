@@ -54,6 +54,7 @@
             this.Filter = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.EndParenthesis = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lbox_selected_columns = new System.Windows.Forms.ListBox();
+            this.ckbox_groupBy = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.datagrid_criteria)).BeginInit();
             this.SuspendLayout();
             // 
@@ -149,7 +150,7 @@
             // 
             // txt_box_limit
             // 
-            this.txt_box_limit.Location = new System.Drawing.Point(733, 514);
+            this.txt_box_limit.Location = new System.Drawing.Point(724, 495);
             this.txt_box_limit.Name = "txt_box_limit";
             this.txt_box_limit.Size = new System.Drawing.Size(100, 20);
             this.txt_box_limit.TabIndex = 76;
@@ -158,7 +159,7 @@
             // lbl_limit
             // 
             this.lbl_limit.AutoSize = true;
-            this.lbl_limit.Location = new System.Drawing.Point(637, 519);
+            this.lbl_limit.Location = new System.Drawing.Point(628, 495);
             this.lbl_limit.Name = "lbl_limit";
             this.lbl_limit.Size = new System.Drawing.Size(90, 13);
             this.lbl_limit.TabIndex = 75;
@@ -213,7 +214,7 @@
             // ckbox_refresh
             // 
             this.ckbox_refresh.AutoSize = true;
-            this.ckbox_refresh.Location = new System.Drawing.Point(640, 491);
+            this.ckbox_refresh.Location = new System.Drawing.Point(478, 514);
             this.ckbox_refresh.Name = "ckbox_refresh";
             this.ckbox_refresh.Size = new System.Drawing.Size(144, 17);
             this.ckbox_refresh.TabIndex = 69;
@@ -308,11 +309,22 @@
             this.lbox_selected_columns.Size = new System.Drawing.Size(148, 355);
             this.lbox_selected_columns.TabIndex = 78;
             // 
+            // ckbox_groupBy
+            // 
+            this.ckbox_groupBy.AutoSize = true;
+            this.ckbox_groupBy.Location = new System.Drawing.Point(478, 491);
+            this.ckbox_groupBy.Name = "ckbox_groupBy";
+            this.ckbox_groupBy.Size = new System.Drawing.Size(98, 17);
+            this.ckbox_groupBy.TabIndex = 79;
+            this.ckbox_groupBy.Text = "Group Columns";
+            this.ckbox_groupBy.UseVisualStyleBackColor = true;
+            // 
             // SqlCreatorView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1102, 561);
+            this.Controls.Add(this.ckbox_groupBy);
             this.Controls.Add(this.lbox_selected_columns);
             this.Controls.Add(this.but_add_row);
             this.Controls.Add(this.txt_box_limit);
@@ -369,5 +381,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Filter;
         private System.Windows.Forms.DataGridViewTextBoxColumn EndParenthesis;
         private System.Windows.Forms.ListBox lbox_selected_columns;
+        private System.Windows.Forms.CheckBox ckbox_groupBy;
     }
 }

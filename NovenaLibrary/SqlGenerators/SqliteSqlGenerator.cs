@@ -1,5 +1,7 @@
-﻿using System;
+﻿using NovenaLibrary.Config;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -45,16 +47,19 @@ namespace NovenaLibrary.SqlGenerators
             base.typeMappings = mappings;
         }
 
-        public override string createSql(bool distinct, string[] columns, string table, string[,] criteria, string[] groupBy, string[] orderBy, string limit, string offset, bool asc)
+        public override string CreateSql(DataTable tableSchema, bool distinct = false, List<string> columns = null, string table = null, List<Criteria> criteria = null,
+            bool groupBy = false, bool orderBy = false, string limit = null, string offset = null, bool asc = false)
         {
+            base.tableSchema = tableSchema;
+
             StringBuilder sql = new StringBuilder("");
-            sql.Append(createSELECTClause(distinct, columns));
-            sql.Append(createFROMClause(table));
-            sql.Append(createWHEREClause(criteria));
-            sql.Append(createGROUPBYCluase(groupBy));
-            sql.Append(createORDERBYCluase(orderBy, asc));
-            sql.Append(createLimitClause(limit));
-            sql.Append(createOffsetClause(offset));
+            sql.Append(CreateSELECTClause(distinct, columns));
+            sql.Append(CreateFROMClause(table));
+            sql.Append(CreateWHEREClause(criteria));
+            sql.Append(CreateGROUPBYCluase(groupBy, columns));
+            sql.Append(CreateORDERBYCluase(orderBy, columns, asc));
+            sql.Append(CreateLimitClause(limit));
+            sql.Append(CreateOffsetClause(offset));
             return sql.ToString().Replace("  ", " ");
         }
     }

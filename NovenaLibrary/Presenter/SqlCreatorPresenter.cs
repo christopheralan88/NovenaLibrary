@@ -9,6 +9,7 @@ using NovenaLibrary.Config;
 using System.Data;
 using System.ComponentModel;
 using System.Windows.Forms;
+using NovenaLibrary.SqlGenerators;
 
 namespace NovenaLibrary.Presenter
 {
@@ -16,12 +17,16 @@ namespace NovenaLibrary.Presenter
     {
         private ISqlCreatorView _view;
         private IDatabaseConnection dbConnection;
+        private BaseSqlGenerator sqlGenerator;
+        private DataTable tableSchema;
         private readonly string DELETE_ROW_MESSAGE = "You must select a row to delete";
+        private readonly string QUERY_RETURNED_NO_RECORDS = "The query returned no records";
 
-        public SqlCreatorPresenter(ISqlCreatorView view, IDatabaseConnection dbConnection)
+        public SqlCreatorPresenter(ISqlCreatorView view, IDatabaseConnection dbConnection, BaseSqlGenerator sqlGenerator)
         {
             _view = view;
             this.dbConnection = dbConnection;
+            this.sqlGenerator = sqlGenerator;
         }
 
         public object UI
@@ -55,9 +60,9 @@ namespace NovenaLibrary.Presenter
         public void OnCBoxTableIndexChanged()
         {
             var table = _view.AvailableTablesText;
-            var dt = dbConnection.getSchema(table);
+            tableSchema = dbConnection.getSchema(table);
 
-            var columnList = (from row in dt.AsEnumerable()
+            var columnList = (from row in tableSchema.AsEnumerable()
                               select row.Field<string>("COLUMN_NAME")).ToList();
 
             _view.AvailableColumns = new BindingList<string>(columnList);
@@ -109,7 +114,32 @@ namespace NovenaLibrary.Presenter
 
         public void OnOk()
         {
-            throw new NotImplementedException();
+            var columns = _view.SelectedColumns.ToList();
+            var table = _view.AvailableTablesText;
+            var critera = _view.Criteria.ToList();
+            var groupBy = _view.GroupBy;
+            var limit = _view.Limit;
+            string sql = sqlGenerator.CreateSql(tableSchema: tableSchema, columns: columns, table: table, criteria: critera, groupBy: groupBy, limit: limit);
+
+            DataTable dt;
+            try
+            {
+                dt = dbConnection.query(sql);
+                if (dt.Rows.Count > 0)
+                {
+                    _view.SQLResult = dt;
+                    _view.CloseForm();
+                }
+                else
+                {
+                    ShowMessage(QUERY_RETURNED_NO_RECORDS);
+                }
+            }
+            catch (Exception ex)
+            {
+                ShowMessage(ex.Message);
+            }
+            
         }
 
         public void OnRemoveSelectedColumn()
@@ -119,11 +149,18 @@ namespace NovenaLibrary.Presenter
 
         public void OnLoad()
         {
-            // get avialable tables
+            // get available tables
             var sql = string.Format(AvailableTablesSql.availableTablesSql[_view.AppConfig.DatabaseType], _view.AppConfig.Username);
             var dt = dbConnection.query(sql);
-            var tableList = (from row in dt.AsEnumerable()
-                             select row.Field<string>("COLUMN_NAME")).ToList();
+
+            //TODO:  Handle when an empty or null datatable is returned by query() method.
+
+            BindingList<string> tableList = new BindingList<string>();
+            foreach (DataRow row in dt.Rows)
+            {
+                tableList.Add(row[0].ToString());
+            }
+
             _view.AvailableTables = new BindingList<string>(tableList);
 
             // set available tables' combo box text to selected table
