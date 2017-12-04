@@ -12,6 +12,5 @@ namespace NovenaLibrary.Presenter
 {
     public interface ISqlCreatorPresenter : IPresenter
     {
-        
     }
 }

@@ -32,7 +32,7 @@ namespace NovenaLibrary.Presenter.Tests
 
             workbookPropertiesConfig = new WorkbookPropertiesConfig();
 
-            view = MockRepository.GenerateStub<ISqlCreatorView>();
+            view = MockRepository.GenerateMock<ISqlCreatorView>();
             view.AppConfig = appConfig;
             view.WorkbookPropertiesConfig = workbookPropertiesConfig;
 
@@ -246,22 +246,34 @@ namespace NovenaLibrary.Presenter.Tests
         }
 
         [TestMethod]
-        public void OnOkTest()
+        public void OnOk()
         {
-            BindingList<string> columns = new BindingList<string>() { "column1", "column2", "column3" };
+            List<string> columns = new List<string>() { "column1", "column2", "column3" };
+            BindingList<string> columnsBindingList = new BindingList<string>(columns);
             string table = "table1";
             var criteria1 = new Criteria("And", "", "column1", "=", "abc", "", false);
             var criteria2 = new Criteria("And", "", "column2", "Like", "def%", "", false);
             var criteria3 = new Criteria("And", "", "column3", "Not Like", "%gef", "", false);
-            BindingList<Criteria> criteria = new BindingList<Criteria>();
+            List<Criteria> criteria = new List<Criteria>();
             criteria.Add(criteria1);
             criteria.Add(criteria2);
             criteria.Add(criteria3);
-            view.Stub(x => x.SelectedColumns).Return(columns);
+            BindingList<Criteria> criteriaBindingList = new BindingList<Criteria>(criteria);
+            view.Stub(x => x.SelectedColumns).Return(columnsBindingList);
             view.Stub(x => x.AvailableTablesText).Return(table);
-            view.Stub(x => x.Criteria).Return(criteria);
+            view.Stub(x => x.Criteria).Return(criteriaBindingList);
             view.Stub(x => x.GroupBy).Return(false);
             view.Stub(x => x.Limit).Return(null);
+            DataTable dt = MultiColumnDataTableBuilder();
+            //view.Stub(x => x.SQLResult).SetPropertyWithArgument(dt);
+            dbConnection.Stub(x => x.getSchema(table)).Return(dt);
+            sqlGenerator.Stub(x => x.CreateSql(tableSchema: dt, columns: columns, table: table, criteria: criteria, groupBy: false, limit: null)).Return("SELECT * FROM table1");
+            dbConnection.Stub(x => x.query("SELECT * FROM table1")).Return(MultiColumnDataTableBuilder());
+
+            presenter.OnCBoxTableIndexChanged(); // this is the only method that updates the presenter's tableSchema field.
+            presenter.OnOk();
+
+            Assert.IsTrue(view.SQLResult != null);
         }
 
         [TestMethod]
@@ -325,7 +337,9 @@ namespace NovenaLibrary.Presenter.Tests
             dt.Columns.Add("col6");
             dt.Columns.Add("col7");
             dt.Columns.Add("DATA_TYPE");
-            dt.Rows.Add(new object[] { "fund", null, null, null, null, null, null, "text" });
+            dt.Rows.Add(new object[] { "column1", null, null, null, null, null, null, "text" });
+            dt.Rows.Add(new object[] { "column2", null, null, null, null, null, null, "text" });
+            dt.Rows.Add(new object[] { "column3", null, null, null, null, null, null, "int2" });
 
             return dt;
         }

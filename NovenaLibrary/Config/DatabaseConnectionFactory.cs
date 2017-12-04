@@ -8,7 +8,7 @@ using Npgsql;
 using MySql.Data.MySqlClient;
 using Oracle.ManagedDataAccess.Client;
 using System.Data.SqlClient;
-using System.Data.SQLite;
+//using System.Data.SQLite;
 using System.Data.Odbc;
 using System.Data.OleDb;
 using NovenaLibrary.Exceptions;
@@ -42,10 +42,10 @@ namespace NovenaLibrary.Config
                 {
                     return new DatabaseConnection(new SqlConnection(connectionString), new SqlCommand());
                 }
-                else if (databaseType.Equals(DatabaseType.Sqlite))
-                {
-                    return new DatabaseConnection(new SQLiteConnection(connectionString), new SQLiteCommand());
-                }
+                //else if (databaseType.Equals(DatabaseType.Sqlite))
+                //{
+                //    return new DatabaseConnection(new SQLiteConnection(connectionString), new SQLiteCommand());
+                //}
                 else if (databaseType.Equals(DatabaseType.Redshift))
                 {
                     return new DatabaseConnection(new OdbcConnection(connectionString), new OdbcCommand());
