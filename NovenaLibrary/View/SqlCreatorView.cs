@@ -68,11 +68,7 @@ namespace NovenaLibrary.View
 
         public BindingList<string> HighlightedAvailableColumns
         {
-            get
-            {
-                lbox_selected_columns.DataSource = null;
-                return ConvertSelectedObjectCollectionToList(lbox_available_columns.SelectedItems);
-            }
+            get { return ConvertSelectedObjectCollectionToList(lbox_available_columns.SelectedItems); }
         }
 
         public BindingList<string> AvailableTables
@@ -140,6 +136,7 @@ namespace NovenaLibrary.View
             but_column_items.Click += (sender, e) => callback.OnColumnItemsClick();
             but_add_row.Click += (sender, e) => callback.OnAddRow();
             but_delete_row.Click += (sender, e) => callback.OnDeleteRow();
+            but_ok.Click += (sender, e) => callback.OnOk();
             this.Load += (sender, e) => callback.OnLoad();
         }
 

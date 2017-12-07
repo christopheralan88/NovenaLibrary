@@ -16,10 +16,6 @@ namespace NovenaLibrary.Config
         public string EndParenthesis { get; set; }
 
 
-        //public Criteria()
-        //{
-        //}
-
         public Criteria(string AndOr = "", string FrontParenthesis = "", string Column = "", 
             string Operator = "", string Filter = "", string EndParenthesis = "", bool Locked = false)
         {
