@@ -18,9 +18,9 @@ namespace NovenaLibrary
         //public ExcelPresenter presenter;
 
 
-        public NovenaReportingAPI(Excel.Application application)
+        public NovenaReportingAPI(Excel.Application application, string connectionString, string availableTablesSQL, DatabaseType databaseType)
         {
-            appConfig = new AppConfig();
+            appConfig = new AppConfig(connectionString, availableTablesSQL, databaseType);
             app = application;
             try
             {
@@ -49,14 +49,14 @@ namespace NovenaLibrary
 
         public void ShowSqlCreator()
         {
-            if (appConfig.Username != null && appConfig.Password != null)
+            if (appConfig.User.Username != null && appConfig.User.Password != null)
             {
                 var sqlCreator = new SqlCreatorView(appConfig, wBookPropertiesConfig);
                 DialogResult result = sqlCreator.ShowDialog();
                 if (result == DialogResult.OK)
                 {
                     wBookPropertiesConfig = sqlCreator.WorkbookPropertiesConfig;
-                    //presenter.copyQueryIntoExcel(sqlCreator.queryResults);
+                    //presenter.copyQueryIntoExcel(sqlCreator.SQLResult;);
                 }
             }
             else

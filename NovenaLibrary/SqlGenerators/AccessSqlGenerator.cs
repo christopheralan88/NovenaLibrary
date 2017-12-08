@@ -67,12 +67,12 @@ namespace NovenaLibrary.SqlGenerators
 
             if (limit != null)
             {
-                sql.Append(" TOP " + limit);
+                sql.Append(" TOP " + SQLCleanser.EscapeAndRemoveWords(limit));
             }
 
             foreach (string column in columns)
             {
-                sql.Append(string.Format("{0}{1}{2}, ", openingColumnMark, column, closingColumnMark));
+                sql.Append(string.Format("{0}{1}{2}, ", openingColumnMark, SQLCleanser.EscapeAndRemoveWords(column), closingColumnMark));
             }
             sql = sql.Remove(sql.Length - 2, 2).Append(" ");
             return sql.Replace("  ", " ");

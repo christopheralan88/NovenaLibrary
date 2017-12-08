@@ -24,11 +24,13 @@ namespace NovenaLibrary.Presenter.Tests
         [TestInitialize]
         public void run_before_each_test_method()
         {
-            appConfig = new AppConfig();
-            appConfig.Username = "username";
-            appConfig.Password = "password";
-            appConfig.ConnectionString = "fake connection string";
-            appConfig.DatabaseType = DatabaseType.PostgreSQL;
+            User user = new User("username", "password", false);
+
+            appConfig = new AppConfig("fake connection string", "sql", DatabaseType.PostgreSQL);
+            //appConfig.User.Username = "username";
+            //appConfig.Password = "password";
+            //appConfig.ConnectionString = "fake connection string";
+            //appConfig.DatabaseType = DatabaseType.PostgreSQL;
 
             workbookPropertiesConfig = new WorkbookPropertiesConfig();
 
@@ -117,12 +119,6 @@ namespace NovenaLibrary.Presenter.Tests
             presenter.OnAddSelectedColumn();
 
             Assert.IsTrue(view.SelectedColumns.Count == 2);
-        }
-
-        [TestMethod]
-        public void OnCancelTest()
-        {
-            Assert.Fail();
         }
    
         [TestMethod]

@@ -17,7 +17,6 @@ namespace NovenaLibrary.Presenter
         void OnRemoveSelectedColumn();
         void OnAddSelectedColumn();
         void OnOk();
-        void OnCancel();
         void OnLoad();
     }
 }

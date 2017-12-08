@@ -52,11 +52,6 @@ namespace NovenaLibrary.Presenter
             }
         }
 
-        public void OnCancel()
-        {
-            throw new NotImplementedException();
-        }
-
         public void OnCBoxTableIndexChanged()
         {
             var table = _view.AvailableTablesText;
@@ -139,7 +134,6 @@ namespace NovenaLibrary.Presenter
             {
                 ShowMessage(ex.Message);
             }
-            
         }
 
         public void OnRemoveSelectedColumn()
@@ -150,7 +144,7 @@ namespace NovenaLibrary.Presenter
         public void OnLoad()
         {
             // get available tables
-            var sql = string.Format(AvailableTablesSql.availableTablesSql[_view.AppConfig.DatabaseType], _view.AppConfig.Username);
+            var sql = string.Format(AvailableTablesSql.availableTablesSql[_view.AppConfig.DatabaseType], _view.AppConfig.User.Username);
             var dt = dbConnection.query(sql);
 
             //TODO:  Handle when an empty or null datatable is returned by query() method.

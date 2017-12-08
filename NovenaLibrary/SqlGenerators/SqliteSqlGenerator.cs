@@ -35,7 +35,7 @@ namespace NovenaLibrary.SqlGenerators
             mappings.Add("datetime", true);
             mappings.Add("smalldate", true);
             mappings.Add("datetimeoffset", true);
-            mappings.Add("TEXT", true);
+            mappings.Add("text", true);
             mappings.Add("ntext", true);
             mappings.Add("char", true);
             mappings.Add("nchar", true);
