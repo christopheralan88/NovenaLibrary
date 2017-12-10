@@ -144,7 +144,8 @@ namespace NovenaLibrary.Presenter
         public void OnLoad()
         {
             // get available tables
-            var sql = string.Format(AvailableTablesSql.availableTablesSql[_view.AppConfig.DatabaseType], _view.AppConfig.User.Username);
+            var sql = _view.AppConfig.AvailableTablesSql;
+            //var sql = string.Format(AvailableTablesSql.availableTablesSql[_view.AppConfig.DatabaseType], _view.AppConfig.User.Username);
             var dt = dbConnection.query(sql);
 
             //TODO:  Handle when an empty or null datatable is returned by query() method.

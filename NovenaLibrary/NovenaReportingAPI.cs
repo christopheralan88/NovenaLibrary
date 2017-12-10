@@ -7,6 +7,8 @@ using NovenaLibrary.Config;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Windows.Forms;
 using NovenaLibrary.View;
+using NovenaLibrary.View.LogIn;
+
 
 namespace NovenaLibrary
 {
@@ -37,19 +39,19 @@ namespace NovenaLibrary
             //presenter = new ExcelPresenter(application, appConfig, wBookPropertiesConfig);
         }
 
-        //public void signIn()
-        //{
-        //    LoginForm loginForm = new LoginForm(appConfig);
-        //    DialogResult result = loginForm.ShowDialog();
-        //    if (result == DialogResult.OK)
-        //    {
-        //        appConfig = loginForm.AppConfig;
-        //    }
-        //}
+        public void LogIn()
+        {
+            var loginForm = new LogInView(appConfig);
+            DialogResult result = loginForm.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                appConfig = loginForm.AppConfig;
+            }
+        }
 
         public void ShowSqlCreator()
         {
-            if (appConfig.User.Username != null && appConfig.User.Password != null)
+            if (appConfig.GetCredentialsRequired == AppConfig.CredentialsRequired.None || appConfig.User != null)
             {
                 var sqlCreator = new SqlCreatorView(appConfig, wBookPropertiesConfig);
                 DialogResult result = sqlCreator.ShowDialog();
@@ -61,7 +63,7 @@ namespace NovenaLibrary
             }
             else
             {
-                //signIn();
+                LogIn();
             }
         }
 

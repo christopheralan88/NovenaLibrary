@@ -103,6 +103,9 @@
     <Compile Include="Presenter\IPresenter.cs" />
     <Compile Include="Presenter\ISqlCreatorPresenterCallbacks.cs" />
     <Compile Include="Presenter\ISqlCreatorPresenter.cs" />
+    <Compile Include="Presenter\LogIn\ILogInPresenter.cs" />
+    <Compile Include="Presenter\LogIn\ILogInPresenterCallbacks.cs" />
+    <Compile Include="Presenter\LogIn\LogInPresenter.cs" />
     <Compile Include="Presenter\SqlCreatorPresenter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -123,6 +126,13 @@
     <Compile Include="SqlGenerators\SqlServerSqlGenerator.cs" />
     <Compile Include="View\IView.cs" />
     <Compile Include="View\ISqlCreatorView.cs" />
+    <Compile Include="View\LogIn\ILogInView.cs" />
+    <Compile Include="View\LogIn\LogInView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\LogIn\LogInView.Designer.cs">
+      <DependentUpon>LogInView.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\SqlCreatorView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -131,6 +141,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="View\LogIn\LogInView.resx">
+      <DependentUpon>LogInView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\SqlCreatorView.resx">
       <DependentUpon>SqlCreatorView.cs</DependentUpon>
     </EmbeddedResource>
