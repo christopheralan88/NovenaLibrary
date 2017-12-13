@@ -10,6 +10,7 @@ using System.Data;
 using System.ComponentModel;
 using System.Windows.Forms;
 using NovenaLibrary.SqlGenerators;
+using NovenaLibrary.View.ColumnItems;
 
 namespace NovenaLibrary.Presenter
 {
@@ -65,7 +66,12 @@ namespace NovenaLibrary.Presenter
 
         public void OnColumnItemsClick()
         {
-            throw new NotImplementedException();
+            var columnItemsForm = new ColumnItemsView(_view.AppConfig, _view.WorkbookPropertiesConfig, _view);
+            var result = columnItemsForm.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                _view.SelectedCriteria.Filter = columnItemsForm.ReturnFilter;
+            }
         }
 
         public void OnDeleteRow()

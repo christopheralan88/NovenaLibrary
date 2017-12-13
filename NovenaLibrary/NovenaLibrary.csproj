@@ -100,7 +100,10 @@
     <Compile Include="Exceptions\IncorrectCriteriaCountException.cs" />
     <Compile Include="Exceptions\PropertyAlreadySetException.cs" />
     <Compile Include="NovenaReportingAPI.cs" />
+    <Compile Include="Presenter\ColumnItems\ColumnItemsPresenter.cs" />
+    <Compile Include="Presenter\ColumnItems\IColumnItemsPresenterCallbacks.cs" />
     <Compile Include="Presenter\Excel\ExcelPresenter.cs" />
+    <Compile Include="Presenter\ColumnItems\IColumnItemsPresenter.cs" />
     <Compile Include="Presenter\IPresenter.cs" />
     <Compile Include="Presenter\ISqlCreatorPresenterCallbacks.cs" />
     <Compile Include="Presenter\ISqlCreatorPresenter.cs" />
@@ -125,6 +128,14 @@
     <Compile Include="SqlGenerators\SQLCleanser.cs" />
     <Compile Include="SqlGenerators\SqliteSqlGenerator.cs" />
     <Compile Include="SqlGenerators\SqlServerSqlGenerator.cs" />
+    <Compile Include="Utilities\Utility.cs" />
+    <Compile Include="View\ColumnItems\ColumnItemsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\ColumnItems\ColumnItemsView.Designer.cs">
+      <DependentUpon>ColumnItemsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\ColumnItems\IColumnItemsView.cs" />
     <Compile Include="View\IView.cs" />
     <Compile Include="View\ISqlCreatorView.cs" />
     <Compile Include="View\LogIn\ILogInView.cs" />
@@ -142,6 +153,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="View\ColumnItems\ColumnItemsView.resx">
+      <DependentUpon>ColumnItemsView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\LogIn\LogInView.resx">
       <DependentUpon>LogInView.cs</DependentUpon>
     </EmbeddedResource>

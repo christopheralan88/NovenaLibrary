@@ -77,8 +77,8 @@ namespace NovenaLibrary.Presenter.Excel
                 {
                     startRange = sheet.Range["A2"];
                 }
+
                 startRange.CurrentRegion.ClearContents();
-                //startRange.Resize[rows, columns].ClearContents();
 
                 if (_workbookPropertiesConfig.refreshColumnHeaders)
                 {
@@ -96,30 +96,6 @@ namespace NovenaLibrary.Presenter.Excel
 
                 RefreshDataSourcePivotTables(query);
             }
-
-            //string[] headersArray = ConvertDataTableHeadersToArray(queries);
-            //object[,] array = ConvertDataTableToArray(queries);
-
-            //MSExcel.Worksheet sheet = _view.Sheets["Data"];
-            //MSExcel.Range startRange = _app.Range["StartCell"];
-            ////MSExcel.Range startRange = sheet.Range["StartCell"];
-            //startRange.CurrentRegion.ClearContents();
-
-            //if (_workbookPropertiesConfig.refreshColumnHeaders)
-            //{
-            //    int headerColumns = headersArray.Length;
-            //    MSExcel.Range headerStartRange = startRange.Offset[-1, 0];
-            //    headerStartRange = startRange.Offset[-1, 0].Resize[1, headerColumns];
-            //    headerStartRange.Value = headersArray;
-            //}
-
-            //var rows = array.GetLength(0);
-            //var columns = array.GetLength(1);
-            //startRange = startRange.Resize[rows, columns];
-            //startRange.Value = array;
-            //startRange.CurrentRegion.NumberFormat = "General";
-
-            //RefreshAllPivotTablesWithNewDataSource();
         }
 
         public void RefreshDataSourcePivotTables(KeyValuePair<string, DataTable> query)
@@ -170,40 +146,6 @@ namespace NovenaLibrary.Presenter.Excel
                 }
             }
         }
-
-        //public void RefreshAllPivotTablesWithNewDataSource()
-        //{
-        //    foreach (MSExcel.Worksheet sheet in _view.Sheets)
-        //    {
-        //        foreach (MSExcel.PivotTable pTable in sheet.PivotTables())
-        //        {
-        //            _app.EnableEvents = false;
-        //            try
-        //            {
-        //                string sourceSheet = pTable.Name.Substring(0, pTable.Name.IndexOf("__"));
-        //                MSExcel.Worksheet wSheet = _view.Sheets[sourceSheet];
-        //                MSExcel.Range startRange = wSheet.Range["startCell"];
-        //                MSExcel.Range dataSource = startRange.CurrentRegion;
-        //                MSExcel.PivotCache cache = _view.PivotCaches().Create(SourceType: MSExcel.XlPivotTableSourceType.xlDatabase,
-        //                    SourceData: dataSource);
-        //                pTable.ChangePivotCache(cache);
-        //                pTable.RefreshTable();
-        //            }
-        //            catch (ArgumentException)
-        //            {
-        //                _app.EnableEvents = true;
-        //                continue;
-        //            }
-        //            catch (Exception)
-        //            {
-        //                _app.EnableEvents = true;
-        //                MessageBox.Show(string.Format("The data may not be a continuous block.  The data source for {0} may need to be adjusted",
-        //                    pTable.Name), "Error", MessageBoxButtons.OK);
-        //            }
-        //            _app.EnableEvents = true;
-        //        }
-        //    }
-        //}
 
         public void CreateDrilldownExcelWorksheet(string sql, DataTable dataTable)
         {

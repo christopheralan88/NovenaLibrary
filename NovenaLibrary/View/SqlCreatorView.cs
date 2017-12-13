@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using NovenaLibrary.Presenter;
 using NovenaLibrary.Config;
 using NovenaLibrary.Exceptions;
+using NovenaLibrary.Utilities;
 
 namespace NovenaLibrary.View
 {
@@ -68,7 +69,7 @@ namespace NovenaLibrary.View
 
         public BindingList<string> HighlightedAvailableColumns
         {
-            get { return ConvertSelectedObjectCollectionToList(lbox_available_columns.SelectedItems); }
+            get { return Utility.ConvertSelectedObjectCollectionToList(lbox_available_columns.SelectedItems); }
         }
 
         public BindingList<string> AvailableTables
@@ -120,6 +121,16 @@ namespace NovenaLibrary.View
 
         public string Limit { get { return txt_box_limit.Text; } }
 
+        public Criteria SelectedCriteria
+        {
+            get
+            {
+                var index = datagrid_criteria.SelectedCells[0].RowIndex;
+                var dataSourceList = (BindingList<Criteria>)datagrid_criteria.DataSource;
+                return dataSourceList[index];
+            }
+        }
+
         public void CloseForm()
         {
             DialogResult = DialogResult.OK;
@@ -140,14 +151,14 @@ namespace NovenaLibrary.View
             this.Load += (sender, e) => callback.OnLoad();
         }
 
-        private BindingList<string> ConvertSelectedObjectCollectionToList(ListBox.SelectedObjectCollection collection)
-        {
-            var list = new BindingList<string>();
-            foreach (var item in collection)
-            {
-                list.Add(item.ToString());
-            }
-            return list;
-        }
+        //private BindingList<string> ConvertSelectedObjectCollectionToList(ListBox.SelectedObjectCollection collection)
+        //{
+        //    var list = new BindingList<string>();
+        //    foreach (var item in collection)
+        //    {
+        //        list.Add(item.ToString());
+        //    }
+        //    return list;
+        //}
     }
 }

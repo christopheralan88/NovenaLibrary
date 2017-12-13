@@ -27,6 +27,7 @@ namespace NovenaLibrary.View
         DataTable SQLResult { get; set; } // make readonly
         bool GroupBy { get; }
         string Limit { get; }
+        Criteria SelectedCriteria { get; }
         void CloseForm();
         // add dgv eventually, but it is a complex type
     }
