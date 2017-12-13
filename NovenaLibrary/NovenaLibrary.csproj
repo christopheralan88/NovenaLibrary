@@ -100,6 +100,7 @@
     <Compile Include="Exceptions\IncorrectCriteriaCountException.cs" />
     <Compile Include="Exceptions\PropertyAlreadySetException.cs" />
     <Compile Include="NovenaReportingAPI.cs" />
+    <Compile Include="Presenter\Excel\ExcelPresenter.cs" />
     <Compile Include="Presenter\IPresenter.cs" />
     <Compile Include="Presenter\ISqlCreatorPresenterCallbacks.cs" />
     <Compile Include="Presenter\ISqlCreatorPresenter.cs" />

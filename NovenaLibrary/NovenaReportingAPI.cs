@@ -8,7 +8,8 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.Windows.Forms;
 using NovenaLibrary.View;
 using NovenaLibrary.View.LogIn;
-
+using NovenaLibrary.Presenter.Excel;
+using System.Data;
 
 namespace NovenaLibrary
 {
@@ -17,8 +18,7 @@ namespace NovenaLibrary
         public AppConfig appConfig;
         public WorkbookPropertiesConfig wBookPropertiesConfig;
         public Excel.Application app;
-        //public ExcelPresenter presenter;
-
+        public ExcelPresenter presenter;
 
         public NovenaReportingAPI(Excel.Application application, string connectionString, string availableTablesSQL, DatabaseType databaseType)
         {
@@ -36,7 +36,10 @@ namespace NovenaLibrary
             {
                 throw;
             }
-            //presenter = new ExcelPresenter(application, appConfig, wBookPropertiesConfig);
+            presenter = new ExcelPresenter(application, 
+                                           new DatabaseConnectionFactory().CreateDbConnection(appConfig), 
+                                           new SqlGeneratorFactory().CreateSqlGenerator(databaseType), 
+                                           wBookPropertiesConfig);
         }
 
         public void LogIn()
@@ -58,7 +61,10 @@ namespace NovenaLibrary
                 if (result == DialogResult.OK)
                 {
                     wBookPropertiesConfig = sqlCreator.WorkbookPropertiesConfig;
-                    //presenter.copyQueryIntoExcel(sqlCreator.SQLResult;);
+
+                    var queries = new Dictionary<string, DataTable>();
+                    queries.Add("main", sqlCreator.SQLResult);
+                    presenter.PasteQueriesIntoExcel(queries);
                 }
             }
             else
