@@ -10,6 +10,7 @@ using NovenaLibrary.View;
 using NovenaLibrary.View.LogIn;
 using NovenaLibrary.Presenter.Excel;
 using System.Data;
+using NovenaLibrary.View.DrilldownColumns;
 
 namespace NovenaLibrary
 {
@@ -73,22 +74,22 @@ namespace NovenaLibrary
             }
         }
 
-        //public void setDrilldownColumns()
-        //{
-        //    if (appConfig.username != null && appConfig.password != null)
-        //    {
-        //        DrilldownColumns drilldownColumns = new DrilldownColumns(appConfig, wBookPropertiesConfig);
-        //        DialogResult result = drilldownColumns.ShowDialog();
-        //        if (result == DialogResult.OK)
-        //        {
-        //            wBookPropertiesConfig = drilldownColumns.WorkbookPropertiesConfig;
-        //        }
-        //    }
-        //    else
-        //    {
-        //        signIn();
-        //    }
-        //}
+        public void SetDrilldownColumns()
+        {
+            if (appConfig.GetCredentialsRequired == AppConfig.CredentialsRequired.None || appConfig.User != null)
+            {
+                var drilldownColumns = new DrilldownColumns(appConfig, wBookPropertiesConfig);
+                DialogResult result = drilldownColumns.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    wBookPropertiesConfig = drilldownColumns.WorkbookPropertiesConfig;
+                }
+            }
+            else
+            {
+                LogIn();
+            }
+        }
 
         //public void drilldown()
         //{

@@ -10,6 +10,7 @@ using NovenaLibrary.View;
 using System.Data;
 using System.Windows.Forms;
 using System.ComponentModel;
+using NovenaLibrary.Utilities;
 
 namespace NovenaLibrary.Presenter.ColumnItems
 {
@@ -75,19 +76,21 @@ namespace NovenaLibrary.Presenter.ColumnItems
             _view.PriorButtonEnabled = true;
             _view.NextButtonEnabled = true;
 
+            TogglePriorAndNextButtonsEnabled();
+
             GetColumnItems();
         }
 
         public void OnNext()
         {
-            currentOffset += int.Parse(_view.PageSize);
+            currentOffset += int.Parse(_view.PageSize);            
 
             GetColumnItems();
         }
 
         public void OnOk()
         {
-            _view.ReturnFilter = StringifyList(_view.SelectedItems);
+            _view.ReturnFilter = Utility.Stringify(_view.SelectedItems, ',');
 
             _view.CloseForm();
         }
@@ -95,6 +98,8 @@ namespace NovenaLibrary.Presenter.ColumnItems
         public void OnPrior()
         {
             currentOffset -= int.Parse(_view.PageSize);
+
+            TogglePriorAndNextButtonsEnabled();
 
             GetColumnItems();
         }
@@ -123,22 +128,14 @@ namespace NovenaLibrary.Presenter.ColumnItems
             _view.AvailableItems = columnItemsList;
         }
 
-        private string StringifyList(IList<string> list)
+        private void TogglePriorAndNextButtonsEnabled()
         {
-            if (list.Count == 0) return null;
-            if (list.Count == 1)
+            if (currentOffset == 0)
             {
-                return list[0];
-            }
-            else
-            {
-                string result = "";
-                foreach (var item in list)
-                {
-                    result += item + ',';
-                }
-                return result.Substring(0, result.Length - 1); //chop off trailing ","
+                _view.PriorButtonEnabled = false;
+                _view.NextButtonEnabled = true;
             }
         }
+
     }
 }

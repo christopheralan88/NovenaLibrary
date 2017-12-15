@@ -97,11 +97,15 @@
     <Compile Include="Config\WorkbookPropertiesConfig.cs" />
     <Compile Include="Exceptions\BadSQLException.cs" />
     <Compile Include="Exceptions\DatabaseTypeNotRecognizedException.cs" />
+    <Compile Include="Exceptions\FragmentNotFoundException.cs" />
     <Compile Include="Exceptions\IncorrectCriteriaCountException.cs" />
     <Compile Include="Exceptions\PropertyAlreadySetException.cs" />
     <Compile Include="NovenaReportingAPI.cs" />
     <Compile Include="Presenter\ColumnItems\ColumnItemsPresenter.cs" />
     <Compile Include="Presenter\ColumnItems\IColumnItemsPresenterCallbacks.cs" />
+    <Compile Include="Presenter\DrilldownColumns\DrilldownColumnsPresenter.cs" />
+    <Compile Include="Presenter\DrilldownColumns\IDrilldownColumnsPresenterCallbacks.cs" />
+    <Compile Include="Presenter\DrilldownColumns\IDrilldownColumnsPresenter.cs" />
     <Compile Include="Presenter\Excel\ExcelPresenter.cs" />
     <Compile Include="Presenter\ColumnItems\IColumnItemsPresenter.cs" />
     <Compile Include="Presenter\IPresenter.cs" />
@@ -128,6 +132,7 @@
     <Compile Include="SqlGenerators\SQLCleanser.cs" />
     <Compile Include="SqlGenerators\SqliteSqlGenerator.cs" />
     <Compile Include="SqlGenerators\SqlServerSqlGenerator.cs" />
+    <Compile Include="Utilities\Interpolator.cs" />
     <Compile Include="Utilities\Utility.cs" />
     <Compile Include="View\ColumnItems\ColumnItemsView.cs">
       <SubType>Form</SubType>
@@ -136,6 +141,13 @@
       <DependentUpon>ColumnItemsView.cs</DependentUpon>
     </Compile>
     <Compile Include="View\ColumnItems\IColumnItemsView.cs" />
+    <Compile Include="View\DrilldownColumns\DrilldownColumnsView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\DrilldownColumns\DrilldownColumnsView.Designer.cs">
+      <DependentUpon>DrilldownColumnsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\DrilldownColumns\IDrilldownColumnsView.cs" />
     <Compile Include="View\IView.cs" />
     <Compile Include="View\ISqlCreatorView.cs" />
     <Compile Include="View\LogIn\ILogInView.cs" />
@@ -155,6 +167,9 @@
   <ItemGroup>
     <EmbeddedResource Include="View\ColumnItems\ColumnItemsView.resx">
       <DependentUpon>ColumnItemsView.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\DrilldownColumns\DrilldownColumnsView.resx">
+      <DependentUpon>DrilldownColumnsView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\LogIn\LogInView.resx">
       <DependentUpon>LogInView.cs</DependentUpon>

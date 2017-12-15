@@ -16,7 +16,7 @@ namespace NovenaLibrary.View.ColumnItems
         bool Descending { get; }
         string PageSize { get; }
         BindingList<string> AvailableItems { get; set; }
-        BindingList<string> SelectedItems { get; }
+        BindingList<string> SelectedItems { get; set; }
         BindingList<string> HighlightedAvailableItems { get; }
         int HighlightedSelectedItemIndex { get; }
         bool AscendingButtonEnabled { get; set; }

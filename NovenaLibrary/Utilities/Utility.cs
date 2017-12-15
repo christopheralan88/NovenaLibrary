@@ -20,5 +20,24 @@ namespace NovenaLibrary.Utilities
 
             return list;
         }
+
+        public static string Stringify(IList<string> list, char separator)
+        {
+            if (list.Count == 0) return null;
+            if (list.Count == 1)
+            {
+                return list[0];
+            }
+            else
+            {
+                string result = "";
+                foreach (var item in list)
+                {
+                    result += item + separator;
+                }
+                return result.Substring(0, result.Length - 1); //chop off trailing ","
+            }
+        }
+
     }
 }

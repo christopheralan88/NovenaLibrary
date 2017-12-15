@@ -113,6 +113,7 @@ namespace NovenaLibrary.View.ColumnItems
         public BindingList<string> SelectedItems
         {
             get { return Utility.ConvertSelectedObjectCollectionToList(lbox_selected_members.SelectedItems); }
+            set { lbox_selected_members.DataSource = value; }
         }
 
         public void Attach(IColumnItemsPresenterCallbacks presenter)
