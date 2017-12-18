@@ -36,5 +36,10 @@ namespace NovenaLibrary.Config
             if (!Filter.Equals(that.Filter)) return false;
             return true;
         }
+
+        public override string ToString()
+        {
+            return $" {AndOr} {FrontParenthesis}{Column} {Operator} {Filter}{EndParenthesis} ";
+        }
     }
 }

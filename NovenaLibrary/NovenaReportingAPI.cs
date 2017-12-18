@@ -8,26 +8,29 @@ using Excel = Microsoft.Office.Interop.Excel;
 using System.Windows.Forms;
 using NovenaLibrary.View;
 using NovenaLibrary.View.LogIn;
+using NovenaLibrary.View.SqlCreator;
 using NovenaLibrary.Presenter.Excel;
 using System.Data;
 using NovenaLibrary.View.DrilldownColumns;
+using NovenaLibrary.View.ConfigurationEditor;
+using System.Collections;
 
 namespace NovenaLibrary
 {
     public class NovenaReportingAPI
     {
-        public AppConfig appConfig;
-        public WorkbookPropertiesConfig wBookPropertiesConfig;
-        public Excel.Application app;
-        public ExcelPresenter presenter;
+        public AppConfig _appConfig;
+        public WorkbookPropertiesConfig _workbookPropertiesConfig;
+        public Excel.Application _application;
+        public ExcelPresenter _presenter;
 
         public NovenaReportingAPI(Excel.Application application, string connectionString, string availableTablesSQL, DatabaseType databaseType)
         {
-            appConfig = new AppConfig(connectionString, availableTablesSQL, databaseType);
-            app = application;
+            _appConfig = new AppConfig(connectionString, availableTablesSQL, databaseType);
+            _application = application;
             try
             {
-                wBookPropertiesConfig = new WorkbookPropertiesConfig(application.ActiveWorkbook).LoadWorkbookProperties();
+                _workbookPropertiesConfig = new WorkbookPropertiesConfig(application.ActiveWorkbook).LoadWorkbookProperties();
             }
             catch (ArgumentOutOfRangeException)
             {
@@ -37,35 +40,35 @@ namespace NovenaLibrary
             {
                 throw;
             }
-            presenter = new ExcelPresenter(application, 
-                                           new DatabaseConnectionFactory().CreateDbConnection(appConfig), 
+            _presenter = new ExcelPresenter(application, 
+                                           new DatabaseConnectionFactory().CreateDbConnection(_appConfig), 
                                            new SqlGeneratorFactory().CreateSqlGenerator(databaseType), 
-                                           wBookPropertiesConfig);
+                                           _workbookPropertiesConfig);
         }
 
         public void LogIn()
         {
-            var loginForm = new LogInView(appConfig);
+            var loginForm = new LogInView(_appConfig);
             DialogResult result = loginForm.ShowDialog();
             if (result == DialogResult.OK)
             {
-                appConfig = loginForm.AppConfig;
+                _appConfig = loginForm.AppConfig;
             }
         }
 
         public void ShowSqlCreator()
         {
-            if (appConfig.GetCredentialsRequired == AppConfig.CredentialsRequired.None || appConfig.User != null)
+            if (_appConfig.GetCredentialsRequired == AppConfig.CredentialsRequired.None || _appConfig.User != null)
             {
-                var sqlCreator = new SqlCreatorView(appConfig, wBookPropertiesConfig);
+                var sqlCreator = new SqlCreatorView(_appConfig, _workbookPropertiesConfig);
                 DialogResult result = sqlCreator.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    wBookPropertiesConfig = sqlCreator.WorkbookPropertiesConfig;
+                    _workbookPropertiesConfig = sqlCreator.WorkbookPropertiesConfig;
 
                     var queries = new Dictionary<string, DataTable>();
                     queries.Add("main", sqlCreator.SQLResult);
-                    presenter.PasteQueriesIntoExcel(queries);
+                    _presenter.PasteQueriesIntoExcel(queries);
                 }
             }
             else
@@ -76,13 +79,13 @@ namespace NovenaLibrary
 
         public void SetDrilldownColumns()
         {
-            if (appConfig.GetCredentialsRequired == AppConfig.CredentialsRequired.None || appConfig.User != null)
+            if (_appConfig.GetCredentialsRequired == AppConfig.CredentialsRequired.None || _appConfig.User != null)
             {
-                var drilldownColumns = new DrilldownColumns(appConfig, wBookPropertiesConfig);
+                var drilldownColumns = new DrilldownColumns(_appConfig, _workbookPropertiesConfig);
                 DialogResult result = drilldownColumns.ShowDialog();
                 if (result == DialogResult.OK)
                 {
-                    wBookPropertiesConfig = drilldownColumns.WorkbookPropertiesConfig;
+                    _workbookPropertiesConfig = drilldownColumns.WorkbookPropertiesConfig;
                 }
             }
             else
@@ -119,21 +122,23 @@ namespace NovenaLibrary
         //    }
         //}
 
-        //public void refreshData()
-        //{
-        //    if (appConfig.username != null && appConfig.password != null)
-        //    {
-        //        DataTable dt = presenter.refreshData();
-        //        if (dt != null)
-        //        {
-        //            presenter.copyQueryIntoExcel(dt);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        signIn();
-        //    }
-        //}
+        public void RefreshData()
+        {
+            if (_appConfig.GetCredentialsRequired == AppConfig.CredentialsRequired.None || _appConfig.User != null)
+            {
+                DataTable dt = _presenter.RefreshData();
+                if (dt != null)
+                {
+                    var queries = new Dictionary<string, DataTable>();
+                    queries.Add("main", dt);
+                    _presenter.PasteQueriesIntoExcel(queries);
+                }
+            }
+            else
+            {
+                LogIn();
+            }
+        }
 
         //public void verifyReportStructure()
         //{
@@ -225,33 +230,37 @@ namespace NovenaLibrary
         //    //not implemented yet
         //}
 
-        //public Hashtable editConfiguration(string dbConnStrings)
-        //{
-        //    EditConfiguration editConfig = new EditConfiguration(dbConnStrings);
-        //    DialogResult result = editConfig.ShowDialog();
-        //    if (result == DialogResult.OK)
-        //    {
-        //        // wipe appConfig object, which reloads the ConnectionString and SQL_getAvailableTables settings set above
-        //        appConfig = new AppConfig();
+        public Hashtable EditConfiguration(IList<string> dbConnStrings)
+        {
+            var editConfig = new ConfigurationEditorView(dbConnStrings);
+            DialogResult result = editConfig.ShowDialog();
+            if (result == DialogResult.OK)
+            {
+                // wipe appConfig object, which reloads the ConnectionString and SQL_getAvailableTables settings set above
+                var defaultDatabaseType = editConfig.DefaultConnectionDatabaseType;
+                var availableTablesSQL = AvailableTablesSql.availableTablesSql[defaultDatabaseType];
+                var defaultConnectionString = editConfig.DefaultConnectionString;
+                _appConfig = new AppConfig(defaultConnectionString, availableTablesSQL, defaultDatabaseType);
 
-        //        // wipe all wBookConfig properties except for "properties" and "wBookProperties" 
-        //        wBookPropertiesConfig.currentSql = "";
-        //        wBookPropertiesConfig.selectedTable = "";
-        //        wBookPropertiesConfig.selectedColumns = new List<string>();
-        //        wBookPropertiesConfig.criteria = new List<string>();
-        //        wBookPropertiesConfig.drilldownSql = "";
-        //        wBookPropertiesConfig.dependentTables = new Dictionary<string, string>();
-        //        appConfig.username = null;
-        //        appConfig.password = null;
+                // wipe all wBookConfig properties except for "properties" and "wBookProperties" 
+                //_workbookPropertiesConfig.currentSql = "";
+                //_workbookPropertiesConfig.selectedTable = "";
+                //_workbookPropertiesConfig.selectedColumns = new List<string>();
+                //_workbookPropertiesConfig.criteria = new List<Criteria>();
+                //_workbookPropertiesConfig.drilldownSql = "";
+                //_workbookPropertiesConfig.dependentTables = new Dictionary<string, string>();
+                _workbookPropertiesConfig.ClearWorkbookProperties();
+                _appConfig.User = null;
 
-        //        Hashtable results = new Hashtable();
-        //        results.Add("dbConnStrings", editConfig.dbConnStrings);
-        //        results.Add("activeConnectionString", editConfig.activeConnectionString);
-        //        results.Add("activeDatabaseType", (int)editConfig.activeDatabaseType);
-        //        results.Add("availableTablesSQL", editConfig.availableTablesSQL);
-        //        return results;
-        //    }
-        //    return null;
-        //}
+                Hashtable results = new Hashtable();
+                results.Add("dbConnStrings", editConfig.DatabaseConnections);
+                results.Add("activeConnectionString", defaultConnectionString);
+                results.Add("activeDatabaseType", (int)defaultDatabaseType);
+                results.Add("availableTablesSQL", availableTablesSQL);
+                return results;
+            }
+
+            return null;
+        }
     }
 }

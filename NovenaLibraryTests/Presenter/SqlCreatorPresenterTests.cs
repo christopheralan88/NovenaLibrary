@@ -8,6 +8,8 @@ using System.Data;
 using Npgsql;
 using System.Collections.Generic;
 using NovenaLibrary.SqlGenerators;
+using NovenaLibrary.Presenter.SqlCreator;
+using NovenaLibrary.View.SqlCreator;
 
 namespace NovenaLibrary.Presenter.Tests
 {

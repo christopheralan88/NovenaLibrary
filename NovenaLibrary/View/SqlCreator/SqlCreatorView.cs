@@ -7,12 +7,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using NovenaLibrary.Presenter;
+using NovenaLibrary.Presenter.SqlCreator;
 using NovenaLibrary.Config;
 using NovenaLibrary.Exceptions;
 using NovenaLibrary.Utilities;
 
-namespace NovenaLibrary.View
+namespace NovenaLibrary.View.SqlCreator
 {
     public partial class SqlCreatorView : Form, ISqlCreatorView
     {

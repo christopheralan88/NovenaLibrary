@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NovenaLibrary.Presenter;
+using NovenaLibrary.Presenter.SqlCreator;
 using System.ComponentModel;
 using NovenaLibrary.Config;
 using System.Data;
 
-namespace NovenaLibrary.View
+namespace NovenaLibrary.View.SqlCreator
 {
     public interface ISqlCreatorView : IView<ISqlCreatorPresenterCallbacks>
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NovenaLibrary.Presenter
+namespace NovenaLibrary.Presenter.SqlCreator
 {
     public interface ISqlCreatorPresenterCallbacks
     {

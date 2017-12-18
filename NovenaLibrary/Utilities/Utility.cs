@@ -39,5 +39,29 @@ namespace NovenaLibrary.Utilities
             }
         }
 
+        public static BindingList<string> ConvertDictKeysToBindingList(ICollection<string> collection)
+        {
+            var bindingList = new BindingList<string>();
+            foreach (string item in collection)
+            {
+                bindingList.Add(item);
+            }
+
+            bindingList.OrderBy(x => x);
+
+            return bindingList;
+        }
+
+        public static IList<string> ConvertListToDict(IDictionary<string, string> dict)
+        {
+            var list = new List<string>();
+            foreach (KeyValuePair<string, string> pair in dict)
+            {
+                list.Add(pair.Key + "::" + pair.Value);
+            }
+
+            return list;
+        }
+
     }
 }

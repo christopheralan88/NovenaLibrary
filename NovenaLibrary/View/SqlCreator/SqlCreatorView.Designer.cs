@@ -1,4 +1,4 @@
-﻿namespace NovenaLibrary.View
+﻿namespace NovenaLibrary.View.SqlCreator
 {
     partial class SqlCreatorView
     {

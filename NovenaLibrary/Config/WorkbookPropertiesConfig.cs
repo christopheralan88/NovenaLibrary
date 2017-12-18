@@ -93,6 +93,77 @@ namespace NovenaLibrary.Config
             }
         }
 
+        public void ClearWorkbookProperties()
+        {
+            foreach (KeyValuePair<string, string> pair in properties)
+            {
+                if (pair.Value == "string")
+                {
+                    ClearStringProperties(pair.Key);
+                }
+                else if (pair.Value == "delimitedStringToList")
+                {
+                    ClearListProperties(pair.Key);
+                }
+                else if (pair.Value == "delimitedStringToCriteria")
+                {
+                    ClearCriteriaProperties(pair.Key);
+                }
+                else if (pair.Value == "delimitedStringToDict")
+                {
+                    ClearDictProperties(pair.Key);
+                }
+            }
+        }
+
+        private void ClearStringProperties(string propertyName)
+        {
+            foreach (FieldInfo field in typeof(WorkbookPropertiesConfig).GetFields(bindingFlags))
+            {
+                if (field.Name == propertyName)
+                {
+                    field.SetValue(this, "");
+                    break;
+                }
+            }
+        }
+
+        private void ClearListProperties(string propertyName)
+        {
+            foreach (FieldInfo field in typeof(WorkbookPropertiesConfig).GetFields(bindingFlags))
+            {
+                if (field.Name == propertyName)
+                {
+                    field.SetValue(this, new List<string>());
+                    break;
+                }
+            }
+        }
+
+        private void ClearCriteriaProperties(string propertyName)
+        {
+            foreach (FieldInfo field in typeof(WorkbookPropertiesConfig).GetFields(bindingFlags))
+            {
+                if (field.Name == propertyName)
+                {
+                    field.SetValue(this, new List<Criteria>());
+                    break;
+                }
+            }
+        }
+
+        private void ClearDictProperties(string propertyName)
+        {
+            foreach (FieldInfo field in typeof(WorkbookPropertiesConfig).GetFields(bindingFlags))
+            {
+                if (field.Name == propertyName)
+                {
+                    field.SetValue(this, new Dictionary<string, string>());
+                    break;
+                }
+            }
+        }
+
         private void LoadStringProperties(string propertyName)
         {
             if (WorkbookPropertyExists(propertyName))

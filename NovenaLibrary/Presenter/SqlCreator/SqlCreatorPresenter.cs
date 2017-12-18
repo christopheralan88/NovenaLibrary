@@ -11,8 +11,9 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using NovenaLibrary.SqlGenerators;
 using NovenaLibrary.View.ColumnItems;
+using NovenaLibrary.View.SqlCreator;
 
-namespace NovenaLibrary.Presenter
+namespace NovenaLibrary.Presenter.SqlCreator
 {
     public class SqlCreatorPresenter : ISqlCreatorPresenter, ISqlCreatorPresenterCallbacks
     {
