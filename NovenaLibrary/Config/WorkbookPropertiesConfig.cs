@@ -122,8 +122,18 @@ namespace NovenaLibrary.Config
             {
                 if (field.Name == propertyName)
                 {
-                    field.SetValue(this, "");
-                    break;
+                    try
+                    {
+                        field.SetValue(this, "");
+                        break;
+                    }
+                    catch (Exception)
+                    {
+                        // catch exception that is throw when trying to set bool field to empty string, "".
+                        field.SetValue(this, false);
+                        break;
+                    }
+                    
                 }
             }
         }

@@ -68,6 +68,7 @@ namespace NovenaLibrary.Presenter.ConfigurationEditor
             {
                 // If nickname is saved successfully
                 _dbConnectionsDict.Add(nickname, connection);
+                _view.AvailableConnectionsNicknames = Utility.ConvertDictKeysToBindingList(_dbConnectionsDict.Keys);
                 MessageBox.Show("Connection saved successfully!", "Success", MessageBoxButtons.OK);
             }
             catch (ArgumentNullException)
@@ -123,6 +124,11 @@ namespace NovenaLibrary.Presenter.ConfigurationEditor
             {
                 MessageBox.Show("There was an problem preventing the connection from being removed", "Error", MessageBoxButtons.OK);
             }
+            else
+            {
+                MessageBox.Show("Connection deleted successfully!", "Success", MessageBoxButtons.OK);
+                _view.AvailableConnectionsNicknames = Utility.ConvertDictKeysToBindingList(_dbConnectionsDict.Keys);
+            }
         }
 
         public void OnEditLoadDatabaseConnection()
@@ -143,13 +149,14 @@ namespace NovenaLibrary.Presenter.ConfigurationEditor
             _view.DefaultConnectionString = _view.EditConnectionString;
 
             // close form
-            _view.CloseForm();
+            _view.CloseFormWithOKDialogResult();
         }
 
         public void OnEditSave()
         {
             var nickname = _view.HighlightedConnectionNickname;
             _dbConnectionsDict[nickname] = _view.EditDatabaseType + "||" + _view.EditConnectionString;
+            MessageBox.Show("Connection updated successfully!", "Success", MessageBoxButtons.OK);
         }
 
         public void OnLoad()

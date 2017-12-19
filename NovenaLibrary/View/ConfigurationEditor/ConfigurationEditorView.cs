@@ -131,5 +131,11 @@ namespace NovenaLibrary.View.ConfigurationEditor
         {
             Close();
         }
+
+        public void CloseFormWithOKDialogResult()
+        {
+            DialogResult = DialogResult.OK;
+            Close();
+        }
     }
 }

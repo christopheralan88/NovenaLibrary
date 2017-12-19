@@ -26,5 +26,6 @@ namespace NovenaLibrary.View.ConfigurationEditor
         DatabaseType DefaultConnectionDatabaseType { get; set; }
         string DefaultConnectionString { get; set; }
         void CloseForm();
+        void CloseFormWithOKDialogResult();
     }
 }
