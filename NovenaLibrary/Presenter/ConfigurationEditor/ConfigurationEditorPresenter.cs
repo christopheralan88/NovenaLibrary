@@ -83,6 +83,16 @@ namespace NovenaLibrary.Presenter.ConfigurationEditor
             }
         }
 
+        public void OnAddTestConnectionClick()
+        {
+            DatabaseType databaseType;
+            Enum.TryParse(_view.AddDatabaseType, true, out databaseType);
+
+            var connectionString = _view.AddConnectionString;
+
+            TestConnection(databaseType, connectionString);
+        }
+
         public void OnAvailableConnectionSelectedIndexChanged()
         {
             var nickname = _view.HighlightedConnectionNickname;
@@ -159,6 +169,16 @@ namespace NovenaLibrary.Presenter.ConfigurationEditor
             MessageBox.Show("Connection updated successfully!", "Success", MessageBoxButtons.OK);
         }
 
+        public void OnEditTestConnectionClick()
+        {
+            DatabaseType databaseType;
+            Enum.TryParse(_view.EditDatabaseType, true, out databaseType);
+
+            var connectionString = _view.EditConnectionString;
+
+            TestConnection(databaseType, connectionString);
+        }
+
         public void OnLoad()
         {
             // Set listbox of available connections to binding list of connection names (keys in dict above)
@@ -198,6 +218,25 @@ namespace NovenaLibrary.Presenter.ConfigurationEditor
         {
             var startIndex = connectionProperties.IndexOf("||") + 2;
             return connectionProperties.Substring(startIndex);
+        }
+
+        private void TestConnection(DatabaseType databaseType, string connectionString)
+        {
+            try
+            {
+                // create DatabaseConnection object from factory...pass connection string and database type into factory
+                var databaseConnection = new DatabaseConnectionFactory().CreateDbConnection(databaseType, connectionString);
+
+                // if no exception, then show message box with success message
+                databaseConnection.userSignIn();
+                MessageBox.Show("Connection test was successful!", "Success", MessageBoxButtons.OK);
+            }
+            catch (Exception ex)
+            {
+                // if exception, then show message box with failure message
+                var message = $"Connection test failed!  {Environment.NewLine}{Environment.NewLine}" + ex.Message;
+                MessageBox.Show(message, "Failure", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
     }

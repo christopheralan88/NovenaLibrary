@@ -41,7 +41,7 @@ namespace NovenaLibrary
                 throw;
             }
             _presenter = new ExcelPresenter(application, 
-                                           new DatabaseConnectionFactory().CreateDbConnection(_appConfig), 
+                                           new DatabaseConnectionFactory().CreateDbConnection(_appConfig.DatabaseType, _appConfig.ConnectionString), 
                                            new SqlGeneratorFactory().CreateSqlGenerator(databaseType), 
                                            _workbookPropertiesConfig);
         }

@@ -19,5 +19,7 @@ namespace NovenaLibrary.Presenter.ConfigurationEditor
         void OnEditLoadDatabaseConnection();
         void OnAddDatabaseTypeSelectedIndexChange();
         void OnAvailableConnectionSelectedIndexChanged();
+        void OnAddTestConnectionClick();
+        void OnEditTestConnectionClick();
     }
 }

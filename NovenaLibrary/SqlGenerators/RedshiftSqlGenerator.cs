@@ -18,21 +18,21 @@ namespace NovenaLibrary.SqlGenerators
             //Website for type mappings (Redshift uses System.Data.ODBC):
             //https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/odbc-data-type-mappings
             Dictionary<string, bool> mappings = new Dictionary<string, bool>();
-            mappings.Add("SQL_BIT", false);
-            mappings.Add("SQL_BIGINT", false);
-            mappings.Add("SQL_INTEGER", false);
-            mappings.Add("SQL_DECIMAL", false);
-            mappings.Add("SQL_DOUBLE", false);
-            mappings.Add("SQL_NUMERIC", false);
-            mappings.Add("SQL_REAL", false);
-            mappings.Add("SQL_SMALLINT", false);
-            mappings.Add("SQL_CHAR", true);
-            mappings.Add("SQL_LONG_VARCHAR", true);
-            mappings.Add("SQL_WCHAR", true);
-            mappings.Add("SQL_WLONGVARCHAR", true);
-            mappings.Add("SQL_WVARCHAR", true);
-            mappings.Add("SQL_TYPE_TIMES", true);
-            mappings.Add("SQL_TYPE_TIMESTAMP", true);
+            mappings.Add("sql_bit", false);
+            mappings.Add("sql_bigint", false);
+            mappings.Add("sql_integer", false);
+            mappings.Add("sql_decimal", false);
+            mappings.Add("sql_double", false);
+            mappings.Add("sql_numeric", false);
+            mappings.Add("sql_real", false);
+            mappings.Add("sql_smallint", false);
+            mappings.Add("sql_char", true);
+            mappings.Add("sql_long_varchar", true);
+            mappings.Add("sql_wchar", true);
+            mappings.Add("sql_wlongvarchar", true);
+            mappings.Add("sql_wvarchar", true);
+            mappings.Add("sql_type_times", true);
+            mappings.Add("sql_type_timestamp", true);
 
             base.typeMappings = mappings;
         }

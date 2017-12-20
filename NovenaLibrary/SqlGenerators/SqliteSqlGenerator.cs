@@ -23,10 +23,10 @@ namespace NovenaLibrary.SqlGenerators
             mappings.Add("int16", false);
             mappings.Add("int", false);
             mappings.Add("int32", false);
-            mappings.Add("INTEGER", false);
+            mappings.Add("integer", false);
             mappings.Add("int64", false);
-            mappings.Add("REAL", false);
-            mappings.Add("NUMERIC", false);
+            mappings.Add("real", false);
+            mappings.Add("numeric", false);
             mappings.Add("decimal", false);
             mappings.Add("money", false);
             mappings.Add("currency", false);

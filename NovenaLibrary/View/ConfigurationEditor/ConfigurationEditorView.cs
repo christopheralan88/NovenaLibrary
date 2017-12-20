@@ -125,6 +125,8 @@ namespace NovenaLibrary.View.ConfigurationEditor
             but_cancel_edit.Click += (sender, e) => presenter.OnEditCancel();
             but_load_connection.Click += (sender, e) => presenter.OnEditLoadDatabaseConnection();
             lbox_available_connections.SelectedIndexChanged += (sender, e) => presenter.OnAvailableConnectionSelectedIndexChanged();
+            but_addTestConnection.Click += (sender, e) => presenter.OnAddTestConnectionClick();
+            but_editTestConnection.Click += (sender, e) => presenter.OnEditTestConnectionClick();
         }
 
         public void CloseForm()

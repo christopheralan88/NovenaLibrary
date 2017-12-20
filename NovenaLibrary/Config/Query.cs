@@ -10,6 +10,7 @@ namespace NovenaLibrary.Config
     public class Query
     {
         private string _queryName;
+        private string _sql;
         public DataTable tableSchema { get; set; }
         public bool distinct { get; set; }
         public List<string> columns { get; set; }
@@ -19,14 +20,20 @@ namespace NovenaLibrary.Config
         public bool orderBy { get; set; }
         public string limit { get; set; }
 
-        public Query(string queryName)
+        public Query(string queryName, string sql)
         {
             _queryName = queryName;
+            _sql = sql;
         }
 
         public string QueryName
         {
             get { return _queryName; }
+        }
+
+        public string SQL
+        {
+            get { return _sql; }
         }
     }
 }

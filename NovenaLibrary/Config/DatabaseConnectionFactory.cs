@@ -19,10 +19,10 @@ namespace NovenaLibrary.Config
     {
         public DatabaseConnectionFactory() { }
 
-        public DatabaseConnection CreateDbConnection(AppConfig appConfig)
+        public DatabaseConnection CreateDbConnection(DatabaseType databaseType, string connectionString)
         {
-            var databaseType = appConfig.DatabaseType;
-            var connectionString = appConfig.ConnectionString;
+            //var databaseType = appConfig.DatabaseType;
+            //var connectionString = appConfig.ConnectionString;
 
             try
             {
@@ -60,10 +60,11 @@ namespace NovenaLibrary.Config
                     throw new DatabaseTypeNotRecognizedException("Database type is not recognized");
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //thrown if database type setting is null or not able to be found.
-                throw new DatabaseTypeNotRecognizedException("Database type is not recognized");
+                //throw new DatabaseTypeNotRecognizedException("Database type is not recognized");
+                throw;
             }
         }
     }

@@ -31,7 +31,7 @@ namespace NovenaLibrary.View.ColumnItems
                 this,
                 parentForm.SelectedCriteria.Column,
                 parentForm.AvailableTablesText,
-                new DatabaseConnectionFactory().CreateDbConnection(appConfig),
+                new DatabaseConnectionFactory().CreateDbConnection(appConfig.DatabaseType, appConfig.ConnectionString),
                 new SqlGeneratorFactory().CreateSqlGenerator(appConfig.DatabaseType));
             presenter.Initialize();
 

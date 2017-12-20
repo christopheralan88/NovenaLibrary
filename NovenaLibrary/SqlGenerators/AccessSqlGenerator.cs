@@ -18,27 +18,27 @@ namespace NovenaLibrary.SqlGenerators
             //Website for type mappings:
             //https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/ole-db-data-type-mappings
             Dictionary<string, bool> mappings = new Dictionary<string, bool>();
-            mappings.Add("adBoolean", false);
-            mappings.Add("adBigInt", false);
-            mappings.Add("adCurrency", false);
-            mappings.Add("adDecimal", false);
-            mappings.Add("adDouble", false);
-            mappings.Add("adInteger", false);
-            mappings.Add("adNumeric", false);
-            mappings.Add("adSingle", false);
-            mappings.Add("adSmallInt", false);
-            mappings.Add("adTinyInt", false);
-            mappings.Add("adUnsignedBigInt", false);
-            mappings.Add("adUnsignedInt", false);
-            mappings.Add("adUnsignedSmallInt", false);
-            mappings.Add("adBSTR", true);
-            mappings.Add("adChar", true);
-            mappings.Add("adWChar", true);
-            mappings.Add("adDate", true);
-            mappings.Add("adDBDate", true);
-            mappings.Add("adDBTime", true);
-            mappings.Add("adDBTimeStamp", true);
-            mappings.Add("adFileTime", true);
+            mappings.Add("adboolean", false); //adBoolean
+            mappings.Add("adbigint", false); // adBigInt
+            mappings.Add("adcurrency", false); // adCurrency
+            mappings.Add("addecimal", false); // adDecimal
+            mappings.Add("addouble", false); // adDouble
+            mappings.Add("adinteger", false); // adInteger
+            mappings.Add("adnumeric", false); // adNumeric
+            mappings.Add("adsingle", false); // adSingle
+            mappings.Add("adsmallint", false); // adSmallInt
+            mappings.Add("adtinyint", false); // adTinyInt
+            mappings.Add("adunsignedbigint", false); // adUnsignedBigInt
+            mappings.Add("adunsignedint", false); // adUnsignedInt
+            mappings.Add("adunsignedsmallint", false); // adUnsignedSmallInt
+            mappings.Add("adbstr", true); // adBSTR
+            mappings.Add("adchar", true); // adChar
+            mappings.Add("adwchar", true); // adWChar
+            mappings.Add("addate", true); // adDate
+            mappings.Add("addbdate", true); // adDBDate
+            mappings.Add("addbTime", true); // adDBTime
+            mappings.Add("addbtimestamp", true); // adDBTimeStamp
+            mappings.Add("adfiletime", true); // adFileTime
 
             base.typeMappings = mappings;
         }

@@ -26,7 +26,7 @@ namespace NovenaLibrary.View.DrilldownColumns
             _workbookPropertiesConfig = workbookPropertiesConfig;
             IDrilldownColumnsPresenter presenter = new DrilldownColumnsPresenter(
                 this,
-                new DatabaseConnectionFactory().CreateDbConnection(appConfig));
+                new DatabaseConnectionFactory().CreateDbConnection(appConfig.DatabaseType, appConfig.ConnectionString));
             presenter.Initialize();
         }
 

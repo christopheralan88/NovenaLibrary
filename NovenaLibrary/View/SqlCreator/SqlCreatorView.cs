@@ -27,7 +27,7 @@ namespace NovenaLibrary.View.SqlCreator
             _workbookPropertiesConfig = workbookPropertiesConfig;
             ISqlCreatorPresenter presenter = new SqlCreatorPresenter(
                 this, 
-                new DatabaseConnectionFactory().CreateDbConnection(appConfig),
+                new DatabaseConnectionFactory().CreateDbConnection(appConfig.DatabaseType, appConfig.ConnectionString),
                 new SqlGeneratorFactory().CreateSqlGenerator(AppConfig.DatabaseType));
             presenter.Initialize();
             HighlightedAvailableColumns.AllowNew = true;

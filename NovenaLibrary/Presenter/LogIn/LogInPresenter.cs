@@ -93,7 +93,7 @@ namespace NovenaLibrary.Presenter.LogIn
 
         private void SetDbConnection()
         {
-            dbConnection = new DatabaseConnectionFactory().CreateDbConnection(_view.AppConfig);
+            dbConnection = new DatabaseConnectionFactory().CreateDbConnection(_view.AppConfig.DatabaseType, _view.AppConfig.ConnectionString);
         } 
     }
 }

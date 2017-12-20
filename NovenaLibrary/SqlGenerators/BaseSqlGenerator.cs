@@ -184,13 +184,15 @@ namespace NovenaLibrary.SqlGenerators
         {
             try
             {
-                return typeMappings[columnDataType];
+                return typeMappings[columnDataType.ToLower()];
             }
             catch (Exception)
             {
-                // if column does not exist in typeMappings list
-                // best guess if can't find column type - have 50/50 chance and worst that happens is SQL query fails
-                return false;
+                // If column does not exist in typeMappings list.
+                // Best guess if can't find column type - have 50/50 chance and worst that happens is SQL query fails.
+                // It's more conservative to use quotes, so that SQL injection has less chance of happening because criteria
+                // is wrapped in single quotes.
+                return true;
             }
         }
 

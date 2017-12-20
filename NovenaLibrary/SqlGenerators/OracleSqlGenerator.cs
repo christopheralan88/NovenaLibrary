@@ -18,21 +18,21 @@ namespace NovenaLibrary.SqlGenerators
             //Website for type mappings:
             //https://docs.microsoft.com/en-us/dotnet/framework/data/adonet/oracle-data-type-mappings
             Dictionary<string, bool> mappings = new Dictionary<string, bool>();
-            mappings.Add("INTEGER", false);
-            mappings.Add("FLOAT", false);
-            mappings.Add("UNSIGNED INTEGER", false);
-            mappings.Add("NUMBER", false);
-            mappings.Add("CHAR", true);
-            mappings.Add("LONG", false);
-            mappings.Add("NCHAR", true);
-            mappings.Add("NVARCHAR2", true);
-            mappings.Add("VARCHAR2", true);
-            mappings.Add("DATE", true);
-            mappings.Add("TIMESTAMP", true);
-            mappings.Add("TIMESTAMP WITH LOCAL TIME ZONE", true);
-            mappings.Add("TIMESTAMP WITH TIME ZONE", true);
-            mappings.Add("INTERVAL YEAR TO MONTH", true);
-            mappings.Add("INTERVAL DAY TO SECOND", true);
+            mappings.Add("integer", false);
+            mappings.Add("float", false);
+            mappings.Add("unsigned integer", false);
+            mappings.Add("number", false);
+            mappings.Add("char", true);
+            mappings.Add("long", false);
+            mappings.Add("nchar", true);
+            mappings.Add("nvarchar2", true);
+            mappings.Add("varchar2", true);
+            mappings.Add("date", true);
+            mappings.Add("timestamp", true);
+            mappings.Add("timestamp with local time zone", true);
+            mappings.Add("timestamp with time zone", true);
+            mappings.Add("interval year to month", true);
+            mappings.Add("interval day to second", true);
 
             base.typeMappings = mappings;
         }

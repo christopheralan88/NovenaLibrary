@@ -30,6 +30,7 @@
         {
             this.tabControl_edit_config = new System.Windows.Forms.TabControl();
             this.tab_add_connection = new System.Windows.Forms.TabPage();
+            this.but_addTestConnection = new System.Windows.Forms.Button();
             this.picBox_add = new System.Windows.Forms.PictureBox();
             this.txtbox_conn_nickname = new System.Windows.Forms.TextBox();
             this.lbl_conn_nickname = new System.Windows.Forms.Label();
@@ -40,6 +41,7 @@
             this.cbox_db_type_add = new System.Windows.Forms.ComboBox();
             this.lbl_db_type_add = new System.Windows.Forms.Label();
             this.tab_edit_connection = new System.Windows.Forms.TabPage();
+            this.but_editTestConnection = new System.Windows.Forms.Button();
             this.picBox_edit = new System.Windows.Forms.PictureBox();
             this.but_delete = new System.Windows.Forms.Button();
             this.but_load_connection = new System.Windows.Forms.Button();
@@ -71,6 +73,7 @@
             // 
             // tab_add_connection
             // 
+            this.tab_add_connection.Controls.Add(this.but_addTestConnection);
             this.tab_add_connection.Controls.Add(this.picBox_add);
             this.tab_add_connection.Controls.Add(this.txtbox_conn_nickname);
             this.tab_add_connection.Controls.Add(this.lbl_conn_nickname);
@@ -88,6 +91,16 @@
             this.tab_add_connection.TabIndex = 0;
             this.tab_add_connection.Text = "Add Connection";
             this.tab_add_connection.UseVisualStyleBackColor = true;
+            // 
+            // but_addTestConnection
+            // 
+            this.but_addTestConnection.Location = new System.Drawing.Point(390, 161);
+            this.but_addTestConnection.Margin = new System.Windows.Forms.Padding(2);
+            this.but_addTestConnection.Name = "but_addTestConnection";
+            this.but_addTestConnection.Size = new System.Drawing.Size(167, 19);
+            this.but_addTestConnection.TabIndex = 9;
+            this.but_addTestConnection.Text = "Test Connection";
+            this.but_addTestConnection.UseVisualStyleBackColor = true;
             // 
             // picBox_add
             // 
@@ -182,6 +195,7 @@
             // 
             // tab_edit_connection
             // 
+            this.tab_edit_connection.Controls.Add(this.but_editTestConnection);
             this.tab_edit_connection.Controls.Add(this.picBox_edit);
             this.tab_edit_connection.Controls.Add(this.but_delete);
             this.tab_edit_connection.Controls.Add(this.but_load_connection);
@@ -201,6 +215,16 @@
             this.tab_edit_connection.TabIndex = 1;
             this.tab_edit_connection.Text = "Edit Connection";
             this.tab_edit_connection.UseVisualStyleBackColor = true;
+            // 
+            // but_editTestConnection
+            // 
+            this.but_editTestConnection.Location = new System.Drawing.Point(381, 177);
+            this.but_editTestConnection.Margin = new System.Windows.Forms.Padding(2);
+            this.but_editTestConnection.Name = "but_editTestConnection";
+            this.but_editTestConnection.Size = new System.Drawing.Size(167, 19);
+            this.but_editTestConnection.TabIndex = 15;
+            this.but_editTestConnection.Text = "Test Connection";
+            this.but_editTestConnection.UseVisualStyleBackColor = true;
             // 
             // picBox_edit
             // 
@@ -358,5 +382,7 @@
         private System.Windows.Forms.Label lbl_db_type_edit;
         private System.Windows.Forms.Label lbl_available_connections;
         private System.Windows.Forms.ListBox lbox_available_connections;
+        private System.Windows.Forms.Button but_addTestConnection;
+        private System.Windows.Forms.Button but_editTestConnection;
     }
 }

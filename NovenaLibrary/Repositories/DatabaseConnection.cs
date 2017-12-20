@@ -15,7 +15,7 @@ namespace NovenaLibrary.Repositories
         private IDbCommand dbCommand;
 
 
-        public DatabaseConnection(DbConnection dbConnection, IDbCommand dbCommand)
+        public DatabaseConnection(DbConnection dbConnection, IDbCommand dbCommand = null)
         {
             this.dbConnection = dbConnection;
             this.dbCommand = dbCommand;
