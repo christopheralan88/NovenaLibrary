@@ -80,7 +80,7 @@ namespace NovenaLibrary
                             // create interpolator object
                             var interpolator = new Interpolator();
 
-                            // test if string needs interpolation
+                            // test if string needs interpolation 
                             var needsInterpolation = interpolator.SetFormattable(query.Value).SetCriteria(_workbookPropertiesConfig.LastMainQuery.Criteria).NeedsInterpolation();
 
                             // if no, then use sql to query against database and add results to queries dict

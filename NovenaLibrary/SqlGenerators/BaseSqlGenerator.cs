@@ -65,7 +65,7 @@ namespace NovenaLibrary.SqlGenerators
                 {
                     sql.Append(theCriteria.AndOr == null ? null : $" {theCriteria.AndOr} ");
                     sql.Append(theCriteria.FrontParenthesis == null ? null : $" {theCriteria.FrontParenthesis} ");
-                    sql.Append(theCriteria.Column == null ? null : $" {theCriteria.Column} ");
+                    sql.Append(theCriteria.Column == null ? null : $" {openingColumnMark}{theCriteria.Column}{closingColumnMark} ");
                     sql.Append(theCriteria.Operator == null ? null : $" {theCriteria.Operator} ");
                     sql.Append(theCriteria.EndParenthesis == null ? null : $" {theCriteria.EndParenthesis} ");
 
