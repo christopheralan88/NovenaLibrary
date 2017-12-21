@@ -18,7 +18,7 @@ namespace NovenaLibrary.View.SqlCreator
     {
         private AppConfig _appConfig;
         private WorkbookPropertiesConfig _workbookPropertiesConfig;
-        private DataTable _sqlResult;
+        private Dictionary<string, DataTable> _sqlResult = new Dictionary<string, DataTable>();
 
         public SqlCreatorView(AppConfig appConfig, WorkbookPropertiesConfig workbookPropertiesConfig)
         {
@@ -33,20 +33,20 @@ namespace NovenaLibrary.View.SqlCreator
             HighlightedAvailableColumns.AllowNew = true;
         }
 
-        public DataTable SQLResult
+        public Dictionary<string, DataTable> SQLResult
         {
             get { return _sqlResult; }
-            set
-            {
-                if (_sqlResult == null)
-                {
-                    _sqlResult = value;
-                }
-                else
-                {
-                    throw new PropertyAlreadySetException();
-                }
-            }
+            set { }
+            //{
+            //    if (_sqlResult == null)
+            //    {
+            //        _sqlResult = value;
+            //    }
+            //    else
+            //    {
+            //        throw new PropertyAlreadySetException();
+            //    }
+            //}
         }
 
         public AppConfig AppConfig

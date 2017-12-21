@@ -25,6 +25,7 @@ namespace NovenaLibrary.Config
         public List<string> selectedColumns = new List<string>();
         public string selectedTable = "";
         public string limit = "1000000";
+        public Query LastMainQuery;
 
 
         //generic constructor for unit testing so that workbook object does not need to be mocked or initialized in tests

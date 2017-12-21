@@ -13,21 +13,42 @@ namespace NovenaLibrary.Utilities
         private string _formattable;
         private IList<Criteria> _criteria;
 
+        public Interpolator() { }
+
         public Interpolator(string formattable, IList<Criteria> criteria)
         {
             _formattable = formattable;
             _criteria = criteria;
         }
 
-        public void Interpolate()
+        public Interpolator SetFormattable(string formattable)
         {
+            _formattable = formattable;
+            return this;
+        }
+
+        public Interpolator SetCriteria(IList<Criteria> criteria)
+        {
+            _criteria = criteria;
+            return this;
+        }
+
+        public bool NeedsInterpolation()
+        {
+            return (_formattable.Contains('{') && _formattable.Contains('}')) ? true : false;
+        }
+
+        public string Interpolate()
+        {
+            var clonedFormattable = string.Copy(_formattable);
+
             // While the formattable string still contains placeholders
-            while (_formattable.Contains('{') && _formattable.Contains('}'))
+            while (clonedFormattable.Contains('{') && clonedFormattable.Contains('}'))
             {
                 // make fragment variable of first interpolated fragment
-                var startMark = _formattable.IndexOf('{');
-                var length = _formattable.IndexOf('}') - startMark + 1;
-                var fragment = _formattable.Substring(startMark, length).ToLower();
+                var startMark = clonedFormattable.IndexOf('{');
+                var length = clonedFormattable.IndexOf('}') - startMark + 1;
+                var fragment = clonedFormattable.Substring(startMark, length).ToLower();
 
                 // loop through Criteria objects' Column property
                 bool foundMatch = false;
@@ -47,7 +68,7 @@ namespace NovenaLibrary.Utilities
                 // if no Property matches, throw exception
                 if (!foundMatch)
                 {
-                    throw new FragmentNotFoundException(fragment + "was not found");
+                    throw new FragmentNotFoundException(fragment + " was not found");
                 }
                 else
                 {
@@ -58,10 +79,19 @@ namespace NovenaLibrary.Utilities
                         replacementString += criteria.ToString();
                     }
 
-                    _formattable = _formattable.Replace(fragment, replacementString);
+                    clonedFormattable = clonedFormattable.Replace(fragment, replacementString);
                 }
             }
 
+            if (clonedFormattable.Contains('{') && clonedFormattable.Contains('}'))
+            {
+                return null;
+            }
+            else
+            {
+                return clonedFormattable;
+            }
+            
         }
     }
 }

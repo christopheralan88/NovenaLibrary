@@ -265,7 +265,9 @@ namespace NovenaLibrary.Presenter.Tests
             DataTable dt = MultiColumnDataTableBuilder();
             //view.Stub(x => x.SQLResult).SetPropertyWithArgument(dt);
             dbConnection.Stub(x => x.getSchema(table)).Return(dt);
-            sqlGenerator.Stub(x => x.CreateSql(tableSchema: dt, columns: columns, table: table, criteria: criteria, groupBy: false, limit: null)).Return("SELECT * FROM table1");
+            Query query = new Query("test").SetTableSchema(dt).SetColumns(columns).SetTable(table).SetCriteria(criteria).SetGroupBy(false).SetLimit(null);
+            //sqlGenerator.Stub(x => x.CreateSql(tableSchema: dt, columns: columns, table: table, criteria: criteria, groupBy: false, limit: null)).Return("SELECT * FROM table1");
+            sqlGenerator.Stub(x => x.CreateSql(query)).Return("SELECT * FROM table1");
             dbConnection.Stub(x => x.query("SELECT * FROM table1")).Return(MultiColumnDataTableBuilder());
 
             presenter.OnCBoxTableIndexChanged(); // this is the only method that updates the presenter's tableSchema field.

@@ -21,8 +21,10 @@ namespace NovenaLibrary.SqlGenerators
         {
         }
 
-        public abstract string CreateSql(DataTable tableSchema, bool distinct = false, List<string> columns = null, string table = null, List<Criteria> criteria = null, 
-            bool groupBy = false, bool orderBy = false, string limit = null, string offset = null, bool asc = false);
+        public abstract string CreateSql(Query query);
+
+        //public abstract string CreateSql(DataTable tableSchema, bool distinct = false, List<string> columns = null, string table = null, List<Criteria> criteria = null, 
+        //    bool groupBy = false, bool orderBy = false, string limit = null, string offset = null, bool asc = false);
 
         protected virtual StringBuilder CreateSELECTClause(bool distinct, List<string> columns)
         {
@@ -47,7 +49,7 @@ namespace NovenaLibrary.SqlGenerators
             return sql.Replace("  ", " ");
         }
 
-        protected virtual StringBuilder CreateWHEREClause(List<Criteria> criteria)
+        protected virtual StringBuilder CreateWHEREClause(List<Criteria> criteria, List<string> columns)
         {
             if (criteria == null) return null;
 
@@ -106,6 +108,20 @@ namespace NovenaLibrary.SqlGenerators
                             var cleansedValue = SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter);
                             sql.Append((shouldHaveQuotes) ? $" '{cleansedValue}' " : $" {cleansedValue} ");
                         }
+                    }
+                }
+
+                // Add IS NOT NULL statements for each column to suppress rows that return nulls for all fields.
+                foreach (var column in columns)
+                {
+                    // If there are criteria, start with "AND" because there will already be WHERE clauses.
+                    if (criteria.Count > 0)
+                    {
+                        sql.Append($" AND {column} IS NOT NULL ");
+                    }
+                    else
+                    {
+                        sql.Append($" {column} IS NOT NULL ");
                     }
                 }
 

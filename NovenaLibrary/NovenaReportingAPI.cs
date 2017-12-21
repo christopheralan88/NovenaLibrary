@@ -14,6 +14,7 @@ using System.Data;
 using NovenaLibrary.View.DrilldownColumns;
 using NovenaLibrary.View.ConfigurationEditor;
 using System.Collections;
+using NovenaLibrary.Utilities;
 
 namespace NovenaLibrary
 {
@@ -66,8 +67,50 @@ namespace NovenaLibrary
                 {
                     _workbookPropertiesConfig = sqlCreator.WorkbookPropertiesConfig;
 
+                    //var queries = new Dictionary<string, DataTable>();
+                    //queries.Add("main", sqlCreator.SQLResult);
                     var queries = new Dictionary<string, DataTable>();
-                    queries.Add("main", sqlCreator.SQLResult);
+                    queries = sqlCreator.SQLResult; // add main query to dict
+
+                    if (_workbookPropertiesConfig.LastMainQuery != null)
+                    {
+                        var dbConnection = new DatabaseConnectionFactory().CreateDbConnection(_appConfig.DatabaseType, _appConfig.ConnectionString);
+                        foreach (KeyValuePair<string, string> query in _workbookPropertiesConfig.dependentTables)
+                        {
+                            // create interpolator object
+                            var interpolator = new Interpolator();
+
+                            // test if string needs interpolation
+                            var needsInterpolation = interpolator.SetFormattable(query.Key).SetCriteria(_workbookPropertiesConfig.LastMainQuery.Criteria).NeedsInterpolation();
+
+                            // if no, then use sql to query against database and add results to queries dict
+                            if (!needsInterpolation)
+                            {
+                                try
+                                {
+                                    queries.Add(query.Key, dbConnection.query(query.Value));
+                                }
+                                catch
+                                {
+                                    MessageBox.Show($"{query.Key} did not run successfully", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                            }
+                            else
+                            {
+                                // if yes, then interpolate
+                                try
+                                {
+                                    var interpolatedQuery = interpolator.Interpolate();
+                                    queries.Add(query.Key, dbConnection.query(interpolatedQuery));
+                                }
+                                catch
+                                {
+                                    MessageBox.Show($"{query.Key} did not run successfully", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                            }
+                        }
+                    }
+                    
                     _presenter.PasteQueriesIntoExcel(queries);
                 }
             }

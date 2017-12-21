@@ -23,33 +23,11 @@ namespace NovenaLibrary.Config
         public string Username
         {
             get { return _username; }
-            //set
-            //{
-            //    if (_username == null)
-            //    {
-            //        _username = value;
-            //    }
-            //    else
-            //    {
-            //        throw new PropertyAlreadySetException();
-            //    }
-            //}
         }
 
         public string Password
         {
             get { return _password; }
-            //set
-            //{
-            //    if (_password == null)
-            //    {
-            //        _password = value;
-            //    }
-            //    else
-            //    {
-            //        throw new PropertyAlreadySetException();
-            //    }
-            //}
         }
 
         public bool SuperUser

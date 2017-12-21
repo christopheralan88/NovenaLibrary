@@ -118,10 +118,12 @@ namespace NovenaLibrary.Presenter.SqlCreator
         {
             var columns = _view.SelectedColumns.ToList();
             var table = _view.AvailableTablesText;
-            var critera = _view.Criteria.ToList();
+            var criteria = _view.Criteria.ToList();
             var groupBy = _view.GroupBy;
             var limit = _view.Limit;
-            string sql = sqlGenerator.CreateSql(tableSchema: tableSchema, columns: columns, table: table, criteria: critera, groupBy: groupBy, limit: limit);
+            var query = new Query("main").SetTableSchema(tableSchema).SetColumns(columns).SetTable(table).SetCriteria(criteria).SetGroupBy(groupBy).SetLimit(limit);
+            //string sql = sqlGenerator.CreateSql(tableSchema: tableSchema, columns: columns, table: table, criteria: criteria, groupBy: groupBy, limit: limit);
+            string sql = sqlGenerator.CreateSql(query);
 
             DataTable dt;
             try
@@ -129,7 +131,12 @@ namespace NovenaLibrary.Presenter.SqlCreator
                 dt = dbConnection.query(sql);
                 if (dt.Rows.Count > 0)
                 {
-                    _view.SQLResult = dt;
+                    _view.SQLResult.Add(query.QueryName, dt);
+                    _view.WorkbookPropertiesConfig.LastMainQuery = query;
+                    _view.WorkbookPropertiesConfig.selectedTable = _view.AvailableTablesText;
+                    _view.WorkbookPropertiesConfig.selectedColumns = _view.SelectedColumns.ToList();
+                    _view.WorkbookPropertiesConfig.criteria = _view.Criteria.ToList();
+                    _view.WorkbookPropertiesConfig.limit = _view.Limit;
                     _view.CloseForm();
                 }
                 else

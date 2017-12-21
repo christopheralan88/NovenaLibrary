@@ -24,7 +24,7 @@ namespace NovenaLibrary.View.SqlCreator
         BindingList<string> AvailableColumnDGV { get; set; }
         BindingList<Criteria> Criteria { get; set; }
         int? HighlightedCriteriaIndex { get; }
-        DataTable SQLResult { get; set; } // make readonly
+        Dictionary<string, DataTable> SQLResult { get; set; } // make readonly
         bool GroupBy { get; }
         string Limit { get; }
         Criteria SelectedCriteria { get; }

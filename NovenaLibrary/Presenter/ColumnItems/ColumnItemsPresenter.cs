@@ -11,6 +11,7 @@ using System.Data;
 using System.Windows.Forms;
 using System.ComponentModel;
 using NovenaLibrary.Utilities;
+using NovenaLibrary.Config;
 
 namespace NovenaLibrary.Presenter.ColumnItems
 {
@@ -113,9 +114,21 @@ namespace NovenaLibrary.Presenter.ColumnItems
         {
             var columns = new List<string>() { _column };
             var asc = _view.Ascending;
-            var sql = _sqlGenerator.CreateSql(tableSchema: _tableSchema, distinct: true, columns: columns,
-                                              table: _table, asc: asc, limit: _view.PageSize,
-                                              offset: currentOffset.ToString());
+            var limit = _view.PageSize;
+            var offset = currentOffset.ToString();
+            var query = new Query("column items").SetTableSchema(_tableSchema)
+                                                 .SetDistinct(true)
+                                                 .SetColumns(columns)
+                                                 .SetTable(_table)
+                                                 .SetAscending(asc)
+                                                 .SetLimit(limit)
+                                                 .SetOffset(offset);
+
+            //var sql = _sqlGenerator.CreateSql(tableSchema: _tableSchema, distinct: true, columns: columns,
+            //                                  table: _table, asc: asc, limit: _view.PageSize,
+            //                                  offset: currentOffset.ToString());
+
+            var sql = _sqlGenerator.CreateSql(query);
 
             var dt = _dbConnection.query(sql);
 
