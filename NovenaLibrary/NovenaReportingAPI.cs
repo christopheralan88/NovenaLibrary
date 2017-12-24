@@ -15,6 +15,7 @@ using NovenaLibrary.View.DrilldownColumns;
 using NovenaLibrary.View.ConfigurationEditor;
 using System.Collections;
 using NovenaLibrary.Utilities;
+using System.Windows.Forms;
 
 namespace NovenaLibrary
 {
@@ -283,18 +284,29 @@ namespace NovenaLibrary
                 var defaultDatabaseType = editConfig.DefaultConnectionDatabaseType;
                 var availableTablesSQL = AvailableTablesSql.availableTablesSql[defaultDatabaseType];
                 var defaultConnectionString = editConfig.DefaultConnectionString;
-                _appConfig = new AppConfig(defaultConnectionString, availableTablesSQL, defaultDatabaseType);
 
-                // wipe all wBookConfig properties except for "properties" and "wBookProperties" 
-                //_workbookPropertiesConfig.currentSql = "";
-                //_workbookPropertiesConfig.selectedTable = "";
-                //_workbookPropertiesConfig.selectedColumns = new List<string>();
-                //_workbookPropertiesConfig.criteria = new List<Criteria>();
-                //_workbookPropertiesConfig.drilldownSql = "";
-                //_workbookPropertiesConfig.dependentTables = new Dictionary<string, string>();
-                _workbookPropertiesConfig.ClearWorkbookProperties();
-                _appConfig.User = null;
+                // Update class fields with new default connection string, availableTablesSQL, and database type (don't update _application field, though)
+                // Updating the _presenter field here allows the new connection string and database type to be tested for validity.  If either is not valid
+                // then the an exception will be throw, a message will be displayed to the user, and no settings (null) will be returned to the calling method,
+                // so that no application settings are updated in the calling application.  Essentially it guards against malformed connection strings or mismatched
+                // database types leaving the NovenaLibrary application and going to the calling appliation.
+                try
+                {
+                    _appConfig = new AppConfig(defaultConnectionString, availableTablesSQL, defaultDatabaseType);
+                    _workbookPropertiesConfig.ClearWorkbookProperties();
+                    _presenter = new ExcelPresenter(_application,
+                                                    new DatabaseConnectionFactory().CreateDbConnection(defaultDatabaseType, defaultConnectionString),
+                                                    new SqlGeneratorFactory().CreateSqlGenerator(defaultDatabaseType),
+                                                    _workbookPropertiesConfig);
+                    //_appConfig.User = null;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK);
+                    return null;
+                }
 
+                // Pass connection strings to calling application method to update application's settings.
                 Hashtable results = new Hashtable();
                 results.Add("dbConnStrings", editConfig.DatabaseConnections);
                 results.Add("activeConnectionString", defaultConnectionString);
