@@ -292,12 +292,13 @@ namespace NovenaLibrary
                 // database types leaving the NovenaLibrary application and going to the calling appliation.
                 try
                 {
-                    _appConfig = new AppConfig(defaultConnectionString, availableTablesSQL, defaultDatabaseType);
-                    _workbookPropertiesConfig.ClearWorkbookProperties();
                     _presenter = new ExcelPresenter(_application,
                                                     new DatabaseConnectionFactory().CreateDbConnection(defaultDatabaseType, defaultConnectionString),
                                                     new SqlGeneratorFactory().CreateSqlGenerator(defaultDatabaseType),
                                                     _workbookPropertiesConfig);
+
+                    _appConfig = new AppConfig(defaultConnectionString, availableTablesSQL, defaultDatabaseType);
+                    _workbookPropertiesConfig.ClearWorkbookProperties();
                     //_appConfig.User = null;
                 }
                 catch (Exception ex)
