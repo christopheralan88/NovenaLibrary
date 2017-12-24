@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NovenaLibrary.Exceptions;
 
 namespace NovenaLibrary.SqlGenerators
 {
@@ -65,15 +66,22 @@ namespace NovenaLibrary.SqlGenerators
         {
             base.tableSchema = query.TableSchema;
 
-            StringBuilder sql = new StringBuilder("");
-            sql.Append(CreateSELECTClause(query.Distinct, query.Columns));
-            sql.Append(CreateFROMClause(query.Table));
-            sql.Append(CreateWHEREClause(query.Criteria, query.Columns));
-            sql.Append(CreateGROUPBYCluase(query.GroupBy, query.Columns));
-            sql.Append(CreateORDERBYCluase(query.OrderBy, query.Columns, query.Ascending));
-            sql.Append(CreateLimitClause(query.Limit));
-            sql.Append(CreateOffsetClause(query.Offset));
-            return sql.ToString().Replace("  ", " ");
+            try
+            {
+                StringBuilder sql = new StringBuilder("");
+                sql.Append(CreateSELECTClause(query.Distinct, query.Columns));
+                sql.Append(CreateFROMClause(query.Table));
+                sql.Append(CreateWHEREClause(query.Criteria, query.Columns));
+                sql.Append(CreateGROUPBYCluase(query.GroupBy, query.Columns));
+                sql.Append(CreateORDERBYCluase(query.OrderBy, query.Columns, query.Ascending));
+                sql.Append(CreateLimitClause(query.Limit));
+                sql.Append(CreateOffsetClause(query.Offset));
+                return sql.ToString().Replace("  ", " ");
+            }
+            catch (BadSQLException)
+            {
+                throw;
+            }
         }
 
         private StringBuilder CreateSELECTClause(bool distinct, List<string> columns, string limit)

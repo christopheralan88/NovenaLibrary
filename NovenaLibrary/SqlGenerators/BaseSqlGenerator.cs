@@ -51,6 +51,8 @@ namespace NovenaLibrary.SqlGenerators
 
         protected virtual StringBuilder CreateWHEREClause(List<Criteria> criteria, List<string> columns)
         {
+            criteria = (List<Criteria>)AddParenthesisToCriteria(criteria);
+
             if (criteria == null) return null;
 
             if (criteria.Count > 0)
@@ -63,51 +65,60 @@ namespace NovenaLibrary.SqlGenerators
                 //for each row
                 foreach (var theCriteria in criteria)
                 {
-                    sql.Append(theCriteria.AndOr == null ? null : $" {theCriteria.AndOr} ");
-                    sql.Append(theCriteria.FrontParenthesis == null ? null : $" {theCriteria.FrontParenthesis} ");
-                    sql.Append(theCriteria.Column == null ? null : $" {openingColumnMark}{theCriteria.Column}{closingColumnMark} ");
-                    sql.Append(theCriteria.Operator == null ? null : $" {theCriteria.Operator} ");
-                    sql.Append(theCriteria.EndParenthesis == null ? null : $" {theCriteria.EndParenthesis} ");
-
-                    // determine if Criteria's filter property is a subquery
-                    if (IsSubQuery(theCriteria.Filter))
+                    if (!CriteriaHasNullValues(theCriteria))
                     {
-                        sql.Append($" ({SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter)}) ");
-                    }
+                        sql.Append(theCriteria.AndOr == null ? null : $" {theCriteria.AndOr} ");
+                        sql.Append(theCriteria.FrontParenthesis == null ? null : $" {theCriteria.FrontParenthesis} ");
+                        sql.Append(theCriteria.Column == null ? null : $" {openingColumnMark}{theCriteria.Column}{closingColumnMark} ");
+                        sql.Append(theCriteria.Operator == null ? null : $" {theCriteria.Operator} ");
+                        sql.Append(theCriteria.EndParenthesis == null ? null : $" {theCriteria.EndParenthesis} ");
 
-                    // if not subquery, then determine if column needs quotes or not
-                    var columnDataType = GetColumnDataType(theCriteria.Column);
-                    if (columnDataType == null)
-                    {
-                        // if the column name cannot be found in the table schema datatable, then throw BadSQLException
-                        throw new BadSQLException(string.Format($"Could not find column name, {theCriteria.Column}, in table schema for {tableSchema.TableName}"));
-                    } 
-                    else
-                    {
-                        var shouldHaveQuotes = IsColumnQuoted(columnDataType);
-
-                        if (theCriteria.Operator == "In" || theCriteria.Operator == "Not In")
+                        // determine if Criteria's filter property is a subquery
+                        if (IsSubQuery(theCriteria.Filter))
                         {
-                            var originalFilters = theCriteria.Filter.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                            var newFilters = new string[originalFilters.Count()];
-                            if (shouldHaveQuotes)
-                            {
-                                for (var i = 0; i < originalFilters.Count(); i++)
-                                {
-                                    newFilters[i] = $"'{SQLCleanser.EscapeAndRemoveWords(originalFilters[i])}'";
-                                }
-                                sql.Append($" ({string.Join(",", newFilters)}) ");
-                            }
-                            else
-                            {
-                                sql.Append($" ({SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter)}) ");
-                            }
+                            sql.Append($" ({SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter)}) ");
+                        }
+
+                        // if not subquery, then determine if column needs quotes or not
+                        var columnDataType = GetColumnDataType(theCriteria.Column);
+                        if (columnDataType == null)
+                        {
+                            // if the column name cannot be found in the table schema datatable, then throw BadSQLException
+                            throw new BadSQLException(string.Format($"Could not find column name, {theCriteria.Column}, in table schema for {tableSchema.TableName}"));
                         }
                         else
                         {
-                            var cleansedValue = SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter);
-                            sql.Append((shouldHaveQuotes) ? $" '{cleansedValue}' " : $" {cleansedValue} ");
+                            var shouldHaveQuotes = IsColumnQuoted(columnDataType);
+
+                            if (theCriteria.Operator == "In" || theCriteria.Operator == "Not In")
+                            {
+                                var originalFilters = theCriteria.Filter.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                                var newFilters = new string[originalFilters.Count()];
+                                if (shouldHaveQuotes)
+                                {
+                                    for (var i = 0; i < originalFilters.Count(); i++)
+                                    {
+                                        newFilters[i] = $"'{SQLCleanser.EscapeAndRemoveWords(originalFilters[i])}'";
+                                    }
+                                    sql.Append($" ({string.Join(",", newFilters)}) ");
+                                }
+                                else
+                                {
+                                    sql.Append($" ({SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter)}) ");
+                                }
+                            }
+                            else
+                            {
+                                var cleansedValue = SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter);
+                                sql.Append((shouldHaveQuotes) ? $" '{cleansedValue}' " : $" {cleansedValue} ");
+                            }
                         }
+                    }
+                    else
+                    {
+                        throw new BadSQLException($"The criteria at index {criteria.IndexOf(theCriteria)} in the Criteria list has a " +
+                                                   "null value for it's Column, Operator, or Filter.  Please make sure each Criteria has " +
+                                                   "has a non-null value for each of these properties");
                     }
                 }
 
@@ -218,6 +229,61 @@ namespace NovenaLibrary.SqlGenerators
             {
                 return (filter.Substring(0, 6).ToLower() == "select") ? true : false;
             }
+            return false;
+        }
+
+        private IList<Criteria> AddParenthesisToCriteria(IList<Criteria> criteria)
+        {
+            // If there is only one or zero items in criteria list, then just return criteria unaltered.
+            if (criteria.Count <= 1)
+            {
+                return criteria;
+            }
+
+            for (var i = 0; i < criteria.Count; i++)
+            {
+                var currentColumn = criteria[i].Column;
+                string priorColumn;
+                string nextColumn;
+
+                // If first criteria in list
+                if (i == 0)
+                {
+                    nextColumn = criteria[i + 1].Column;
+                    if (currentColumn == nextColumn) { criteria[i].FrontParenthesis = "("; }
+                }
+                // If last criteria in list
+                else if (i == criteria.Count - 1)
+                {
+                    priorColumn = criteria[i - 1].Column;
+                    if (currentColumn == priorColumn) { criteria[i].EndParenthesis = ")"; }
+                }
+                // If criteria is neither the first or last
+                else
+                {
+                    priorColumn = criteria[i - 1].Column;
+                    nextColumn = criteria[i + 1].Column;
+                    if (currentColumn != priorColumn && currentColumn == nextColumn)
+                    {
+                        criteria[i].FrontParenthesis = "(";
+                    }
+                    else if (currentColumn == priorColumn && currentColumn != nextColumn)
+                    {
+                        criteria[i].EndParenthesis = ")";
+                    }
+                }
+            }
+
+            return criteria;
+        }
+
+        private bool CriteriaHasNullValues(Criteria criteria)
+        {
+            // Test each criteria's Column, Operator, and Filter properties.  If any criteria in list is null, then return true.
+            if (criteria.Column == null) return true;
+            if (criteria.Operator == null) return true;
+            if (criteria.Filter == null) return true;
+           
             return false;
         }
     }

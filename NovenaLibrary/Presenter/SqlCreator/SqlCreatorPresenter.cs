@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using NovenaLibrary.SqlGenerators;
 using NovenaLibrary.View.ColumnItems;
 using NovenaLibrary.View.SqlCreator;
+using NovenaLibrary.Exceptions;
 
 namespace NovenaLibrary.Presenter.SqlCreator
 {
@@ -123,31 +124,40 @@ namespace NovenaLibrary.Presenter.SqlCreator
             var limit = _view.Limit;
             var query = new Query("main").SetTableSchema(tableSchema).SetColumns(columns).SetTable(table).SetCriteria(criteria).SetGroupBy(groupBy).SetLimit(limit);
             //string sql = sqlGenerator.CreateSql(tableSchema: tableSchema, columns: columns, table: table, criteria: criteria, groupBy: groupBy, limit: limit);
-            string sql = sqlGenerator.CreateSql(query);
-
-            DataTable dt;
             try
             {
-                dt = dbConnection.query(sql);
-                if (dt.Rows.Count > 0)
+                string sql = sqlGenerator.CreateSql(query);
+
+                DataTable dt;
+                try
                 {
-                    _view.SQLResult.Add(query.QueryName, dt);
-                    _view.WorkbookPropertiesConfig.LastMainQuery = query;
-                    _view.WorkbookPropertiesConfig.selectedTable = _view.AvailableTablesText;
-                    _view.WorkbookPropertiesConfig.selectedColumns = _view.SelectedColumns.ToList();
-                    _view.WorkbookPropertiesConfig.criteria = _view.Criteria.ToList();
-                    _view.WorkbookPropertiesConfig.limit = _view.Limit;
-                    _view.CloseForm();
+                    dt = dbConnection.query(sql);
+                    if (dt.Rows.Count > 0)
+                    {
+                        _view.SQLResult.Add(query.QueryName, dt);
+                        _view.WorkbookPropertiesConfig.LastMainQuery = query;
+                        _view.WorkbookPropertiesConfig.selectedTable = _view.AvailableTablesText;
+                        _view.WorkbookPropertiesConfig.selectedColumns = _view.SelectedColumns.ToList();
+                        _view.WorkbookPropertiesConfig.criteria = _view.Criteria.ToList();
+                        _view.WorkbookPropertiesConfig.limit = _view.Limit;
+                        _view.CloseForm();
+                    }
+                    else
+                    {
+                        ShowMessage(QUERY_RETURNED_NO_RECORDS);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    ShowMessage(QUERY_RETURNED_NO_RECORDS);
+                    ShowMessage(ex.Message);
                 }
             }
-            catch (Exception ex)
+            catch (BadSQLException ex)
             {
-                ShowMessage(ex.Message);
+                MessageBox.Show(ex.Message, "Bad SQL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
+            
         }
 
         public void OnRemoveSelectedColumn()

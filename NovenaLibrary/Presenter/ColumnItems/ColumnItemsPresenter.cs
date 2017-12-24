@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using NovenaLibrary.Utilities;
 using NovenaLibrary.Config;
+using NovenaLibrary.Exceptions;
 
 namespace NovenaLibrary.Presenter.ColumnItems
 {
@@ -128,17 +129,26 @@ namespace NovenaLibrary.Presenter.ColumnItems
             //                                  table: _table, asc: asc, limit: _view.PageSize,
             //                                  offset: currentOffset.ToString());
 
-            var sql = _sqlGenerator.CreateSql(query);
-
-            var dt = _dbConnection.query(sql);
-
-            BindingList<string> columnItemsList = new BindingList<string>();
-            foreach (DataRow row in dt.Rows)
+            try
             {
-                columnItemsList.Add(row[0].ToString());
+                var sql = _sqlGenerator.CreateSql(query);
+
+                var dt = _dbConnection.query(sql);
+
+                BindingList<string> columnItemsList = new BindingList<string>();
+                foreach (DataRow row in dt.Rows)
+                {
+                    columnItemsList.Add(row[0].ToString());
+                }
+
+                _view.AvailableItems = columnItemsList;
+            }
+            catch (BadSQLException ex)
+            {
+                MessageBox.Show(ex.Message, "Bad SQL", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
-            _view.AvailableItems = columnItemsList;
         }
 
         private void TogglePriorAndNextButtonsEnabled()
