@@ -89,10 +89,10 @@
   <ItemGroup>
     <Compile Include="Config\AppConfig.cs" />
     <Compile Include="Config\AvailableTablesSql.cs" />
-    <Compile Include="Config\Criteria.cs" />
+    <Compile Include="SqlGenerators\Criteria.cs" />
     <Compile Include="Config\DatabaseConnectionFactory.cs" />
     <Compile Include="Config\DatabaseType.cs" />
-    <Compile Include="Config\Query.cs" />
+    <Compile Include="SqlGenerators\Query.cs" />
     <Compile Include="Config\SqlGeneratorFactory.cs" />
     <Compile Include="Config\User.cs" />
     <Compile Include="Config\WorkbookPropertiesConfig.cs" />

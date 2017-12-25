@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NovenaLibrary.Config;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Windows.Forms;
-using NovenaLibrary.View;
 using NovenaLibrary.View.LogIn;
 using NovenaLibrary.View.SqlCreator;
 using NovenaLibrary.Presenter.Excel;
@@ -15,7 +11,6 @@ using NovenaLibrary.View.DrilldownColumns;
 using NovenaLibrary.View.ConfigurationEditor;
 using System.Collections;
 using NovenaLibrary.Utilities;
-using System.Windows.Forms;
 
 namespace NovenaLibrary
 {
@@ -138,33 +133,30 @@ namespace NovenaLibrary
             }
         }
 
-        //public void drilldown()
-        //{
-        //    if (appConfig.username != null && appConfig.password != null)
-        //    {
-        //        if (wBookPropertiesConfig.drilldownSql == null)
-        //        {
-        //            setDrilldownColumns();
-        //        }
-        //        else
-        //        {
-        //            Dictionary<string, DataTable> dict = new Dictionary<string, DataTable>();
-        //            dict = presenter.drilldown();
+        public void Drilldown()
+        {
+            if (_appConfig.GetCredentialsRequired == AppConfig.CredentialsRequired.None || _appConfig.User != null)
+            {
+                if (_workbookPropertiesConfig.drilldownSql == null)
+                {
+                    SetDrilldownColumns();
+                }
+                else
+                {
+                    Dictionary<string, DataTable> queries = new Dictionary<string, DataTable>();
+                    queries = _presenter.drilldown();
 
-        //            if (dict != null)
-        //            {
-        //                string sql = dict.ElementAt(0).Key;
-        //                DataTable dt = dict.ElementAt(0).Value;
-
-        //                presenter.createDrilldownExcelWorksheet(sql, dt);
-        //            }
-        //        }
-        //    }
-        //    else
-        //    {
-        //        signIn();
-        //    }
-        //}
+                    if (queries != null)
+                    {
+                        _presenter.PasteQueriesIntoExcel(queries);
+                    }
+                }
+            }
+            else
+            {
+                LogIn();
+            }
+        }
 
         public void RefreshData()
         {

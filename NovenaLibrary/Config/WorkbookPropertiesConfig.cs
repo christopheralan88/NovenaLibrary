@@ -7,6 +7,7 @@ using System.Reflection;
 using Excel = Microsoft.Office.Interop.Excel;
 using NovenaLibrary.Exceptions;
 using System.Runtime.InteropServices;
+using NovenaLibrary.SqlGenerators;
 
 namespace NovenaLibrary.Config
 {

@@ -19,6 +19,7 @@ namespace NovenaLibrary.Presenter.Excel
         private IDatabaseConnection _dbConnection;
         private BaseSqlGenerator _sqlGenerator;
         private WorkbookPropertiesConfig _workbookPropertiesConfig;
+        private DataTable _drilldownTableSchema;
 
         public ExcelPresenter(MSExcel.Application app, IDatabaseConnection dbConnection, BaseSqlGenerator sqlGenerator, WorkbookPropertiesConfig workbookPropertiesConfig)
         {
@@ -219,6 +220,364 @@ namespace NovenaLibrary.Presenter.Excel
                 MessageBox.Show("You must run the Query Creator once before being allowed to refresh the query",
                         "Run SQL Creator First", MessageBoxButtons.OK);
                 return null;
+            }
+        }
+
+        public Dictionary<string, DataTable> drilldown()
+        {
+            Dictionary<string, DataTable> dict = new Dictionary<string, DataTable>();
+            MSExcel.Range thisCell = _app.ActiveCell;
+
+            if (!IsPivotCell(thisCell) && !thisCell.HasFormula)
+            {
+                // thisCell is not on a pivot table and has no formuala, so it can't have prcedents on a pivot table.
+                MessageBox.Show("Cannot drill on this cell.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
+            else if (IsPivotCell(thisCell) && !thisCell.HasFormula)
+            {
+                // thisCell is in pivot table.
+                try
+                {
+                    var query = CreateQueryFromPivotCell(thisCell);
+                    var sql = _sqlGenerator.CreateSql(query);
+                    var dt = _dbConnection.query(sql);
+                    dict.Add(sql, dt);
+                    return dict;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return null;
+                }
+            }
+            else if (!IsPivotCell(thisCell) && thisCell.HasFormula)
+            {
+                // thisCell is not on a pivot table, but it's precendents may be on a pivot table
+                if (!PrecedentsArePivotCells(thisCell))
+                {
+                    // static report cell mapping
+                    try
+                    {
+                        var query = CreateQueryFromRange(thisCell);
+                        var sql = _sqlGenerator.CreateSql(query);
+                        var dt = _dbConnection.query(sql);
+                        dict.Add(sql, dt);
+                        return dict;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return null;
+                    }
+                }
+                else
+                {
+                    // dynamic report cell mapping
+                    MSExcel.Range pCell = FindPrecedentCellEqualToCell(thisCell);
+                    if (pCell != null)
+                    {
+                        try
+                        {
+                            var query = CreateQueryFromPivotCell(pCell);
+                            var sql = _sqlGenerator.CreateSql(query);
+                            var dt = _dbConnection.query(sql);
+                            dict.Add(sql, dt);
+                            return dict;
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return null;
+                        }
+                    }
+                }
+                //else
+                //{
+                //    MessageBox.Show("Cannot drill on this cell.", "Drilldown", MessageBoxButtons.OK);
+                //    return null;
+                //}
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Returns Query object to be passed to SqlGenerator, which transforms the Query object into a SQL string.  
+        /// This is meant to be used with a Range that is NOT a pivot cell.
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <returns>Query</returns>
+        private Query CreateQueryFromRange(MSExcel.Range cell)
+        {
+            // create new Query object
+            var query = new Query("drilldown");
+
+            // Loop through named ranges.
+            // Create list of named ranges that are novena named ranges and intersect with the cell parameter.
+            var namedRanges = _app.ActiveWorkbook.Names;
+            var relevantNamedRanges = new List<MSExcel.Name>();
+            foreach (MSExcel.Name name in namedRanges)
+            {
+                // test if named range is a novena named range (starts with "novena__")
+                if (IsNovenaNamedRange(name))
+                {
+                    // find named ranges that have an address that intersects with cell's column or row
+                    if (name.RefersToRange.Column == cell.Column || name.RefersToRange.Row == cell.Row)
+                    {
+                        relevantNamedRanges.Add(name);
+                    }
+                }
+            }
+
+            if (relevantNamedRanges.Count > 0)
+            {
+                foreach (var name in relevantNamedRanges)
+                {
+                    // add Criteria to Query that includes column (parsed named range), operator ("IN"), and filter (cell value)
+                    var criteria = new Criteria();
+
+                    criteria.AndOr = "And";
+                    criteria.FrontParenthesis = "";
+                    criteria.Column = ParseColumnFromNamedRange(name); // Wrap in try/catch block to catch exception
+                    criteria.Operator = "IN";
+                    criteria.Filter = (string)name.RefersToRange.Text;
+                    criteria.EndParenthesis = "";
+
+                    query.AddSingleCriteria(criteria);
+                }
+
+                return query;
+            }
+            else
+            {
+                // if no named ranges that intersect with cell's column and row, then return null
+                MessageBox.Show("Cannot drill on this cell", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return null;
+            }
+        }
+
+
+        /// <summary>
+        /// Returns Query object to be passed to SqlGenerator, which transforms the Query object into SQL string.
+        /// This is meant to be used with a Range that is a pivot cell.
+        /// </summary>
+        /// <param name="cell"></param>
+        /// <returns>Query</returns>
+        private Query CreateQueryFromPivotCell(MSExcel.Range cell)
+        {
+            // First check if pivot cell is a type that can be drilled into (custom subtotal, subtotal, grand total, or cell value.
+            // If not, then throw exception.
+            if (!PivotCellTypeIsAllowed(cell.PivotCell))
+            {
+                throw new Exception("Cannot drill into this cell");
+            }
+
+            var query = new Query("drilldown");
+
+            query.SetColumns(_workbookPropertiesConfig.drilldownSql.Split(',').ToList());
+            var table = _workbookPropertiesConfig.selectedTable + "_detail";
+            query.SetTable(table);
+
+            try
+            {
+                var tableSchema = _dbConnection.getSchema(table);
+                query.SetTableSchema(tableSchema);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (_workbookPropertiesConfig.LastMainQuery.Criteria != null)
+            {
+                query.AddMultipleCriteria(_workbookPropertiesConfig.LastMainQuery.Criteria);
+            }
+
+            Criteria criteria;
+            foreach (MSExcel.PivotItem item in cell.PivotCell.RowItems)
+            {
+                criteria = new Criteria();
+
+                var columnName = item.Parent.Name;
+
+                criteria.AndOr = "AND";
+                criteria.FrontParenthesis = null;
+                criteria.Column = columnName;
+                criteria.Operator = " = ";
+                criteria.Filter = item.Name;
+                criteria.EndParenthesis = null;
+
+                query.AddSingleCriteria(criteria);
+            }
+
+            foreach (MSExcel.PivotItem item in cell.PivotCell.ColumnItems)
+            {
+                criteria = new Criteria();
+
+                var columnName = item.Parent.Name;
+
+                criteria.AndOr = "AND";
+                criteria.FrontParenthesis = null;
+                criteria.Column = columnName;
+                criteria.Operator = " = ";
+                criteria.Filter = item.Name;
+                criteria.EndParenthesis = null;
+
+                query.AddSingleCriteria(criteria);
+            }
+
+            //add all other pivot fields' items that are visible.
+            try
+            { 
+                //loop thru each drilldown table field
+                foreach (DataRow row in query.TableSchema.Rows)
+                {
+                    var field = row["COLUMN_NAME"].ToString();
+                    if (FieldExistsInPivotTable(field, cell.PivotCell))
+                    {
+                        if (!query.CriteriaExistsForColumn(field))
+                        {
+                            MSExcel.PivotItems fieldItems = cell.PivotCell.PivotTable.PivotFields(field).PivotItems();
+                            var filter = "";
+                            foreach (MSExcel.PivotItem item in fieldItems)
+                            {
+                                if (item.Visible)
+                                {
+                                    filter += $"{item.Name},";
+                                }
+                            }
+
+                            if (filter.Length > 0)
+                            {
+                                criteria = new Criteria();
+
+                                filter.Substring(0, filter.Length - 1);
+
+                                criteria.AndOr = "AND";
+                                criteria.FrontParenthesis = null;
+                                criteria.Column = field;
+                                criteria.Operator = "IN";
+                                criteria.Filter = filter;
+                                criteria.EndParenthesis = null;
+
+                                query.AddSingleCriteria(criteria);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Drilldown", MessageBoxButtons.OK);
+                return null;
+            }
+
+            return query;
+        }
+
+        private bool IsNovenaNamedRange(MSExcel.Name namedRange)
+        {
+            // get first 7 characters of named range
+            var endIndex = namedRange.Name.IndexOf("__") + 2;
+            var first7Chars = namedRange.Name.Substring(0, endIndex ).ToLower();
+
+            return (first7Chars == "novena__") ? true : false; 
+        }
+
+        private string ParseColumnFromNamedRange(MSExcel.Name namedRange)
+        {
+            // get column name from named range's name
+            var startIndex = namedRange.Name.IndexOf("__");
+            if (startIndex != -1)
+            {
+                // if novena
+                return namedRange.Name.Substring(startIndex + 1);
+            }
+            else
+            {
+                return null;
+            }
+            
+
+            // return column name
+        }
+
+        private bool PivotCellTypeIsAllowed(MSExcel.PivotCell pivotCell)
+        {
+            if (pivotCell.PivotCellType == MSExcel.XlPivotCellType.xlPivotCellCustomSubtotal || 
+                pivotCell.PivotCellType == MSExcel.XlPivotCellType.xlPivotCellGrandTotal ||
+                pivotCell.PivotCellType == MSExcel.XlPivotCellType.xlPivotCellSubtotal ||
+                pivotCell.PivotCellType == MSExcel.XlPivotCellType.xlPivotCellValue)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private bool FieldExistsInPivotTable(string field, MSExcel.PivotCell cell)
+        {
+            MSExcel.PivotFields pFields = cell.PivotTable.PivotFields();
+            foreach (MSExcel.PivotField pField in pFields)
+            {
+                if (pField.Name.Equals(field))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private MSExcel.Range FindPrecedentCellEqualToCell(MSExcel.Range thisCell)
+        {
+            if (thisCell.Precedents.Count > 0)
+            {
+                foreach (MSExcel.Range cell in thisCell.Precedents)
+                {
+                    if (IsPivotCell(cell))
+                    {
+                        if (cell.PivotCell.PivotCellType == MSExcel.XlPivotCellType.xlPivotCellValue)
+                        {
+                            if (cell.Value == thisCell.Value)
+                            {
+                                return cell;
+                            }
+                        }
+                    }
+                }
+                MessageBox.Show("Cannot drill into this cell", "Drilldown Error", MessageBoxButtons.OK);
+                return null;
+            }
+            else
+            {
+                MessageBox.Show("Cannot drill into this cell", "Drilldown Error", MessageBoxButtons.OK);
+                return null;
+            }
+        }
+
+        private bool PrecedentsArePivotCells(MSExcel.Range cell)
+        {
+            foreach (MSExcel.Range range in cell.Precedents)
+            {
+                if (range.PivotCell != null) return true;
+            }
+            return false;
+        }
+
+        private bool IsPivotCell(MSExcel.Range cell)
+        {
+            try
+            {
+                string answer = cell.PivotCell.Range.Address;
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
 

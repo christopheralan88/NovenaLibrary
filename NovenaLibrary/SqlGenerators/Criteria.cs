@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace NovenaLibrary.Config
+namespace NovenaLibrary.SqlGenerators
 {
     public class Criteria
     {

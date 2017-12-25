@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data;
 
-namespace NovenaLibrary.Config
+namespace NovenaLibrary.SqlGenerators
 {
     public class Query
     {
@@ -96,6 +96,51 @@ namespace NovenaLibrary.Config
         {
             Offset = offset;
             return this;
+        }
+
+        public bool AddSingleCriteria(Criteria criteria)
+        {
+            try
+            {
+                Criteria.Add(criteria);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool AddMultipleCriteria(IEnumerable<Criteria> criteria)
+        {
+            try
+            {
+                Criteria.AddRange(criteria);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public IList<Criteria> FindAllCriteriaByColumn(string column)
+        {
+            return Criteria.FindAll(x => x.Column == column);
+        }
+
+        public bool CriteriaExistsForColumn(string column)
+        {
+            var test = Criteria.First(x => x.Column == column);
+
+            if (test != null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }
