@@ -51,9 +51,9 @@ namespace NovenaLibrary.SqlGenerators
 
         protected virtual StringBuilder CreateWHEREClause(List<Criteria> criteria, List<string> columns)
         {
-            criteria = (List<Criteria>)AddParenthesisToCriteria(criteria);
-
             if (criteria == null) return null;
+
+            criteria = (List<Criteria>)AddParenthesisToCriteria(criteria);
 
             if (criteria.Count > 0)
             {
