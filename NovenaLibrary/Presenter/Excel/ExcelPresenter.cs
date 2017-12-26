@@ -313,6 +313,12 @@ namespace NovenaLibrary.Presenter.Excel
             // create new Query object
             var query = new Query("drilldown");
 
+            // Add main query's criteria
+            if (_workbookPropertiesConfig.LastMainQuery.Criteria != null)
+            {
+                query.AddMultipleCriteria(_workbookPropertiesConfig.LastMainQuery.Criteria);
+            }
+
             // Loop through named ranges.
             // Create list of named ranges that are novena named ranges and intersect with the cell parameter.
             var namedRanges = _app.ActiveWorkbook.Names;
@@ -389,6 +395,7 @@ namespace NovenaLibrary.Presenter.Excel
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
+            // Add main query's criteria
             if (_workbookPropertiesConfig.LastMainQuery.Criteria != null)
             {
                 query.AddMultipleCriteria(_workbookPropertiesConfig.LastMainQuery.Criteria);
