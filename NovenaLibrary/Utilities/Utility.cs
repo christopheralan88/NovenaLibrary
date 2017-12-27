@@ -13,6 +13,7 @@ namespace NovenaLibrary.Utilities
         public static BindingList<string> ConvertSelectedObjectCollectionToList(ListBox.SelectedObjectCollection collection)
         {
             var list = new BindingList<string>();
+            //list.AllowNew = true;
             foreach (var item in collection)
             {
                 list.Add(item.ToString());

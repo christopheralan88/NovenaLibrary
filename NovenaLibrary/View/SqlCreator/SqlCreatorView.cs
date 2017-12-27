@@ -38,16 +38,6 @@ namespace NovenaLibrary.View.SqlCreator
         {
             get { return _sqlResult; }
             set { }
-            //{
-            //    if (_sqlResult == null)
-            //    {
-            //        _sqlResult = value;
-            //    }
-            //    else
-            //    {
-            //        throw new PropertyAlreadySetException();
-            //    }
-            //}
         }
 
         public AppConfig AppConfig
@@ -129,6 +119,12 @@ namespace NovenaLibrary.View.SqlCreator
                 var index = datagrid_criteria.SelectedCells[0].RowIndex;
                 var dataSourceList = (BindingList<Criteria>)datagrid_criteria.DataSource;
                 return dataSourceList[index];
+            }
+            set
+            {
+                var index = datagrid_criteria.SelectedCells[0].RowIndex;
+                var dataSourceList = (BindingList<Criteria>)datagrid_criteria.DataSource;
+                dataSourceList[index] = value;
             }
         }
 

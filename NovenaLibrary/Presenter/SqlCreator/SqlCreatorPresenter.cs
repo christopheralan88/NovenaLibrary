@@ -72,7 +72,12 @@ namespace NovenaLibrary.Presenter.SqlCreator
             var result = columnItemsForm.ShowDialog();
             if (result == DialogResult.OK)
             {
-                _view.SelectedCriteria.Filter = columnItemsForm.ReturnFilter;
+                // Get form's DataGridView's current criteria.
+                var criteria = _view.SelectedCriteria;
+                // Set the criteria's filter property to the Column Items Form's ReturnFilter property.
+                criteria.Filter = columnItemsForm.ReturnFilter;
+                // Update the form's DataGridView's current criteria with the new filter.
+                _view.SelectedCriteria = criteria;
             }
         }
 

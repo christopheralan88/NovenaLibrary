@@ -28,7 +28,7 @@ namespace NovenaLibrary.View.SqlCreator
         Dictionary<string, DataTable> SQLResult { get; set; } // make readonly
         bool GroupBy { get; }
         string Limit { get; }
-        Criteria SelectedCriteria { get; }
+        Criteria SelectedCriteria { get; set; }
         void CloseForm();
         // add dgv eventually, but it is a complex type
     }

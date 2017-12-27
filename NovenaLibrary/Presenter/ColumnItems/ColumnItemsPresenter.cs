@@ -59,10 +59,22 @@ namespace NovenaLibrary.Presenter.ColumnItems
 
         public void OnAdd()
         {
+            //var newList = new BindingList<string>();
+            BindingList<string> newList;
+            if (_view.SelectedItems != null)
+            {
+                newList = _view.SelectedItems;
+            }
+            else
+            {
+                newList = new BindingList<string>();
+            }
+            
             foreach (var item in _view.HighlightedAvailableItems)
             {
-                _view.SelectedItems.Add(item);
+                newList.Add(item);
             }
+            _view.SelectedItems = newList;
         }
 
         public void OnCancel()
@@ -108,7 +120,10 @@ namespace NovenaLibrary.Presenter.ColumnItems
 
         public void OnRemove()
         {
-            _view.SelectedItems.RemoveAt(_view.HighlightedSelectedItemIndex);
+            if (_view.SelectedItems.Count > 0)
+            {
+                _view.SelectedItems.RemoveAt(_view.HighlightedSelectedItemIndex);
+            }
         }
 
         private void GetColumnItems()
@@ -121,13 +136,10 @@ namespace NovenaLibrary.Presenter.ColumnItems
                                                  .SetDistinct(true)
                                                  .SetColumns(columns)
                                                  .SetTable(_table)
+                                                 .SetOrderBy(true)
                                                  .SetAscending(asc)
                                                  .SetLimit(limit)
                                                  .SetOffset(offset);
-
-            //var sql = _sqlGenerator.CreateSql(tableSchema: _tableSchema, distinct: true, columns: columns,
-            //                                  table: _table, asc: asc, limit: _view.PageSize,
-            //                                  offset: currentOffset.ToString());
 
             try
             {

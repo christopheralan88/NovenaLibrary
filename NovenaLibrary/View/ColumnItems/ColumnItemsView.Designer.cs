@@ -233,6 +233,7 @@
             // 
             // but_cancel
             // 
+            this.but_cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.but_cancel.Location = new System.Drawing.Point(392, 505);
             this.but_cancel.Margin = new System.Windows.Forms.Padding(2);
             this.but_cancel.Name = "but_cancel";
@@ -243,6 +244,7 @@
             // 
             // but_ok
             // 
+            this.but_ok.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.but_ok.Location = new System.Drawing.Point(320, 505);
             this.but_ok.Margin = new System.Windows.Forms.Padding(2);
             this.but_ok.Name = "but_ok";

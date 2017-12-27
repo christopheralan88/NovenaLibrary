@@ -36,7 +36,8 @@ namespace NovenaLibrary.View.ColumnItems
             presenter.Initialize();
 
             // Makes first item in drop down box the selected item, so that blank choice disappears and "" will not be passed to presenter for limit.
-            cbox_paging_limit.SelectedIndex = 0; 
+            cbox_paging_limit.SelectedIndex = 0;
+            //SelectedItems.AllowNew = true;
         }
 
         public bool Ascending
@@ -80,7 +81,7 @@ namespace NovenaLibrary.View.ColumnItems
 
         public int HighlightedSelectedItemIndex
         {
-            get { return lbox_available_members.SelectedIndex; }
+            get { return lbox_selected_members.SelectedIndex; }
         }
 
         public bool NextButtonEnabled
@@ -113,7 +114,7 @@ namespace NovenaLibrary.View.ColumnItems
 
         public BindingList<string> SelectedItems
         {
-            get { return Utility.ConvertSelectedObjectCollectionToList(lbox_selected_members.SelectedItems); }
+            get { return (BindingList<string>)lbox_selected_members.DataSource; }
             set { lbox_selected_members.DataSource = value; }
         }
 
