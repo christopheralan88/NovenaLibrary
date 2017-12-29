@@ -374,7 +374,7 @@ namespace NovenaLibrary.Presenter.Excel
         {
             // First check if pivot cell is a type that can be drilled into (custom subtotal, subtotal, grand total, or cell value.
             // If not, then throw exception.
-            if (!PivotCellTypeIsAllowed(cell.PivotCell))
+            if (!PivotCellTypeIsAmount(cell.PivotCell))
             {
                 throw new Exception("Cannot drill into this cell");
             }
@@ -443,7 +443,9 @@ namespace NovenaLibrary.Presenter.Excel
                     var field = row["COLUMN_NAME"].ToString();
                     if (FieldExistsInPivotTable(field, cell.PivotCell))
                     {
-                        if (!query.CriteriaExistsForColumn(field))
+                        //// If a criteria does NOT currently exist for the field (!query.CriteriaExistsForColumn(field))
+                        // And the field is NOT a data field.
+                        if (!IsPivotTableDataField(cell.PivotCell, field))
                         {
                             MSExcel.PivotItems fieldItems = cell.PivotCell.PivotTable.PivotFields(field).PivotItems();
                             var filter = "";
@@ -453,6 +455,10 @@ namespace NovenaLibrary.Presenter.Excel
                                 {
                                     filter += $"{item.Name},";
                                 }
+                            }
+                            if (filter.Length > 0)
+                            {
+                                filter = filter.Substring(0, filter.Length - 1);
                             }
 
                             if (filter.Length > 0)
@@ -464,7 +470,7 @@ namespace NovenaLibrary.Presenter.Excel
                                 criteria.AndOr = "AND";
                                 criteria.FrontParenthesis = null;
                                 criteria.Column = field;
-                                criteria.Operator = "IN";
+                                criteria.Operator = "In";
                                 criteria.Filter = filter;
                                 criteria.EndParenthesis = null;
 
@@ -481,6 +487,18 @@ namespace NovenaLibrary.Presenter.Excel
             }
 
             return query;
+        }
+
+        private bool IsPivotTableDataField(MSExcel.PivotCell cell, string fieldName)
+        {
+            MSExcel.PivotFields dataFields = cell.PivotTable.DataFields;
+
+            foreach (MSExcel.PivotField dataField in dataFields)
+            {
+                if (dataField.SourceName == fieldName) return true;
+            }
+
+            return false;
         }
 
         private bool IsNovenaNamedRange(MSExcel.Name namedRange)
@@ -510,7 +528,7 @@ namespace NovenaLibrary.Presenter.Excel
             // return column name
         }
 
-        private bool PivotCellTypeIsAllowed(MSExcel.PivotCell pivotCell)
+        private bool PivotCellTypeIsAmount(MSExcel.PivotCell pivotCell)
         {
             if (pivotCell.PivotCellType == MSExcel.XlPivotCellType.xlPivotCellCustomSubtotal || 
                 pivotCell.PivotCellType == MSExcel.XlPivotCellType.xlPivotCellGrandTotal ||

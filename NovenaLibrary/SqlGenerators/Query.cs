@@ -26,6 +26,8 @@ namespace NovenaLibrary.SqlGenerators
         {
             _queryName = queryName;
             _sql = sql;
+            Columns = new List<string>();
+            Criteria = new List<Criteria>();
         }
 
         public string QueryName
@@ -131,16 +133,22 @@ namespace NovenaLibrary.SqlGenerators
 
         public bool CriteriaExistsForColumn(string column)
         {
-            var test = Criteria.First(x => x.Column == column);
+            //var test = Criteria.Where(x => x.Column.Equals(column)).First();
+            foreach (var criteria in Criteria)
+            {
+                if (criteria.Column == column) return true;
+            }
 
-            if (test != null)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return false;
+
+            //if (test != null)
+            //{
+            //    return true;
+            //}
+            //else
+            //{
+            //    return false;
+            //}
         }
     }
 }
