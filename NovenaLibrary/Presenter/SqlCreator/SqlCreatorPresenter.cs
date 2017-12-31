@@ -63,7 +63,26 @@ namespace NovenaLibrary.Presenter.SqlCreator
             var columnList = (from row in tableSchema.AsEnumerable()
                               select row.Field<string>("COLUMN_NAME")).ToList();
 
+            if (_view.AvailableColumns != null)
+            {
+                _view.AvailableColumns = null;
+            }
             _view.AvailableColumns = new BindingList<string>(columnList);
+
+            if (_view.AvailableColumnDGV != null)
+            {
+                _view.AvailableColumnDGV.Clear();
+            }
+            //foreach (var column in columnList)
+            //{
+            //    _view.AvailableColumnDGV.Add(column);
+            //}
+            _view.AvailableColumnDGV = new BindingList<string>(columnList);
+            _view.AvailableColumnDGV.ResetBindings();
+
+            if (_view.SelectedColumns != null) _view.SelectedColumns.Clear();
+
+            if (_view.Criteria != null) _view.Criteria.Clear();
         }
 
         public void OnColumnItemsClick()

@@ -53,7 +53,7 @@ namespace NovenaLibrary.SqlGenerators
         {
             if (criteria == null) return null;
 
-            criteria = (List<Criteria>)AddParenthesisToCriteria(criteria);
+            //criteria = (List<Criteria>)AddParenthesisToCriteria(criteria);
 
             if (criteria.Count > 0)
             {
@@ -232,50 +232,50 @@ namespace NovenaLibrary.SqlGenerators
             return false;
         }
 
-        private IList<Criteria> AddParenthesisToCriteria(IList<Criteria> criteria)
-        {
-            // If there is only one or zero items in criteria list, then just return criteria unaltered.
-            if (criteria.Count <= 1)
-            {
-                return criteria;
-            }
+        //private IList<Criteria> AddParenthesisToCriteria(IList<Criteria> criteria)
+        //{
+        //    // If there is only one or zero items in criteria list, then just return criteria unaltered.
+        //    if (criteria.Count <= 1)
+        //    {
+        //        return criteria;
+        //    }
 
-            for (var i = 0; i < criteria.Count; i++)
-            {
-                var currentColumn = criteria[i].Column;
-                string priorColumn;
-                string nextColumn;
+        //    for (var i = 0; i < criteria.Count; i++)
+        //    {
+        //        var currentColumn = criteria[i].Column;
+        //        string priorColumn;
+        //        string nextColumn;
 
-                // If first criteria in list
-                if (i == 0)
-                {
-                    nextColumn = criteria[i + 1].Column;
-                    if (currentColumn == nextColumn) { criteria[i].FrontParenthesis = "("; }
-                }
-                // If last criteria in list
-                else if (i == criteria.Count - 1)
-                {
-                    priorColumn = criteria[i - 1].Column;
-                    if (currentColumn == priorColumn) { criteria[i].EndParenthesis = ")"; }
-                }
-                // If criteria is neither the first or last
-                else
-                {
-                    priorColumn = criteria[i - 1].Column;
-                    nextColumn = criteria[i + 1].Column;
-                    if (currentColumn != priorColumn && currentColumn == nextColumn)
-                    {
-                        criteria[i].FrontParenthesis = "(";
-                    }
-                    else if (currentColumn == priorColumn && currentColumn != nextColumn)
-                    {
-                        criteria[i].EndParenthesis = ")";
-                    }
-                }
-            }
+        //        // If first criteria in list
+        //        if (i == 0)
+        //        {
+        //            nextColumn = criteria[i + 1].Column;
+        //            if (currentColumn == nextColumn) { criteria[i].FrontParenthesis = "("; }
+        //        }
+        //        // If last criteria in list
+        //        else if (i == criteria.Count - 1)
+        //        {
+        //            priorColumn = criteria[i - 1].Column;
+        //            if (currentColumn == priorColumn) { criteria[i].EndParenthesis = ")"; }
+        //        }
+        //        // If criteria is neither the first or last
+        //        else
+        //        {
+        //            priorColumn = criteria[i - 1].Column;
+        //            nextColumn = criteria[i + 1].Column;
+        //            if (currentColumn != priorColumn && currentColumn == nextColumn)
+        //            {
+        //                criteria[i].FrontParenthesis = "(";
+        //            }
+        //            else if (currentColumn == priorColumn && currentColumn != nextColumn)
+        //            {
+        //                criteria[i].EndParenthesis = ")";
+        //            }
+        //        }
+        //    }
 
-            return criteria;
-        }
+        //    return criteria;
+        //}
 
         private bool CriteriaHasNullValues(Criteria criteria)
         {

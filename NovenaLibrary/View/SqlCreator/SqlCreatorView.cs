@@ -20,6 +20,7 @@ namespace NovenaLibrary.View.SqlCreator
         private AppConfig _appConfig;
         private WorkbookPropertiesConfig _workbookPropertiesConfig;
         private Dictionary<string, DataTable> _sqlResult = new Dictionary<string, DataTable>();
+        private BindingSource bindingSource = new BindingSource();
 
         public SqlCreatorView(AppConfig appConfig, WorkbookPropertiesConfig workbookPropertiesConfig)
         {
@@ -93,8 +94,18 @@ namespace NovenaLibrary.View.SqlCreator
 
         public BindingList<string> AvailableColumnDGV
         {
-            get { return (BindingList<string>)Column.DataSource; }
-            set { Column.DataSource = value; }
+            get
+            {
+                // TODO:  handle when bindingSource is null.
+                var source = (BindingSource)Column.DataSource;
+                return (BindingList<string>)source.DataSource;
+            }
+
+            set
+            {
+                bindingSource.DataSource = value;
+                Column.DataSource = bindingSource;
+            }
         }
 
         public BindingList<Criteria> Criteria

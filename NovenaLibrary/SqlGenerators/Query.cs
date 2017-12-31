@@ -126,6 +126,59 @@ namespace NovenaLibrary.SqlGenerators
             }
         }
 
+        public bool RemoveSingleCriteria(Criteria criteria)
+        {
+            try
+            {
+                Criteria.Remove(criteria);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool RemoveSingleCriteria(int index)
+        {
+            try
+            {
+                Criteria.RemoveAt(index);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool ReplaceAllMatchingCriteria(Criteria criteria)
+        {
+            try
+            {
+                RemoveAllCriteriaWithMatchingColumn(criteria.Column);
+                AddSingleCriteria(criteria);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool RemoveAllCriteriaWithMatchingColumn(string column)
+        {
+            try
+            {
+                Criteria.RemoveAll(x => x.Column == column);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         public IList<Criteria> FindAllCriteriaByColumn(string column)
         {
             return Criteria.FindAll(x => x.Column == column);
@@ -133,22 +186,12 @@ namespace NovenaLibrary.SqlGenerators
 
         public bool CriteriaExistsForColumn(string column)
         {
-            //var test = Criteria.Where(x => x.Column.Equals(column)).First();
             foreach (var criteria in Criteria)
             {
                 if (criteria.Column == column) return true;
             }
 
             return false;
-
-            //if (test != null)
-            //{
-            //    return true;
-            //}
-            //else
-            //{
-            //    return false;
-            //}
         }
     }
 }

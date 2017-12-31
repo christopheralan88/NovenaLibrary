@@ -143,12 +143,12 @@ namespace NovenaLibrary
                 }
                 else
                 {
-                    Dictionary<string, DataTable> queries = new Dictionary<string, DataTable>();
-                    queries = _presenter.drilldown();
+                    Dictionary<string, DataTable> query = new Dictionary<string, DataTable>();
+                    query = _presenter.Drilldown();
 
-                    if (queries != null)
+                    if (query != null)
                     {
-                        _presenter.PasteQueriesIntoExcel(queries);
+                        _presenter.CreateDrilldownExcelWorksheet(query);
                     }
                 }
             }

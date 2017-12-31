@@ -148,8 +148,11 @@ namespace NovenaLibrary.Presenter.Excel
             }
         }
 
-        public void CreateDrilldownExcelWorksheet(string sql, DataTable dataTable)
+        public void CreateDrilldownExcelWorksheet(Dictionary<string, DataTable> query)
         {
+            var sql = query.Keys.First();
+            var dataTable = query[sql];
+
             int sheetCount = 1;
 
             foreach (MSExcel.Worksheet sheet in _view.Sheets)
@@ -223,7 +226,7 @@ namespace NovenaLibrary.Presenter.Excel
             }
         }
 
-        public Dictionary<string, DataTable> drilldown()
+        public Dictionary<string, DataTable> Drilldown()
         {
             Dictionary<string, DataTable> dict = new Dictionary<string, DataTable>();
             MSExcel.Range thisCell = _app.ActiveCell;
@@ -292,11 +295,6 @@ namespace NovenaLibrary.Presenter.Excel
                         }
                     }
                 }
-                //else
-                //{
-                //    MessageBox.Show("Cannot drill on this cell.", "Drilldown", MessageBoxButtons.OK);
-                //    return null;
-                //}
             }
 
             return null;
@@ -401,6 +399,7 @@ namespace NovenaLibrary.Presenter.Excel
                 query.AddMultipleCriteria(_workbookPropertiesConfig.LastMainQuery.Criteria);
             }
 
+            // Add row fields and items.
             Criteria criteria;
             foreach (MSExcel.PivotItem item in cell.PivotCell.RowItems)
             {
@@ -418,6 +417,7 @@ namespace NovenaLibrary.Presenter.Excel
                 query.AddSingleCriteria(criteria);
             }
 
+            // Add column fields and items.
             foreach (MSExcel.PivotItem item in cell.PivotCell.ColumnItems)
             {
                 criteria = new Criteria();
@@ -434,13 +434,15 @@ namespace NovenaLibrary.Presenter.Excel
                 query.AddSingleCriteria(criteria);
             }
 
-            //add all other pivot fields' items that are visible.
+            // Add all other pivot fields and items that are visible.
             try
             { 
-                //loop thru each drilldown table field
+                // Loop thru each drilldown table field
                 foreach (DataRow row in query.TableSchema.Rows)
                 {
                     var field = row["COLUMN_NAME"].ToString();
+
+                    // Only attempt to add fields that exist in the pivot table (ie: fields that have items in the pivot table).
                     if (FieldExistsInPivotTable(field, cell.PivotCell))
                     {
                         //// If a criteria does NOT currently exist for the field (!query.CriteriaExistsForColumn(field))
@@ -474,7 +476,8 @@ namespace NovenaLibrary.Presenter.Excel
                                 criteria.Filter = filter;
                                 criteria.EndParenthesis = null;
 
-                                query.AddSingleCriteria(criteria);
+                                //query.AddSingleCriteria(criteria);
+                                query.ReplaceAllMatchingCriteria(criteria);
                             }
                         }
                     }
