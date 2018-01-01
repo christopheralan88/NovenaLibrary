@@ -245,6 +245,11 @@ namespace NovenaLibrary.Presenter.Excel
                     var query = CreateQueryFromPivotCell(thisCell);
                     var sql = _sqlGenerator.CreateSql(query);
                     var dt = _dbConnection.query(sql);
+                    if (dt.Rows.Count == 0)
+                    {
+                        MessageBox.Show("Query returned no results.", "No Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return null;
+                    }
                     dict.Add(sql, dt);
                     return dict;
                 }
@@ -394,10 +399,10 @@ namespace NovenaLibrary.Presenter.Excel
             }
 
             // Add main query's criteria
-            if (_workbookPropertiesConfig.LastMainQuery.Criteria != null)
-            {
-                query.AddMultipleCriteria(_workbookPropertiesConfig.LastMainQuery.Criteria);
-            }
+            //if (_workbookPropertiesConfig.LastMainQuery.Criteria != null)
+            //{
+            //    query.AddMultipleCriteria(_workbookPropertiesConfig.LastMainQuery.Criteria);
+            //}
 
             // Add row fields and items.
             Criteria criteria;
@@ -442,42 +447,44 @@ namespace NovenaLibrary.Presenter.Excel
                 {
                     var field = row["COLUMN_NAME"].ToString();
 
-                    // Only attempt to add fields that exist in the pivot table (ie: fields that have items in the pivot table).
-                    if (FieldExistsInPivotTable(field, cell.PivotCell))
+                    // If a criteria does not already exist for this field/column
+                    if (!query.CriteriaExistsForColumn(field))
                     {
-                        //// If a criteria does NOT currently exist for the field (!query.CriteriaExistsForColumn(field))
-                        // And the field is NOT a data field.
-                        if (!IsPivotTableDataField(cell.PivotCell, field))
+                        // Only attempt to add fields that exist in the pivot table (ie: fields that have items in the pivot table).
+                        if (FieldExistsInPivotTable(field, cell.PivotCell))
                         {
-                            MSExcel.PivotItems fieldItems = cell.PivotCell.PivotTable.PivotFields(field).PivotItems();
-                            var filter = "";
-                            foreach (MSExcel.PivotItem item in fieldItems)
+                            // And the field is NOT a data field.
+                            if (!IsPivotTableDataField(cell.PivotCell, field))
                             {
-                                if (item.Visible)
+                                MSExcel.PivotItems fieldItems = cell.PivotCell.PivotTable.PivotFields(field).PivotItems();
+                                var filter = "";
+                                foreach (MSExcel.PivotItem item in fieldItems)
                                 {
-                                    filter += $"{item.Name},";
+                                    if (item.Visible)
+                                    {
+                                        filter += $"{item.Name},";
+                                    }
                                 }
-                            }
-                            if (filter.Length > 0)
-                            {
-                                filter = filter.Substring(0, filter.Length - 1);
-                            }
+                                if (filter.Length > 0)
+                                {
+                                    filter = filter.Substring(0, filter.Length - 1);
+                                }
 
-                            if (filter.Length > 0)
-                            {
-                                criteria = new Criteria();
+                                if (filter.Length > 0)
+                                {
+                                    criteria = new Criteria();
 
-                                filter.Substring(0, filter.Length - 1);
+                                    filter.Substring(0, filter.Length - 1);
 
-                                criteria.AndOr = "AND";
-                                criteria.FrontParenthesis = null;
-                                criteria.Column = field;
-                                criteria.Operator = "In";
-                                criteria.Filter = filter;
-                                criteria.EndParenthesis = null;
+                                    criteria.AndOr = "AND";
+                                    criteria.FrontParenthesis = null;
+                                    criteria.Column = field;
+                                    criteria.Operator = "In";
+                                    criteria.Filter = filter;
+                                    criteria.EndParenthesis = null;
 
-                                //query.AddSingleCriteria(criteria);
-                                query.ReplaceAllMatchingCriteria(criteria);
+                                    query.ReplaceAllMatchingCriteria(criteria);
+                                }
                             }
                         }
                     }

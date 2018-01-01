@@ -20,7 +20,7 @@ namespace NovenaLibrary.View.SqlCreator
         private AppConfig _appConfig;
         private WorkbookPropertiesConfig _workbookPropertiesConfig;
         private Dictionary<string, DataTable> _sqlResult = new Dictionary<string, DataTable>();
-        private BindingSource bindingSource = new BindingSource();
+        private BindingSource ColumnBindingSource = new BindingSource();
 
         public SqlCreatorView(AppConfig appConfig, WorkbookPropertiesConfig workbookPropertiesConfig)
         {
@@ -97,14 +97,23 @@ namespace NovenaLibrary.View.SqlCreator
             get
             {
                 // TODO:  handle when bindingSource is null.
-                var source = (BindingSource)Column.DataSource;
-                return (BindingList<string>)source.DataSource;
+                //var source = (BindingSource)Column.DataSource;
+                //return (BindingList<string>)source.DataSource;
+                if (Column.DataSource != null)
+                {
+                    var source = (BindingSource)Column.DataSource;
+                    return (BindingList<string>)source.DataSource;
+                }
+                else
+                {
+                    return null;
+                }
             }
 
             set
             {
-                bindingSource.DataSource = value;
-                Column.DataSource = bindingSource;
+                ColumnBindingSource.DataSource = value;
+                Column.DataSource = ColumnBindingSource;
             }
         }
 
