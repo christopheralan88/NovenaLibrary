@@ -125,7 +125,17 @@ namespace NovenaLibrary.View.SqlCreator
 
         public int? HighlightedCriteriaIndex
         {
-            get { return datagrid_criteria.SelectedRows[0].Index; }
+            get
+            {
+                if (datagrid_criteria.SelectedRows.Count != 0)
+                {
+                    return datagrid_criteria.SelectedRows[0].Index;
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
 
         public bool GroupBy { get { return ckbox_groupBy.Checked; } }

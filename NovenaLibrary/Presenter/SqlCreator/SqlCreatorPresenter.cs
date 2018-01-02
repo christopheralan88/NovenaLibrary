@@ -102,40 +102,49 @@ namespace NovenaLibrary.Presenter.SqlCreator
 
         public void OnDeleteRow()
         {
-            var highlightedCriteriaIndex = _view.HighlightedCriteriaIndex;
-            if (highlightedCriteriaIndex != null)
+            if (_view.HighlightedCriteriaIndex != null)
             {
-                _view.Criteria.RemoveAt((int)highlightedCriteriaIndex);
-            }
-            else
-            {
-                ShowMessage(DELETE_ROW_MESSAGE);
+                var highlightedCriteriaIndex = _view.HighlightedCriteriaIndex;
+                if (highlightedCriteriaIndex != null)
+                {
+                    _view.Criteria.RemoveAt((int)highlightedCriteriaIndex);
+                }
+                else
+                {
+                    ShowMessage(DELETE_ROW_MESSAGE);
+                }
             }
         }
 
         public void OnMoveSelectedColumnDown()
         {
-            var currentIndex = _view.HighlightedSelectedColumnIndex;
             var currentColumn = _view.HighlightedSelectedColumn;
 
-            // if item is not last item in bindinglist
-            if (currentIndex != _view.SelectedColumns.Count - 1)
+            if (currentColumn != null)
             {
-                _view.SelectedColumns.Insert(currentIndex + 2, currentColumn);
-               _view.SelectedColumns.RemoveAt(currentIndex);
+                // if item is not last item in bindinglist
+                var currentIndex = _view.HighlightedSelectedColumnIndex;
+                if (currentIndex != _view.SelectedColumns.Count - 1)
+                {
+                    _view.SelectedColumns.Insert(currentIndex + 2, currentColumn);
+                    _view.SelectedColumns.RemoveAt(currentIndex);
+                }
             }
         }
 
         public void OnMoveSelectedColumnUp()
         {
-            var currentIndex = _view.HighlightedSelectedColumnIndex;
             var currentColumn = _view.HighlightedSelectedColumn;
 
-            // if item is not first item in bindinglist
-            if (currentIndex != 0)
+            if (currentColumn != null)
             {
-                _view.SelectedColumns.Insert(currentIndex - 1, currentColumn);
-                _view.SelectedColumns.RemoveAt(currentIndex + 1);
+                // if item is not first item in bindinglist
+                var currentIndex = _view.HighlightedSelectedColumnIndex;
+                if (currentIndex != 0)
+                {
+                    _view.SelectedColumns.Insert(currentIndex - 1, currentColumn);
+                    _view.SelectedColumns.RemoveAt(currentIndex + 1);
+                }
             }
         }
 
