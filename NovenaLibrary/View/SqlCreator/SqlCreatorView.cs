@@ -175,6 +175,7 @@ namespace NovenaLibrary.View.SqlCreator
             but_add_row.Click += (sender, e) => callback.OnAddRow();
             but_delete_row.Click += (sender, e) => callback.OnDeleteRow();
             but_ok.Click += (sender, e) => callback.OnOk();
+            datagrid_criteria.DataError += (sender, e) => callback.OnDGVDataError();
             this.Load += (sender, e) => callback.OnLoad();
         }
 

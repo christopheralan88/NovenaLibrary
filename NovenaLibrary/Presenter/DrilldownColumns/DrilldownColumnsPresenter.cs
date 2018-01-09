@@ -52,7 +52,7 @@ namespace NovenaLibrary.Presenter.DrilldownColumns
             DataTable dt;
             try
             {
-                dt = _dbConnection.getSchema(_view.WorkbookPropertiesConfig.selectedTable + "_detail");
+                dt = _dbConnection.getSchema(_view.WorkbookPropertiesConfig.SelectedTable + "_detail");
 
                 var availableColumnsList = (from row in dt.AsEnumerable()
                                             select row.Field<string>("COLUMN_NAME")).ToList();
@@ -66,7 +66,7 @@ namespace NovenaLibrary.Presenter.DrilldownColumns
             }
 
             // populate selected drilldown columns
-            var selectedColumnList = _view.WorkbookPropertiesConfig.drilldownSql.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            var selectedColumnList = _view.WorkbookPropertiesConfig.DrilldownSql.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
             _view.SelectedColumns = new BindingList<string>(selectedColumnList);
         }
 
@@ -81,7 +81,7 @@ namespace NovenaLibrary.Presenter.DrilldownColumns
             }
             else
             {
-                _view.WorkbookPropertiesConfig.drilldownSql = drilldownColumns;
+                _view.WorkbookPropertiesConfig.DrilldownSql = drilldownColumns;
             }
         }
 

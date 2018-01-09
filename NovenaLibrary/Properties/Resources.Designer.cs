@@ -129,5 +129,30 @@ namespace NovenaLibrary.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;?xml version=&quot;1.0&quot;?&gt;
+        ///&lt;WorkbookProperties xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xmlns:xsd=&quot;http://www.w3.org/2001/XMLSchema&quot;&gt;
+        ///  &lt;Limit&gt;100&lt;/Limit&gt;
+        ///  &lt;SelectedTable&gt;table1&lt;/SelectedTable&gt;
+        ///  &lt;Criteria&gt;
+        ///    &lt;Criteria&gt;
+        ///      &lt;AndOr&gt;And&lt;/AndOr&gt;
+        ///      &lt;FrontParenthesis /&gt;
+        ///      &lt;Column&gt;Column1&lt;/Column&gt;
+        ///      &lt;Operator&gt;=&lt;/Operator&gt;
+        ///      &lt;Filter&gt;filter1&lt;/Filter&gt;
+        ///      &lt;EndParenthesis /&gt;
+        ///    &lt;/Criteria&gt;
+        ///    &lt;Criteria&gt;
+        ///      &lt;AndOr&gt;And&lt;/AndOr&gt;
+        ///      &lt;FrontParenthesis /&gt;
+        ///      &lt;Column&gt; [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string WorkbookPropertiesConfigXML {
+            get {
+                return ResourceManager.GetString("WorkbookPropertiesConfigXML", resourceCulture);
+            }
+        }
     }
 }

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<WorkbookProperties xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Limit>100</Limit>
+  <SelectedTable>table1</SelectedTable>
+  <Criteria>
+    <Criteria>
+      <AndOr>And</AndOr>
+      <FrontParenthesis />
+      <Column>Column1</Column>
+      <Operator>=</Operator>
+      <Filter>filter1</Filter>
+      <EndParenthesis />
+    </Criteria>
+    <Criteria>
+      <AndOr>And</AndOr>
+      <FrontParenthesis />
+      <Column>Column2</Column>
+      <Operator>IN</Operator>
+      <Filter>filter2</Filter>
+      <EndParenthesis />
+    </Criteria>
+  </Criteria>
+  <AdditionalQueries>
+    <string>query1|SELECT * FROM table1;</string>
+    <string>query2|SELECT col2 FROM table2;</string>
+  </AdditionalQueries>
+  <DrilldownSql>
+    <string>column1</string>
+  </DrilldownSql>
+  <RefreshColumnHeaders>true</RefreshColumnHeaders>
+  <SelectedColumns />
+</WorkbookProperties>

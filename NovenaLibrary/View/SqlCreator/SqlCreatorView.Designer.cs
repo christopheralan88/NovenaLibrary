@@ -223,6 +223,7 @@
             // 
             // datagrid_criteria
             // 
+            this.datagrid_criteria.AllowUserToAddRows = false;
             this.datagrid_criteria.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.datagrid_criteria.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.AndOr,

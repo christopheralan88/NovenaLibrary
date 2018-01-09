@@ -21,17 +21,13 @@ namespace NovenaLibrary
         public Excel.Application _application;
         public ExcelPresenter _presenter;
 
-        public NovenaReportingAPI(Excel.Application application, string connectionString, string availableTablesSQL, DatabaseType databaseType)
+        public NovenaReportingAPI(Excel.Application application, string connectionString, string availableTablesSQL, DatabaseType databaseType, string workbookPropertiesConfigXML)
         {
             _appConfig = new AppConfig(connectionString, availableTablesSQL, databaseType);
             _application = application;
             try
             {
-                _workbookPropertiesConfig = new WorkbookPropertiesConfig(application.ActiveWorkbook).LoadWorkbookProperties();
-            }
-            catch (ArgumentOutOfRangeException)
-            {
-                throw;
+                _workbookPropertiesConfig = new WorkbookPropertiesConfig(application.ActiveWorkbook).DeserializeXML(workbookPropertiesConfigXML);
             }
             catch (Exception)
             {
@@ -71,7 +67,7 @@ namespace NovenaLibrary
                     if (_workbookPropertiesConfig.LastMainQuery != null)
                     {
                         var dbConnection = new DatabaseConnectionFactory().CreateDbConnection(_appConfig.DatabaseType, _appConfig.ConnectionString);
-                        foreach (KeyValuePair<string, string> query in _workbookPropertiesConfig.dependentTables)
+                        foreach (KeyValuePair<string, string> query in _workbookPropertiesConfig.AdditionalQueriesAsDictionary())
                         {
                             // create interpolator object
                             var interpolator = new Interpolator();
@@ -137,7 +133,7 @@ namespace NovenaLibrary
         {
             if (_appConfig.GetCredentialsRequired == AppConfig.CredentialsRequired.None || _appConfig.User != null)
             {
-                if (_workbookPropertiesConfig.drilldownSql == null)
+                if (_workbookPropertiesConfig.DrilldownSql == null)
                 {
                     SetDrilldownColumns();
                 }
@@ -290,8 +286,7 @@ namespace NovenaLibrary
                                                     _workbookPropertiesConfig);
 
                     _appConfig = new AppConfig(defaultConnectionString, availableTablesSQL, defaultDatabaseType);
-                    _workbookPropertiesConfig.ClearWorkbookProperties();
-                    //_appConfig.User = null;
+                    _workbookPropertiesConfig = new WorkbookPropertiesConfig(_application.ActiveWorkbook);
                 }
                 catch (Exception ex)
                 {

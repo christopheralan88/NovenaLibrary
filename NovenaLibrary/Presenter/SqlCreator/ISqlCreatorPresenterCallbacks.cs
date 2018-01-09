@@ -18,5 +18,6 @@ namespace NovenaLibrary.Presenter.SqlCreator
         void OnAddSelectedColumn();
         void OnOk();
         void OnLoad();
+        void OnDGVDataError();
     }
 }

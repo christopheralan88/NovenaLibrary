@@ -295,9 +295,9 @@ namespace NovenaLibrary.Presenter.Tests
             var sql = "SELECT table_name FROM information_schema.table_privileges WHERE grantee = 'username' AND privilege_type = 'SELECT';";
             dbConnection.Stub(x => x.query(sql)).Return(SingleColumnDataTableBuilder());
             List<string> tableList = new List<string>() { "column1", "column2", "column3" };
-            workbookPropertiesConfig.selectedTable = "table1";
-            dbConnection.Stub(x => x.getSchema(workbookPropertiesConfig.selectedTable)).Return(MultiColumnDataTableBuilder());
-            workbookPropertiesConfig.selectedColumns = new List<string>() { "column1", "column3" };
+            workbookPropertiesConfig.SelectedTable = "table1";
+            dbConnection.Stub(x => x.getSchema(workbookPropertiesConfig.SelectedTable)).Return(MultiColumnDataTableBuilder());
+            workbookPropertiesConfig.SelectedColumns = new List<string>() { "column1", "column3" };
             var criteria1 = new Criteria("And", "", "column1", "=", "abc", "", false);
             var criteria2 = new Criteria("And", "", "column2", "Like", "def%", "", false);
             var criteria3 = new Criteria("And", "", "column3", "Not Like", "%gef", "", false);
@@ -305,7 +305,7 @@ namespace NovenaLibrary.Presenter.Tests
             criteria.Add(criteria1);
             criteria.Add(criteria2);
             criteria.Add(criteria3);
-            workbookPropertiesConfig.criteria = criteria;
+            workbookPropertiesConfig.Criteria = criteria;
 
             presenter.OnLoad();
 
@@ -314,16 +314,16 @@ namespace NovenaLibrary.Presenter.Tests
             Assert.IsTrue(view.AvailableTables[1] == tableList[1]);
             Assert.IsTrue(view.AvailableTables[2] == tableList[2]);
 
-            Assert.IsTrue(view.AvailableTablesText == workbookPropertiesConfig.selectedTable);
+            Assert.IsTrue(view.AvailableTablesText == workbookPropertiesConfig.SelectedTable);
 
             Assert.IsTrue(view.AvailableColumns.Count == 1);
             Assert.IsTrue(view.AvailableColumnDGV.Count == 1);
 
-            Assert.IsTrue(view.SelectedColumns.Count == workbookPropertiesConfig.selectedColumns.Count);
+            Assert.IsTrue(view.SelectedColumns.Count == workbookPropertiesConfig.SelectedColumns.Count);
             Assert.IsTrue(view.AvailableTables[0] == tableList[0]);
             Assert.IsTrue(view.AvailableTables[1] == tableList[1]);
 
-            Assert.IsTrue(view.Criteria.Count == workbookPropertiesConfig.criteria.Count);
+            Assert.IsTrue(view.Criteria.Count == workbookPropertiesConfig.Criteria.Count);
         }
 
         private DataTable MultiColumnDataTableBuilder()

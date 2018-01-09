@@ -3,18 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 
 namespace NovenaLibrary.SqlGenerators
 {
+    [Serializable, XmlRoot("Criteria"), XmlType("Criteria")]
     public class Criteria
     {
-        public string AndOr { get; set; }
-        public string FrontParenthesis { get; set; }
-        public string Column { get; set; }
-        public string Operator { get; set; }
-        public string Filter { get; set; }
-        public string EndParenthesis { get; set; }
+        [XmlElement] public string AndOr { get; set; }
+        [XmlElement] public string FrontParenthesis { get; set; }
+        [XmlElement] public string Column { get; set; }
+        [XmlElement] public string Operator { get; set; }
+        [XmlElement] public string Filter { get; set; }
+        [XmlElement] public string EndParenthesis { get; set; }
 
+        public Criteria() { }
 
         public Criteria(string AndOr = "", string FrontParenthesis = "", string Column = "", 
             string Operator = "", string Filter = "", string EndParenthesis = "", bool Locked = false)
@@ -40,6 +43,11 @@ namespace NovenaLibrary.SqlGenerators
         public override string ToString()
         {
             return $" {AndOr} {FrontParenthesis}{Column} {Operator} {Filter}{EndParenthesis} ";
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
         }
     }
 }

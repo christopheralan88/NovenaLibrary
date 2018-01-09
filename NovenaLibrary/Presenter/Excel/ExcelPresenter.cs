@@ -81,7 +81,7 @@ namespace NovenaLibrary.Presenter.Excel
 
                 startRange.CurrentRegion.ClearContents();
 
-                if (_workbookPropertiesConfig.refreshColumnHeaders)
+                if (_workbookPropertiesConfig.RefreshColumnHeaders)
                 {
                     int headerColumns = headersArray.Length;
                     MSExcel.Range headerStartRange = startRange.Offset[-1, 0];
@@ -195,7 +195,7 @@ namespace NovenaLibrary.Presenter.Excel
 
         public DataTable RefreshData()
         {
-            string sql = _workbookPropertiesConfig.currentSql;
+            string sql = _workbookPropertiesConfig.CurrentSQL;
 
             if (sql != null)
             {
@@ -384,8 +384,8 @@ namespace NovenaLibrary.Presenter.Excel
 
             var query = new Query("drilldown");
 
-            query.SetColumns(_workbookPropertiesConfig.drilldownSql.Split(',').ToList());
-            var table = _workbookPropertiesConfig.selectedTable + "_detail";
+            query.SetColumns(_workbookPropertiesConfig.DrilldownSql.Split(',').ToList());
+            var table = _workbookPropertiesConfig.SelectedTable + "_detail";
             query.SetTable(table);
 
             try

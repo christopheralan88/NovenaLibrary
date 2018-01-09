@@ -169,10 +169,10 @@ namespace NovenaLibrary.Presenter.SqlCreator
                     {
                         _view.SQLResult.Add(query.QueryName, dt);
                         _view.WorkbookPropertiesConfig.LastMainQuery = query;
-                        _view.WorkbookPropertiesConfig.selectedTable = _view.AvailableTablesText;
-                        _view.WorkbookPropertiesConfig.selectedColumns = _view.SelectedColumns.ToList();
-                        _view.WorkbookPropertiesConfig.criteria = _view.Criteria.ToList();
-                        _view.WorkbookPropertiesConfig.limit = _view.Limit;
+                        _view.WorkbookPropertiesConfig.SelectedTable = _view.AvailableTablesText;
+                        _view.WorkbookPropertiesConfig.SelectedColumns = _view.SelectedColumns.ToList();
+                        _view.WorkbookPropertiesConfig.Criteria = _view.Criteria.ToList();
+                        _view.WorkbookPropertiesConfig.Limit = _view.Limit;
                         _view.CloseForm();
                     }
                     else
@@ -216,7 +216,7 @@ namespace NovenaLibrary.Presenter.SqlCreator
             _view.AvailableTables = new BindingList<string>(tableList);
 
             // set available tables' combo box text to selected table
-            _view.AvailableTablesText = _view.WorkbookPropertiesConfig.selectedTable;
+            _view.AvailableTablesText = _view.WorkbookPropertiesConfig.SelectedTable;
 
             // set available columns list box and Column combo box in dgv
             var dtAvailableColumns = dbConnection.getSchema(_view.AvailableTablesText);
@@ -228,15 +228,21 @@ namespace NovenaLibrary.Presenter.SqlCreator
             _view.AvailableColumnDGV = new BindingList<string>(availableColumnsList);
 
             // set selected columns list box values to selected columns
-            _view.SelectedColumns = new BindingList<string>(_view.WorkbookPropertiesConfig.selectedColumns);
+            _view.SelectedColumns = new BindingList<string>(_view.WorkbookPropertiesConfig.SelectedColumns);
 
             // set criteria for dgv
-            _view.Criteria = new BindingList<Criteria>(_view.WorkbookPropertiesConfig.criteria);
+            _view.Criteria = new BindingList<Criteria>(_view.WorkbookPropertiesConfig.Criteria);
+        }
+
+        public void OnDGVDataError()
+        {
+            
         }
 
         private void ShowMessage(string message)
         {
             MessageBox.Show(message);
         }
+
     }
 }
