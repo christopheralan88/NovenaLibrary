@@ -59,7 +59,6 @@ namespace NovenaLibrary.Presenter.ColumnItems
 
         public void OnAdd()
         {
-            //var newList = new BindingList<string>();
             BindingList<string> newList;
             if (_view.SelectedItems != null)
             {

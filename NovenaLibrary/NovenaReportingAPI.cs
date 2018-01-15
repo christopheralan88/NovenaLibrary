@@ -59,8 +59,6 @@ namespace NovenaLibrary
                 {
                     _workbookPropertiesConfig = sqlCreator.WorkbookPropertiesConfig;
 
-                    //var queries = new Dictionary<string, DataTable>();
-                    //queries.Add("main", sqlCreator.SQLResult);
                     var queries = new Dictionary<string, DataTable>();
                     queries = sqlCreator.SQLResult; // add main query to dict
 

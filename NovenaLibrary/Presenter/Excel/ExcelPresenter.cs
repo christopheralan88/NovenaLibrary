@@ -19,7 +19,6 @@ namespace NovenaLibrary.Presenter.Excel
         private IDatabaseConnection _dbConnection;
         private BaseSqlGenerator _sqlGenerator;
         private WorkbookPropertiesConfig _workbookPropertiesConfig;
-        private DataTable _drilldownTableSchema;
 
         public ExcelPresenter(MSExcel.Application app, IDatabaseConnection dbConnection, BaseSqlGenerator sqlGenerator, WorkbookPropertiesConfig workbookPropertiesConfig)
         {
@@ -387,6 +386,7 @@ namespace NovenaLibrary.Presenter.Excel
             query.SetColumns(_workbookPropertiesConfig.DrilldownSql.Split(',').ToList());
             var table = _workbookPropertiesConfig.SelectedTable + "_detail";
             query.SetTable(table);
+            query.SetSuppressNulls(false);
 
             try
             {

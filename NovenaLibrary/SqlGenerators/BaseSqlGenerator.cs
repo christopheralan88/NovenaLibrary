@@ -48,23 +48,6 @@ namespace NovenaLibrary.SqlGenerators
 
         protected virtual StringBuilder CreateWHEREClause(List<Criteria> criteria, List<string> columns, bool suppressNulls)
         {
-            //if (columns == null) return null;
-
-            //StringBuilder sql = new StringBuilder(" WHERE ");
-            //if (columns.Count > 0)
-            //{
-            //    for (var i=0; i < columns.Count; i++)
-            //    {
-            //        if (i==0)
-            //        {
-            //            sql.Append($" {columns[i]} IS NOT NULL ");
-            //        }
-            //        else
-            //        {
-            //            sql.Append($" AND {columns[i]} IS NOT NULL ");
-            //        }
-            //    }
-            //}
             StringBuilder sql = new StringBuilder(" WHERE ");
             if (suppressNulls)
             {
@@ -73,13 +56,14 @@ namespace NovenaLibrary.SqlGenerators
 
             if (criteria == null) return sql.Replace("  ", " ");
 
-            //criteria = (List<Criteria>)AddParenthesisToCriteria(criteria);
             if (criteria.Count > 0)
             {
-                //set first cell to blank since we don't need an "And" or "Or" there.
-                //criteria.First().AndOr = "";
-
-                //StringBuilder sql = new StringBuilder(" WHERE ");
+                // If nulls are not being suppressed, then the first Criteria's AndOr property is not needed since it's coming directly after
+                // the WHERE keyword in the generated SQL statement.
+                if (!suppressNulls)
+                {
+                    criteria.First().AndOr = "";
+                }
 
                 //for each row
                 foreach (var theCriteria in criteria)
