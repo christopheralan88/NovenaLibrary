@@ -21,6 +21,7 @@ namespace NovenaLibrary.SqlGenerators
         public string Limit { get; private set; }
         public bool Ascending { get; private set; }
         public string Offset { get; private set; }
+        public bool SuppressNulls { get; private set; }
 
         public Query(string queryName, string sql = null)
         {
@@ -28,6 +29,7 @@ namespace NovenaLibrary.SqlGenerators
             _sql = sql;
             Columns = new List<string>();
             Criteria = new List<Criteria>();
+            SuppressNulls = true;
         }
 
         public string QueryName
@@ -82,9 +84,34 @@ namespace NovenaLibrary.SqlGenerators
             return this;
         }
 
+        /// <summary>
+        /// Sets the query's limit property
+        /// </summary>
+        /// <param name="limit"></param>
+        /// <returns>Query</returns>
+        /// <exception cref="member">description</exception> 
         public Query SetLimit(string limit)
         {
-            Limit = limit;
+            // make sure
+            int parsedLimit;
+            bool isInteger = int.TryParse(limit, out parsedLimit);
+
+            if (! isInteger)
+            {
+                Limit = limit;
+            }
+            else
+            {
+                if (parsedLimit > 1000000)
+                {
+                    Limit = "1000000"; // 1 million.
+                }
+                else
+                {
+                    Limit = limit;
+                }
+            }
+            
             return this;
         }
 
@@ -97,6 +124,12 @@ namespace NovenaLibrary.SqlGenerators
         public Query SetOffset(string offset)
         {
             Offset = offset;
+            return this;
+        }
+
+        public Query SetSuppressNulls(bool suppress)
+        {
+            SuppressNulls = suppress;
             return this;
         }
 
@@ -193,5 +226,29 @@ namespace NovenaLibrary.SqlGenerators
 
             return false;
         }
+
+        //private bool LimitIsGreaterThan1Million(string limit)
+        //{
+        //    // parse to int
+        //    int limitAsInt = 0;
+        //    try
+        //    {
+        //        limitAsInt = int.Parse(limit);
+        //    }
+        //    catch (ArgumentNullException)
+        //    {
+        //        limitAsInt = 0;
+        //    }
+
+        //    // if parse is greater than 1 million return true
+        //    if (limitAsInt > 1000000)
+        //    {
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        return false;
+        //    }
+        //}
     }
 }

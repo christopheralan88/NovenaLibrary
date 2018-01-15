@@ -100,7 +100,7 @@
             this.lbox_available_columns.Location = new System.Drawing.Point(12, 131);
             this.lbox_available_columns.Name = "lbox_available_columns";
             this.lbox_available_columns.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-            this.lbox_available_columns.Size = new System.Drawing.Size(151, 355);
+            this.lbox_available_columns.Size = new System.Drawing.Size(151, 251);
             this.lbox_available_columns.TabIndex = 64;
             // 
             // lbl_selected_columns
@@ -150,7 +150,7 @@
             // 
             // txt_box_limit
             // 
-            this.txt_box_limit.Location = new System.Drawing.Point(724, 495);
+            this.txt_box_limit.Location = new System.Drawing.Point(597, 338);
             this.txt_box_limit.Name = "txt_box_limit";
             this.txt_box_limit.Size = new System.Drawing.Size(100, 20);
             this.txt_box_limit.TabIndex = 76;
@@ -159,7 +159,7 @@
             // lbl_limit
             // 
             this.lbl_limit.AutoSize = true;
-            this.lbl_limit.Location = new System.Drawing.Point(628, 495);
+            this.lbl_limit.Location = new System.Drawing.Point(501, 338);
             this.lbl_limit.Name = "lbl_limit";
             this.lbl_limit.Size = new System.Drawing.Size(90, 13);
             this.lbl_limit.TabIndex = 75;
@@ -195,7 +195,7 @@
             // but_cancel
             // 
             this.but_cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.but_cancel.Location = new System.Drawing.Point(938, 511);
+            this.but_cancel.Location = new System.Drawing.Point(853, 338);
             this.but_cancel.Name = "but_cancel";
             this.but_cancel.Size = new System.Drawing.Size(75, 23);
             this.but_cancel.TabIndex = 71;
@@ -204,7 +204,7 @@
             // 
             // but_ok
             // 
-            this.but_ok.Location = new System.Drawing.Point(845, 511);
+            this.but_ok.Location = new System.Drawing.Point(760, 338);
             this.but_ok.Name = "but_ok";
             this.but_ok.Size = new System.Drawing.Size(75, 23);
             this.but_ok.TabIndex = 70;
@@ -214,7 +214,7 @@
             // ckbox_refresh
             // 
             this.ckbox_refresh.AutoSize = true;
-            this.ckbox_refresh.Location = new System.Drawing.Point(478, 514);
+            this.ckbox_refresh.Location = new System.Drawing.Point(504, 299);
             this.ckbox_refresh.Name = "ckbox_refresh";
             this.ckbox_refresh.Size = new System.Drawing.Size(144, 17);
             this.ckbox_refresh.TabIndex = 69;
@@ -235,7 +235,7 @@
             this.datagrid_criteria.Location = new System.Drawing.Point(478, 106);
             this.datagrid_criteria.MultiSelect = false;
             this.datagrid_criteria.Name = "datagrid_criteria";
-            this.datagrid_criteria.Size = new System.Drawing.Size(612, 379);
+            this.datagrid_criteria.Size = new System.Drawing.Size(612, 152);
             this.datagrid_criteria.TabIndex = 68;
             // 
             // AndOr
@@ -307,13 +307,13 @@
             this.lbox_selected_columns.FormattingEnabled = true;
             this.lbox_selected_columns.Location = new System.Drawing.Point(256, 131);
             this.lbox_selected_columns.Name = "lbox_selected_columns";
-            this.lbox_selected_columns.Size = new System.Drawing.Size(148, 355);
+            this.lbox_selected_columns.Size = new System.Drawing.Size(148, 251);
             this.lbox_selected_columns.TabIndex = 78;
             // 
             // ckbox_groupBy
             // 
             this.ckbox_groupBy.AutoSize = true;
-            this.ckbox_groupBy.Location = new System.Drawing.Point(478, 491);
+            this.ckbox_groupBy.Location = new System.Drawing.Point(504, 276);
             this.ckbox_groupBy.Name = "ckbox_groupBy";
             this.ckbox_groupBy.Size = new System.Drawing.Size(98, 17);
             this.ckbox_groupBy.TabIndex = 79;
@@ -324,7 +324,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1102, 561);
+            this.ClientSize = new System.Drawing.Size(1102, 416);
             this.Controls.Add(this.ckbox_groupBy);
             this.Controls.Add(this.lbox_selected_columns);
             this.Controls.Add(this.but_add_row);

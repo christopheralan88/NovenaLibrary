@@ -38,22 +38,6 @@ namespace NovenaLibrary.SqlGenerators
             base.typeMappings = mappings;
         }
 
-        //public override string CreateSql(DataTable tableSchema, bool distinct = false, List<string> columns = null, string table = null, List<Criteria> criteria = null,
-        //    bool groupBy = false, bool orderBy = false, string limit = null, string offset = null, bool asc = false)
-        //{
-        //    base.tableSchema = tableSchema;
-
-        //    StringBuilder sql = new StringBuilder("");
-        //    sql.Append(CreateSELECTClause(distinct, columns));
-        //    sql.Append(CreateFROMClause(table));
-        //    sql.Append(CreateWHEREClause(criteria));
-        //    sql.Append(CreateGROUPBYCluase(groupBy, columns));
-        //    sql.Append(CreateORDERBYCluase(orderBy, columns, asc));
-        //    sql.Append(CreateLimitClause(limit));
-        //    sql.Append(CreateOffsetClause(offset));
-        //    return sql.ToString().Replace("  ", " ");
-        //}
-
         public override string CreateSql(Query query)
         {
             base.tableSchema = query.TableSchema;
@@ -63,10 +47,21 @@ namespace NovenaLibrary.SqlGenerators
                 StringBuilder sql = new StringBuilder("");
                 sql.Append(CreateSELECTClause(query.Distinct, query.Columns));
                 sql.Append(CreateFROMClause(query.Table));
-                sql.Append(CreateWHEREClause(query.Criteria, query.Columns));
+                sql.Append(CreateWHEREClause(query.Criteria, query.Columns, query.SuppressNulls));
+
+                // If SQL already contains a WHERE clause, then add " AND " followed by a LIMIT clause. 
+                if (sql.ToString().Contains(" WHERE "))
+                {
+                    sql.Append(" AND " + CreateLimitClause(query.Limit));
+                }
+                // If SQL does not already contain a WHERE clause, then add " WHERE " followed by the LIMIT clause.
+                else
+                {
+                    sql.Append(" WHERE " + CreateLimitClause(query.Limit));
+                }
+
                 sql.Append(CreateGROUPBYCluase(query.GroupBy, query.Columns));
                 sql.Append(CreateORDERBYCluase(query.OrderBy, query.Columns, query.Ascending));
-                sql.Append(CreateLimitClause(query.Limit));
                 sql.Append(CreateOffsetClause(query.Offset));
                 return sql.ToString().Replace("  ", " ");
             }
@@ -74,6 +69,22 @@ namespace NovenaLibrary.SqlGenerators
             {
                 throw;
             }
+        }
+
+        protected override StringBuilder CreateLimitClause(string limit)
+        {
+            if (limit == null) return null;
+
+            var cleansedLimit = SQLCleanser.EscapeAndRemoveWords(limit);
+            return new StringBuilder(" ROWNUM < " + cleansedLimit).Replace("  ", " ");
+        }
+
+        protected override StringBuilder CreateOffsetClause(string offset)
+        {
+            if (offset == null) return null;
+
+            var cleansedOffset = SQLCleanser.EscapeAndRemoveWords(offset);
+            return new StringBuilder(" OFFSET " + cleansedOffset + " ROWS").Replace("  ", " ");
         }
     }
 }

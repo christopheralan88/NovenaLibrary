@@ -97,7 +97,9 @@ namespace NovenaLibrary.Presenter.ColumnItems
 
         public void OnNext()
         {
-            currentOffset += int.Parse(_view.PageSize);            
+            currentOffset += int.Parse(_view.PageSize);
+
+            TogglePriorAndNextButtonsEnabled(); 
 
             GetColumnItems();
         }
@@ -168,6 +170,11 @@ namespace NovenaLibrary.Presenter.ColumnItems
             if (currentOffset == 0)
             {
                 _view.PriorButtonEnabled = false;
+                _view.NextButtonEnabled = true;
+            }
+            else if (currentOffset > 0)
+            {
+                _view.PriorButtonEnabled = true;
                 _view.NextButtonEnabled = true;
             }
         }

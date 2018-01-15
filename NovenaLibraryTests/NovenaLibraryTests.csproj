@@ -71,6 +71,8 @@
     <Compile Include="Config\WorkbookPropertiesConfigTests.cs" />
     <Compile Include="Presenter\SqlCreatorPresenterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SqlGenerators\OracleSqlGeneratorTests.cs" />
+    <Compile Include="SqlGenerators\QueryTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NovenaLibrary\NovenaLibrary.csproj">

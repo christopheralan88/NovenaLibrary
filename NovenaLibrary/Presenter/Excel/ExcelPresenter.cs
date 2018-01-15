@@ -92,8 +92,8 @@ namespace NovenaLibrary.Presenter.Excel
                 var rows = array.GetLength(0);
                 var columns = array.GetLength(1);
                 startRange = startRange.Resize[rows, columns];
+                startRange.NumberFormat = "General"; // reset the cells to the default format, so that Excel can automatically adjust the cell's format based on the cell value.
                 startRange.Value = array;
-                startRange.CurrentRegion.NumberFormat = "General";
 
                 RefreshDataSourcePivotTables(query);
             }

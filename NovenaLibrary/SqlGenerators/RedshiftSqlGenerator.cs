@@ -63,7 +63,7 @@ namespace NovenaLibrary.SqlGenerators
                 StringBuilder sql = new StringBuilder("");
                 sql.Append(CreateSELECTClause(query.Distinct, query.Columns));
                 sql.Append(CreateFROMClause(query.Table));
-                sql.Append(CreateWHEREClause(query.Criteria, query.Columns));
+                sql.Append(CreateWHEREClause(query.Criteria, query.Columns, query.SuppressNulls));
                 sql.Append(CreateGROUPBYCluase(query.GroupBy, query.Columns));
                 sql.Append(CreateORDERBYCluase(query.OrderBy, query.Columns, query.Ascending));
                 sql.Append(CreateLimitClause(query.Limit));

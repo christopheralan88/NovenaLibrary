@@ -23,9 +23,6 @@ namespace NovenaLibrary.SqlGenerators
 
         public abstract string CreateSql(Query query);
 
-        //public abstract string CreateSql(DataTable tableSchema, bool distinct = false, List<string> columns = null, string table = null, List<Criteria> criteria = null, 
-        //    bool groupBy = false, bool orderBy = false, string limit = null, string offset = null, bool asc = false);
-
         protected virtual StringBuilder CreateSELECTClause(bool distinct, List<string> columns)
         {
             if (columns == null) return null;
@@ -49,18 +46,40 @@ namespace NovenaLibrary.SqlGenerators
             return sql.Replace("  ", " ");
         }
 
-        protected virtual StringBuilder CreateWHEREClause(List<Criteria> criteria, List<string> columns)
+        protected virtual StringBuilder CreateWHEREClause(List<Criteria> criteria, List<string> columns, bool suppressNulls)
         {
-            if (criteria == null) return null;
+            //if (columns == null) return null;
+
+            //StringBuilder sql = new StringBuilder(" WHERE ");
+            //if (columns.Count > 0)
+            //{
+            //    for (var i=0; i < columns.Count; i++)
+            //    {
+            //        if (i==0)
+            //        {
+            //            sql.Append($" {columns[i]} IS NOT NULL ");
+            //        }
+            //        else
+            //        {
+            //            sql.Append($" AND {columns[i]} IS NOT NULL ");
+            //        }
+            //    }
+            //}
+            StringBuilder sql = new StringBuilder(" WHERE ");
+            if (suppressNulls)
+            {
+                sql.Append(CreateSuprressNullsClause(columns));
+            }
+
+            if (criteria == null) return sql.Replace("  ", " ");
 
             //criteria = (List<Criteria>)AddParenthesisToCriteria(criteria);
-
             if (criteria.Count > 0)
             {
                 //set first cell to blank since we don't need an "And" or "Or" there.
-                criteria.First().AndOr = "";
+                //criteria.First().AndOr = "";
 
-                StringBuilder sql = new StringBuilder(" WHERE ");
+                //StringBuilder sql = new StringBuilder(" WHERE ");
 
                 //for each row
                 foreach (var theCriteria in criteria)
@@ -122,23 +141,9 @@ namespace NovenaLibrary.SqlGenerators
                     }
                 }
 
-                // Add IS NOT NULL statements for each column to suppress rows that return nulls for all fields.
-                foreach (var column in columns)
-                {
-                    // If there are criteria, start with "AND" because there will already be WHERE clauses.
-                    if (criteria.Count > 0)
-                    {
-                        sql.Append($" AND {column} IS NOT NULL ");
-                    }
-                    else
-                    {
-                        sql.Append($" {column} IS NOT NULL ");
-                    }
-                }
-
                 return sql.Replace("  ", " ");
             }
-            return null;
+            return sql.Replace("  ", " ");
         }
 
         protected virtual StringBuilder CreateGROUPBYCluase(bool groupBy, List<string> columns)
@@ -189,6 +194,29 @@ namespace NovenaLibrary.SqlGenerators
 
             var cleansedOffset = SQLCleanser.EscapeAndRemoveWords(offset);
             return (offset == null) ? null : new StringBuilder(" OFFSET " + cleansedOffset).Replace("  ", " ");
+        }
+
+        public virtual StringBuilder CreateSuprressNullsClause(List<string> columns)
+        {
+            if (columns == null) return null;
+
+            StringBuilder sql = new StringBuilder();
+            if (columns.Count > 0)
+            {
+                for (var i = 0; i < columns.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        sql.Append($" {columns[i]} IS NOT NULL ");
+                    }
+                    else
+                    {
+                        sql.Append($" AND {columns[i]} IS NOT NULL ");
+                    }
+                }
+            }
+
+            return sql;
         }
 
         private string GetColumnDataType(string columnName)
