@@ -40,6 +40,7 @@
             // 
             // but_cancel
             // 
+            this.but_cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.but_cancel.Location = new System.Drawing.Point(584, 371);
             this.but_cancel.Name = "but_cancel";
             this.but_cancel.Size = new System.Drawing.Size(75, 23);
@@ -49,6 +50,7 @@
             // 
             // but_ok
             // 
+            this.but_ok.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.but_ok.Location = new System.Drawing.Point(485, 371);
             this.but_ok.Name = "but_ok";
             this.but_ok.Size = new System.Drawing.Size(75, 23);

@@ -83,6 +83,8 @@ namespace NovenaLibrary.Presenter.DrilldownColumns
             {
                 _view.WorkbookPropertiesConfig.DrilldownSql = drilldownColumns;
             }
+
+            _view.CloseForm();
         }
 
         public void OnRemove()

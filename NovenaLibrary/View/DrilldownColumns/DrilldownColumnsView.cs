@@ -60,6 +60,7 @@ namespace NovenaLibrary.View.DrilldownColumns
 
         public void Attach(IDrilldownColumnsPresenterCallbacks presenter)
         {
+            this.Load += (sender, e) => presenter.OnLoad();
             but_add.Click += (sender, e) => presenter.OnAdd();
             but_remove.Click += (sender, e) => presenter.OnRemove();
             but_ok.Click += (sender, e) => presenter.OnOk();
