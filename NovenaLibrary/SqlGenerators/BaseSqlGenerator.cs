@@ -191,16 +191,16 @@ namespace NovenaLibrary.SqlGenerators
                 {
                     if (i == 0)
                     {
-                        sql.Append($" {columns[i]} IS NOT NULL ");
+                        sql.Append($" ({columns[i]} IS NOT NULL ");
                     }
                     else
                     {
-                        sql.Append($" AND {columns[i]} IS NOT NULL ");
+                        sql.Append($" OR {columns[i]} IS NOT NULL ");
                     }
                 }
             }
 
-            return sql;
+            return sql.Append(")");
         }
 
         private string GetColumnDataType(string columnName)

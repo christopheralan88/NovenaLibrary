@@ -19,6 +19,7 @@ namespace NovenaLibrary.Presenter.Excel
         private IDatabaseConnection _dbConnection;
         private BaseSqlGenerator _sqlGenerator;
         private WorkbookPropertiesConfig _workbookPropertiesConfig;
+        private readonly string[] NULL_EQUIVALENTS = new string[] { "(blank)" };
 
         public ExcelPresenter(MSExcel.Application app, IDatabaseConnection dbConnection, BaseSqlGenerator sqlGenerator, WorkbookPropertiesConfig workbookPropertiesConfig)
         {
@@ -398,12 +399,6 @@ namespace NovenaLibrary.Presenter.Excel
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            // Add main query's criteria
-            //if (_workbookPropertiesConfig.LastMainQuery.Criteria != null)
-            //{
-            //    query.AddMultipleCriteria(_workbookPropertiesConfig.LastMainQuery.Criteria);
-            //}
-
             // Add row fields and items.
             Criteria criteria;
             foreach (MSExcel.PivotItem item in cell.PivotCell.RowItems)
@@ -456,35 +451,58 @@ namespace NovenaLibrary.Presenter.Excel
                             // And the field is NOT a data field.
                             if (!IsPivotTableDataField(cell.PivotCell, field))
                             {
+                                var fieldHasNullItems = false;
                                 MSExcel.PivotItems fieldItems = cell.PivotCell.PivotTable.PivotFields(field).PivotItems();
                                 var filter = "";
+
                                 foreach (MSExcel.PivotItem item in fieldItems)
                                 {
                                     if (item.Visible)
                                     {
-                                        filter += $"{item.Name},";
+                                        if (NULL_EQUIVALENTS.Contains(item.Name))
+                                        {
+                                            fieldHasNullItems = true;
+                                        }
+                                        else
+                                        {
+                                            filter += $"{item.Name},";
+                                        }
                                     }
-                                }
-                                if (filter.Length > 0)
-                                {
-                                    filter = filter.Substring(0, filter.Length - 1);
                                 }
 
                                 if (filter.Length > 0)
                                 {
+                                    filter = filter.Substring(0, filter.Length - 1);
+
                                     criteria = new Criteria();
 
                                     filter.Substring(0, filter.Length - 1);
 
                                     criteria.AndOr = "AND";
-                                    criteria.FrontParenthesis = null;
+                                    criteria.FrontParenthesis = (fieldHasNullItems) ? "(" : null;
                                     criteria.Column = field;
                                     criteria.Operator = "In";
-                                    criteria.Filter = filter;
-                                    criteria.EndParenthesis = null;
+                                    criteria.Filter = (fieldHasNullItems) ? $"{filter} OR {field} IS NULL" : filter;
+                                    criteria.EndParenthesis = (fieldHasNullItems) ? ")" : null;
 
                                     query.ReplaceAllMatchingCriteria(criteria);
                                 }
+
+                                //if (filter.Length > 0)
+                                //{
+                                //    criteria = new Criteria();
+
+                                //    filter.Substring(0, filter.Length - 1);
+
+                                //    criteria.AndOr = "AND";
+                                //    criteria.FrontParenthesis = (fieldHasNullItems) ? "(" : null;
+                                //    criteria.Column = field;
+                                //    criteria.Operator = "In";
+                                //    criteria.Filter = (fieldHasNullItems) ? $"{filter} OR {field} IS NULL" : filter;
+                                //    criteria.EndParenthesis = (fieldHasNullItems) ? ")" : null;
+
+                                //    query.ReplaceAllMatchingCriteria(criteria);
+                                //}
                             }
                         }
                     }
