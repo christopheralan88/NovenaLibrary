@@ -211,7 +211,7 @@ namespace NovenaLibrary.SqlGenerators
 
             if (columnInfo.Count() == 1)
             {
-                return (string)columnInfo.ElementAt(0).ItemArray[11];
+                return (string)columnInfo.ElementAt(0)["data_type"]; //11
             }
             else
             {

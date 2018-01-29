@@ -27,9 +27,6 @@ namespace NovenaLibrary.Config
 
         public AppConfig(string connectionString, string availableTablesSQL, DatabaseType databaseType)
         {
-            //_connectionString = Properties.Settings.Default.ConnectionString.ToString();
-            //_availableTablesSQL = Properties.Settings.Default.AvailableTablesSQL.ToString();
-            //_databaseType = (DatabaseType)Properties.Settings.Default.DatabaseType;
             _connectionString = connectionString;
             _availableTablesSQL = availableTablesSQL;
             _databaseType = databaseType;

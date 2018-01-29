@@ -66,8 +66,16 @@ namespace NovenaLibrary.Presenter.DrilldownColumns
             }
 
             // populate selected drilldown columns
-            var selectedColumnList = _view.WorkbookPropertiesConfig.DrilldownSql.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            _view.SelectedColumns = new BindingList<string>(selectedColumnList);
+            if (_view.WorkbookPropertiesConfig.DrilldownSql != null)
+            {
+                var selectedColumnList = _view.WorkbookPropertiesConfig.DrilldownSql.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                _view.SelectedColumns = new BindingList<string>(selectedColumnList);
+            }
+            else
+            {
+                _view.SelectedColumns = new BindingList<string>();
+            }
+            
         }
 
         public void OnOk()

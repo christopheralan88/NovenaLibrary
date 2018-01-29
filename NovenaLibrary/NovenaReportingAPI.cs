@@ -25,18 +25,26 @@ namespace NovenaLibrary
         {
             _appConfig = new AppConfig(connectionString, availableTablesSQL, databaseType);
             _application = application;
+
             try
             {
                 _workbookPropertiesConfig = new WorkbookPropertiesConfig(application.ActiveWorkbook).DeserializeXML(workbookPropertiesConfigXML);
+
+                // If no credentials are required, create ExcelPresenter with DatabaseConnection and SqlGenerator dependencies.
+                // If credentials are required, then they are set in the Login() method below.
+                if (_appConfig.GetCredentialsRequired == AppConfig.CredentialsRequired.None)
+                {
+                    _presenter = new ExcelPresenter(application,
+                                           new DatabaseConnectionFactory().CreateDbConnection(_appConfig.DatabaseType, _appConfig.ConnectionString),
+                                           new SqlGeneratorFactory().CreateSqlGenerator(databaseType),
+                                           _workbookPropertiesConfig);
+                }
+                
             }
             catch (Exception)
             {
                 throw;
             }
-            _presenter = new ExcelPresenter(application, 
-                                           new DatabaseConnectionFactory().CreateDbConnection(_appConfig.DatabaseType, _appConfig.ConnectionString), 
-                                           new SqlGeneratorFactory().CreateSqlGenerator(databaseType), 
-                                           _workbookPropertiesConfig);
         }
 
         public void LogIn()
@@ -46,6 +54,10 @@ namespace NovenaLibrary
             if (result == DialogResult.OK)
             {
                 _appConfig = loginForm.AppConfig;
+                _presenter = new ExcelPresenter(_application,
+                                           new DatabaseConnectionFactory().CreateDbConnection(_appConfig.DatabaseType, _appConfig.ConnectionString),
+                                           new SqlGeneratorFactory().CreateSqlGenerator(_appConfig.DatabaseType),
+                                           _workbookPropertiesConfig);
             }
         }
 
