@@ -70,16 +70,17 @@ namespace NovenaLibrary.SqlGenerators
                 {
                     if (!CriteriaHasNullValues(theCriteria))
                     {
-                        sql.Append(theCriteria.AndOr == null ? null : $" {theCriteria.AndOr} ");
-                        sql.Append(theCriteria.FrontParenthesis == null ? null : $" {theCriteria.FrontParenthesis} ");
-                        sql.Append(theCriteria.Column == null ? null : $" {openingColumnMark}{theCriteria.Column}{closingColumnMark} ");
-                        sql.Append(theCriteria.Operator == null ? null : $" {theCriteria.Operator} ");
-                        sql.Append(theCriteria.EndParenthesis == null ? null : $" {theCriteria.EndParenthesis} ");
+                        //sql.Append(theCriteria.AndOr == null ? null : $" {theCriteria.AndOr} ");
+                        //sql.Append(theCriteria.FrontParenthesis == null ? null : $" {theCriteria.FrontParenthesis} ");
+                        //sql.Append(theCriteria.Column == null ? null : $" {openingColumnMark}{theCriteria.Column}{closingColumnMark} ");
+                        //sql.Append(theCriteria.Operator == null ? null : $" {theCriteria.Operator} ");
+                        //sql.Append(theCriteria.EndParenthesis == null ? null : $" {theCriteria.EndParenthesis} ");
 
                         // determine if Criteria's filter property is a subquery
                         if (IsSubQuery(theCriteria.Filter))
                         {
-                            sql.Append($" ({SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter)}) ");
+                            theCriteria.Filter = SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter);
+                            sql.Append($" ({theCriteria.ToString()}) ");
                         }
 
                         // if not subquery, then determine if column needs quotes or not
@@ -103,17 +104,24 @@ namespace NovenaLibrary.SqlGenerators
                                     {
                                         newFilters[i] = $"'{SQLCleanser.EscapeAndRemoveWords(originalFilters[i])}'";
                                     }
-                                    sql.Append($" ({string.Join(",", newFilters)}) ");
+                                    theCriteria.Filter = "(" + string.Join(",", newFilters) + ")";
+                                    sql.Append($" {theCriteria.ToString()} ");
                                 }
                                 else
                                 {
-                                    sql.Append($" ({SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter)}) ");
+                                    theCriteria.Filter = "(" + SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter) + ")";
+                                    sql.Append($" {theCriteria.ToString()} ");
                                 }
+                            }
+                            else if (theCriteria.Operator.ToLower() == "is null")
+                            {
+                                sql.Append($" {theCriteria.ToString()} ");
                             }
                             else
                             {
                                 var cleansedValue = SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter);
-                                sql.Append((shouldHaveQuotes) ? $" '{cleansedValue}' " : $" {cleansedValue} ");
+                                theCriteria.Filter = (shouldHaveQuotes) ? $" '{cleansedValue}' " : $" {cleansedValue} ";
+                                sql.Append($" {theCriteria.ToString()} ");
                             }
                         }
                     }
@@ -293,8 +301,8 @@ namespace NovenaLibrary.SqlGenerators
         {
             // Test each criteria's Column, Operator, and Filter properties.  If any criteria in list is null, then return true.
             if (criteria.Column == null) return true;
-            if (criteria.Operator == null) return true;
-            if (criteria.Filter == null) return true;
+            //if (criteria.Operator == null) return true;
+            //if (criteria.Filter == null) return true;
            
             return false;
         }

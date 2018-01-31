@@ -408,11 +408,19 @@ namespace NovenaLibrary.Presenter.Excel
                 var columnName = item.Parent.Name;
 
                 criteria.AndOr = "AND";
-                criteria.FrontParenthesis = null;
+                //criteria.FrontParenthesis = null;
                 criteria.Column = columnName;
                 criteria.Operator = " = ";
-                criteria.Filter = item.Name;
-                criteria.EndParenthesis = null;
+                //criteria.EndParenthesis = null;
+
+                if (NULL_EQUIVALENTS.Contains(item.Name))
+                {
+                    criteria.OrIsNull = true;
+                } 
+                else
+                {
+                    criteria.Filter = item.Name;
+                }
 
                 query.AddSingleCriteria(criteria);
             }
@@ -425,11 +433,19 @@ namespace NovenaLibrary.Presenter.Excel
                 var columnName = item.Parent.Name;
 
                 criteria.AndOr = "AND";
-                criteria.FrontParenthesis = null;
+                //criteria.FrontParenthesis = null;
                 criteria.Column = columnName;
                 criteria.Operator = " = ";
-                criteria.Filter = item.Name;
-                criteria.EndParenthesis = null;
+                //criteria.EndParenthesis = null;
+
+                if (NULL_EQUIVALENTS.Contains(item.Name))
+                {
+                    criteria.OrIsNull = true;
+                }
+                else
+                {
+                    criteria.Filter = item.Name;
+                }
 
                 query.AddSingleCriteria(criteria);
             }
@@ -448,7 +464,7 @@ namespace NovenaLibrary.Presenter.Excel
                         // Only attempt to add fields that exist in the pivot table (ie: fields that have items in the pivot table).
                         if (FieldExistsInPivotTable(field, cell.PivotCell))
                         {
-                            // And the field is NOT a data field.
+                            // And the field if is NOT a data field.
                             if (!IsPivotTableDataField(cell.PivotCell, field))
                             {
                                 var fieldHasNullItems = false;
@@ -479,11 +495,13 @@ namespace NovenaLibrary.Presenter.Excel
                                     filter.Substring(0, filter.Length - 1);
 
                                     criteria.AndOr = "AND";
-                                    criteria.FrontParenthesis = (fieldHasNullItems) ? "(" : null;
+                                    //criteria.FrontParenthesis = (fieldHasNullItems) ? "(" : null;
                                     criteria.Column = field;
                                     criteria.Operator = "In";
-                                    criteria.Filter = (fieldHasNullItems) ? $"{filter} OR {field} IS NULL" : filter;
-                                    criteria.EndParenthesis = (fieldHasNullItems) ? ")" : null;
+                                    criteria.Filter = filter;
+                                    criteria.OrIsNull = (fieldHasNullItems) ? true : false;
+                                    //criteria.Filter = (fieldHasNullItems) ? $"{filter} OR {field} IS NULL" : filter;
+                                    //criteria.EndParenthesis = (fieldHasNullItems) ? ")" : null;
 
                                     query.ReplaceAllMatchingCriteria(criteria);
                                 }

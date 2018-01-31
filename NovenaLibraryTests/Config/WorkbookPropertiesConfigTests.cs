@@ -44,6 +44,7 @@ namespace NovenaLibrary.Config.Tests
             bookConfig.RefreshColumnHeaders = true;
             bookConfig.SelectedTable = "cash_contributions";
             var criteria1 = new Criteria("And", "", "ContributionDate", "LIKE", "(01/11/2017,03/15/2017)");
+            criteria1.OrIsNull = true;
             bookConfig.Criteria.Add(criteria1);
 
             var xml = bookConfig.SerializeXML();
