@@ -13,6 +13,7 @@ using NovenaLibrary.SqlGenerators;
 using NovenaLibrary.View.ColumnItems;
 using NovenaLibrary.View.SqlCreator;
 using NovenaLibrary.Exceptions;
+using System.Text.RegularExpressions;
 
 namespace NovenaLibrary.Presenter.SqlCreator
 {
@@ -231,6 +232,14 @@ namespace NovenaLibrary.Presenter.SqlCreator
             _view.SelectedColumns = new BindingList<string>(_view.WorkbookPropertiesConfig.SelectedColumns);
 
             // set criteria for dgv
+            foreach (var criteria in _view.WorkbookPropertiesConfig.Criteria)
+            {
+                // Remove characters that were added by SqlGenerators...I wish I didn't have to do this :(.
+                criteria.Filter = criteria.Filter.Replace("(", "");
+                criteria.Filter = criteria.Filter.Replace(")", "");
+                criteria.Filter = criteria.Filter.Replace("'", "");
+                criteria.Filter = criteria.Filter.Trim();
+            }
             _view.Criteria = new BindingList<Criteria>(_view.WorkbookPropertiesConfig.Criteria);
         }
 

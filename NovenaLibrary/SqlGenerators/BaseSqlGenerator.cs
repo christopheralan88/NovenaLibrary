@@ -113,10 +113,10 @@ namespace NovenaLibrary.SqlGenerators
                                     sql.Append($" {theCriteria.ToString()} ");
                                 }
                             }
-                            else if (theCriteria.Operator.ToLower() == "is null")
-                            {
-                                sql.Append($" {theCriteria.ToString()} ");
-                            }
+                            //else if (theCriteria.Operator.ToLower() == "is null")
+                            //{
+                            //    sql.Append($" {theCriteria.ToString()} ");
+                            //}
                             else
                             {
                                 var cleansedValue = SQLCleanser.EscapeAndRemoveWords(theCriteria.Filter);

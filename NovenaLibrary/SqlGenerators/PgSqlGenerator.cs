@@ -42,25 +42,21 @@ namespace NovenaLibrary.SqlGenerators
             base.typeMappings = mappings;
         }
 
-        //public override string CreateSql(DataTable tableSchema, bool distinct = false, List<string> columns = null, string table = null, List<Criteria> criteria = null,
-        //    bool groupBy = false, bool orderBy = false, string limit = null, string offset = null, bool asc = false)
-        //{
-        //    base.tableSchema = tableSchema;
-
-        //    StringBuilder sql = new StringBuilder("");
-        //    sql.Append(CreateSELECTClause(distinct, columns));
-        //    sql.Append(CreateFROMClause(table));
-        //    sql.Append(CreateWHEREClause(criteria));
-        //    sql.Append(CreateGROUPBYCluase(groupBy, columns));
-        //    sql.Append(CreateORDERBYCluase(orderBy, columns, asc));
-        //    sql.Append(CreateLimitClause(limit));
-        //    sql.Append(CreateOffsetClause(offset));
-        //    return sql.ToString().Replace("  ", " ");
-        //}
-
         public override string CreateSql(Query query)
         {
             base.tableSchema = query.TableSchema;
+
+            //Query newQuery = new Query("main").SetDistinct(query.Distinct)
+            //                                  .SetColumns(query.Columns)
+            //                                  .SetTable(query.Table)
+            //                                  .SetCriteria(query.Criteria)
+            //                                  .SetSuppressNulls(query.SuppressNulls)
+            //                                  .SetGroupBy(query.GroupBy)
+            //                                  .SetOrderBy(query.OrderBy)
+            //                                  .SetAscending(query.Ascending)
+            //                                  .SetLimit(query.Limit)
+            //                                  .SetOffset(query.Offset);
+
 
             try
             {

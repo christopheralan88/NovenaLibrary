@@ -60,7 +60,7 @@ namespace NovenaLibrary.Config
                     throw new DatabaseTypeNotRecognizedException("Database type is not recognized");
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //thrown if database type setting is null or not able to be found.
                 //throw new DatabaseTypeNotRecognizedException("Database type is not recognized");
