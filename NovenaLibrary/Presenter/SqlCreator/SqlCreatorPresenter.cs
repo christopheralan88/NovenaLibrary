@@ -157,39 +157,35 @@ namespace NovenaLibrary.Presenter.SqlCreator
             var groupBy = _view.GroupBy;
             var limit = _view.Limit;
             var query = new Query("main").SetTableSchema(tableSchema).SetColumns(columns).SetTable(table).SetCriteria(criteria).SetGroupBy(groupBy).SetLimit(limit);
-            //string sql = sqlGenerator.CreateSql(tableSchema: tableSchema, columns: columns, table: table, criteria: criteria, groupBy: groupBy, limit: limit);
+
             try
             {
                 string sql = sqlGenerator.CreateSql(query);
 
-                DataTable dt;
-                try
+                DataTable dt = dbConnection.query(sql);
+                if (dt.Rows.Count > 0)
                 {
-                    dt = dbConnection.query(sql);
-                    if (dt.Rows.Count > 0)
-                    {
-                        _view.SQLResult.Add(query.QueryName, dt);
-                        _view.WorkbookPropertiesConfig.LastMainQuery = query;
-                        _view.WorkbookPropertiesConfig.SelectedTable = _view.AvailableTablesText;
-                        _view.WorkbookPropertiesConfig.SelectedColumns = _view.SelectedColumns.ToList();
-                        _view.WorkbookPropertiesConfig.Criteria = _view.Criteria.ToList();
-                        _view.WorkbookPropertiesConfig.Limit = _view.Limit;
-                        _view.CloseForm();
-                    }
-                    else
-                    {
-                        ShowMessage(QUERY_RETURNED_NO_RECORDS);
-                    }
+                    _view.SQLResult.Add(query.QueryName, dt);
+                    _view.WorkbookPropertiesConfig.LastMainQuery = query;
+                    _view.WorkbookPropertiesConfig.SelectedTable = _view.AvailableTablesText;
+                    _view.WorkbookPropertiesConfig.SelectedColumns = _view.SelectedColumns.ToList();
+                    _view.WorkbookPropertiesConfig.Criteria = _view.Criteria.ToList();
+                    _view.WorkbookPropertiesConfig.Limit = _view.Limit;
+                    _view.CloseForm();
                 }
-                catch (Exception ex)
+                else
                 {
-                    ShowMessage(ex.Message);
+                    ShowMessage(QUERY_RETURNED_NO_RECORDS);
                 }
             }
             catch (BadSQLException ex)
             {
                 MessageBox.Show(ex.Message, "Bad SQL", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
+            }
+            finally
+            {
+                RemoveSqlGeneratorCharactersFromCriteria(_view.WorkbookPropertiesConfig.Criteria);
             }
             
         }
@@ -203,7 +199,6 @@ namespace NovenaLibrary.Presenter.SqlCreator
         {
             // get available tables
             var sql = _view.AppConfig.AvailableTablesSql;
-            //var sql = string.Format(AvailableTablesSql.availableTablesSql[_view.AppConfig.DatabaseType], _view.AppConfig.User.Username);
             var dt = dbConnection.query(sql);
 
             //TODO:  Handle when an empty or null datatable is returned by query() method.
@@ -232,14 +227,6 @@ namespace NovenaLibrary.Presenter.SqlCreator
             _view.SelectedColumns = new BindingList<string>(_view.WorkbookPropertiesConfig.SelectedColumns);
 
             // set criteria for dgv
-            foreach (var criteria in _view.WorkbookPropertiesConfig.Criteria)
-            {
-                // Remove characters that were added by SqlGenerators...I wish I didn't have to do this :(.
-                criteria.Filter = criteria.Filter.Replace("(", "");
-                criteria.Filter = criteria.Filter.Replace(")", "");
-                criteria.Filter = criteria.Filter.Replace("'", "");
-                criteria.Filter = criteria.Filter.Trim();
-            }
             _view.Criteria = new BindingList<Criteria>(_view.WorkbookPropertiesConfig.Criteria);
         }
 
@@ -251,6 +238,18 @@ namespace NovenaLibrary.Presenter.SqlCreator
         private void ShowMessage(string message)
         {
             MessageBox.Show(message);
+        }
+
+        private void RemoveSqlGeneratorCharactersFromCriteria(IList<Criteria> criteria)
+        {
+            // Remove characters that were added by SqlGenerators...I wish I didn't have to do this :(.
+            foreach (var crit in criteria)
+            {
+                crit.Filter = crit.Filter.Replace("(", "");
+                crit.Filter = crit.Filter.Replace(")", "");
+                crit.Filter = crit.Filter.Replace("'", "");
+                crit.Filter = crit.Filter.Trim();
+            }
         }
 
     }
