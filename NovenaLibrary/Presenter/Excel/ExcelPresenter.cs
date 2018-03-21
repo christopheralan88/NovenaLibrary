@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MSExcel = Microsoft.Office.Interop.Excel;
-using NovenaLibrary.Repositories;
-using NovenaLibrary.SqlGenerators;
+using QueryBuilder.DatabaseConnections;
+using QueryBuilder.SqlGenerators;
+using QueryBuilder.Config;
 using NovenaLibrary.Config;
 using System.Data;
 using System.Windows.Forms;
@@ -201,7 +200,7 @@ namespace NovenaLibrary.Presenter.Excel
             {
                 try
                 {
-                    DataTable dt = _dbConnection.query(sql);
+                    DataTable dt = _dbConnection.Query(sql);
                     if (dt.Rows.Count <= 0)
                     {
                         MessageBox.Show("Query returned no results", "No Results", MessageBoxButtons.OK);
@@ -243,15 +242,16 @@ namespace NovenaLibrary.Presenter.Excel
                 try
                 {
                     var query = CreateQueryFromPivotCell(thisCell);
-                    var sql = _sqlGenerator.CreateSql(query);
-                    var dt = _dbConnection.query(sql);
-                    if (dt.Rows.Count == 0)
-                    {
-                        MessageBox.Show("Query returned no results.", "No Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return null;
+                    if (query != null) {
+                        var sql = _sqlGenerator.CreateSql((Query)query);
+                        var dt = _dbConnection.Query(sql);
+                        if (dt.Rows.Count == 0) {
+                            MessageBox.Show("Query returned no results.", "No Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return null;
+                        }
+                        dict.Add(sql, dt);
+                        return dict;
                     }
-                    dict.Add(sql, dt);
-                    return dict;
                 }
                 catch (Exception ex)
                 {
@@ -268,10 +268,12 @@ namespace NovenaLibrary.Presenter.Excel
                     try
                     {
                         var query = CreateQueryFromRange(thisCell);
-                        var sql = _sqlGenerator.CreateSql(query);
-                        var dt = _dbConnection.query(sql);
-                        dict.Add(sql, dt);
-                        return dict;
+                        if (query != null) {
+                            var sql = _sqlGenerator.CreateSql((Query)query); // Cast because CreateQueryFromRange returns nullable Query type.
+                            var dt = _dbConnection.Query(sql);
+                            dict.Add(sql, dt);
+                            return dict;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -288,10 +290,12 @@ namespace NovenaLibrary.Presenter.Excel
                         try
                         {
                             var query = CreateQueryFromPivotCell(pCell);
-                            var sql = _sqlGenerator.CreateSql(query);
-                            var dt = _dbConnection.query(sql);
-                            dict.Add(sql, dt);
-                            return dict;
+                            if (query != null) {
+                                var sql = _sqlGenerator.CreateSql((Query)query);
+                                var dt = _dbConnection.Query(sql);
+                                dict.Add(sql, dt);
+                                return dict;
+                            }
                         }
                         catch (Exception ex)
                         {
@@ -311,7 +315,7 @@ namespace NovenaLibrary.Presenter.Excel
         /// </summary>
         /// <param name="cell"></param>
         /// <returns>Query</returns>
-        private Query CreateQueryFromRange(MSExcel.Range cell)
+        private Query? CreateQueryFromRange(MSExcel.Range cell)
         {
             // create new Query object
             var query = new Query("drilldown");
@@ -346,12 +350,12 @@ namespace NovenaLibrary.Presenter.Excel
                     // add Criteria to Query that includes column (parsed named range), operator ("IN"), and filter (cell value)
                     var criteria = new Criteria();
 
-                    criteria.AndOr = "And";
-                    criteria.FrontParenthesis = "";
+                    criteria.AndOr = Conjunction.And;
+                    criteria.FrontParenthesis = null;
                     criteria.Column = ParseColumnFromNamedRange(name); // Wrap in try/catch block to catch exception
-                    criteria.Operator = "IN";
+                    criteria.Operator = Operator.In;
                     criteria.Filter = (string)name.RefersToRange.Text;
-                    criteria.EndParenthesis = "";
+                    criteria.EndParenthesis = null;
 
                     query.AddSingleCriteria(criteria);
                 }
@@ -373,7 +377,7 @@ namespace NovenaLibrary.Presenter.Excel
         /// </summary>
         /// <param name="cell"></param>
         /// <returns>Query</returns>
-        private Query CreateQueryFromPivotCell(MSExcel.Range cell)
+        private Query? CreateQueryFromPivotCell(MSExcel.Range cell)
         {
             // First check if pivot cell is a type that can be drilled into (custom subtotal, subtotal, grand total, or cell value.
             // If not, then throw exception.
@@ -391,7 +395,7 @@ namespace NovenaLibrary.Presenter.Excel
 
             try
             {
-                var tableSchema = _dbConnection.getSchema(table);
+                var tableSchema = _dbConnection.GetColumns(table);
                 query.SetTableSchema(tableSchema);
             }
             catch (Exception ex)
@@ -407,10 +411,10 @@ namespace NovenaLibrary.Presenter.Excel
 
                 var columnName = item.Parent.Name;
 
-                criteria.AndOr = "AND";
+                criteria.AndOr = Conjunction.And;
                 //criteria.FrontParenthesis = null;
                 criteria.Column = columnName;
-                criteria.Operator = " = ";
+                criteria.Operator = Operator.EqualTo;
                 //criteria.EndParenthesis = null;
 
                 if (NULL_EQUIVALENTS.Contains(item.Name))
@@ -432,10 +436,10 @@ namespace NovenaLibrary.Presenter.Excel
 
                 var columnName = item.Parent.Name;
 
-                criteria.AndOr = "AND";
+                criteria.AndOr = Conjunction.And;
                 //criteria.FrontParenthesis = null;
                 criteria.Column = columnName;
-                criteria.Operator = " = ";
+                criteria.Operator = Operator.EqualTo;
                 //criteria.EndParenthesis = null;
 
                 if (NULL_EQUIVALENTS.Contains(item.Name))
@@ -494,10 +498,10 @@ namespace NovenaLibrary.Presenter.Excel
 
                                     filter.Substring(0, filter.Length - 1);
 
-                                    criteria.AndOr = "AND";
+                                    criteria.AndOr = Conjunction.And;
                                     //criteria.FrontParenthesis = (fieldHasNullItems) ? "(" : null;
                                     criteria.Column = field;
-                                    criteria.Operator = "In";
+                                    criteria.Operator = Operator.In;
                                     criteria.Filter = filter;
                                     criteria.OrIsNull = (fieldHasNullItems) ? true : false;
                                     //criteria.Filter = (fieldHasNullItems) ? $"{filter} OR {field} IS NULL" : filter;

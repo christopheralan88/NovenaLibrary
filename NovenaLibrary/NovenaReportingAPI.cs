@@ -11,6 +11,9 @@ using NovenaLibrary.View.DrilldownColumns;
 using NovenaLibrary.View.ConfigurationEditor;
 using System.Collections;
 using NovenaLibrary.Utilities;
+using QueryBuilder.Config;
+using QueryBuilder.DatabaseConnections;
+using QueryBuilder.SqlGenerators;
 
 namespace NovenaLibrary
 {
@@ -74,8 +77,8 @@ namespace NovenaLibrary
                     var queries = new Dictionary<string, DataTable>();
                     queries = sqlCreator.SQLResult; // add main query to dict
 
-                    if (_workbookPropertiesConfig.LastMainQuery != null)
-                    {
+                    //if (_workbookPropertiesConfig.LastMainQuery != null)
+                    //{
                         var dbConnection = new DatabaseConnectionFactory().CreateDbConnection(_appConfig.DatabaseType, _appConfig.ConnectionString);
                         foreach (KeyValuePair<string, string> query in _workbookPropertiesConfig.AdditionalQueriesAsDictionary())
                         {
@@ -90,7 +93,7 @@ namespace NovenaLibrary
                             {
                                 try
                                 {
-                                    queries.Add(query.Key, dbConnection.query(query.Value));
+                                    queries.Add(query.Key, dbConnection.Query(query.Value));
                                 }
                                 catch
                                 {
@@ -103,7 +106,7 @@ namespace NovenaLibrary
                                 try
                                 {
                                     var interpolatedQuery = interpolator.Interpolate();
-                                    queries.Add(query.Key, dbConnection.query(interpolatedQuery));
+                                    queries.Add(query.Key, dbConnection.Query(interpolatedQuery));
                                 }
                                 catch
                                 {
@@ -111,7 +114,7 @@ namespace NovenaLibrary
                                 }
                             }
                         }
-                    }
+                    //}
                     
                     _presenter.PasteQueriesIntoExcel(queries);
                 }

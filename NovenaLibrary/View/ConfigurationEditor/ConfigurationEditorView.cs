@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NovenaLibrary.Presenter.ConfigurationEditor;
-using NovenaLibrary.Config;
+using QueryBuilder.Config;
 
 namespace NovenaLibrary.View.ConfigurationEditor
 {

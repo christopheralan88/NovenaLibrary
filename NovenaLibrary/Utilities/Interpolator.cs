@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NovenaLibrary.Config;
 using NovenaLibrary.Exceptions;
-using NovenaLibrary.SqlGenerators;
+using QueryBuilder.SqlGenerators;
 
 namespace NovenaLibrary.Utilities
 {
@@ -16,7 +16,7 @@ namespace NovenaLibrary.Utilities
 
         public Interpolator() { }
 
-        public Interpolator(string formattable, IList<Criteria> criteria)
+        public Interpolator(string formattable, List<Criteria> criteria)
         {
             _formattable = formattable;
             _criteria = criteria;
@@ -28,7 +28,7 @@ namespace NovenaLibrary.Utilities
             return this;
         }
 
-        public Interpolator SetCriteria(IList<Criteria> criteria)
+        public Interpolator SetCriteria(List<Criteria> criteria)
         {
             _criteria = criteria;
             return this;

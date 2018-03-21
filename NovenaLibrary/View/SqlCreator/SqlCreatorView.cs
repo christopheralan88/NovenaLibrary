@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using NovenaLibrary.Presenter.SqlCreator;
 using NovenaLibrary.Config;
-using NovenaLibrary.Exceptions;
 using NovenaLibrary.Utilities;
-using NovenaLibrary.SqlGenerators;
+using QueryBuilder.SqlGenerators;
+using QueryBuilder.Config;
 
 namespace NovenaLibrary.View.SqlCreator
 {
@@ -140,7 +140,18 @@ namespace NovenaLibrary.View.SqlCreator
 
         public bool GroupBy { get { return ckbox_groupBy.Checked; } }
 
-        public string Limit { get { return txt_box_limit.Text; } }
+        public long? Limit {
+            get {
+                long parsedLimit;
+                var success = long.TryParse(txt_box_limit.Text, out parsedLimit);
+
+                if (success) {
+                    return parsedLimit;
+                } else {
+                    return null;
+                }
+            }
+        }
 
         public Criteria SelectedCriteria
         {

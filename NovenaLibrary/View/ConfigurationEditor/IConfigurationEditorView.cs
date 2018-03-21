@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using NovenaLibrary.Presenter.ConfigurationEditor;
 using System.Drawing;
 using System.ComponentModel;
-using NovenaLibrary.Config;
+using QueryBuilder.Config;
 
 namespace NovenaLibrary.View.ConfigurationEditor
 {

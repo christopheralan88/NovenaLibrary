@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NovenaLibrary.View.ConfigurationEditor;
-using NovenaLibrary.Config;
+using QueryBuilder.Config;
 using System.Drawing;
 using System.Windows.Forms;
 using System.ComponentModel;
@@ -192,8 +192,8 @@ namespace NovenaLibrary.Presenter.ConfigurationEditor
                 DatabaseType dbTypeEnum;
                 Enum.TryParse(dbType.ToLower().Replace(" ", ""), true, out dbTypeEnum);
 
-                if (dbTypeEnum.Equals(DatabaseType.MsAccess)) return Properties.Resources.msaccess;
-                if (dbTypeEnum.Equals(DatabaseType.MsSqlServer)) return Properties.Resources.mssqlserver;
+                if (dbTypeEnum.Equals(DatabaseType.Access)) return Properties.Resources.msaccess;
+                if (dbTypeEnum.Equals(DatabaseType.SqlServer)) return Properties.Resources.mssqlserver;
                 if (dbTypeEnum.Equals(DatabaseType.MySql)) return Properties.Resources.mysql;
                 if (dbTypeEnum.Equals(DatabaseType.Oracle)) return Properties.Resources.oracle;
                 if (dbTypeEnum.Equals(DatabaseType.PostgreSQL)) return Properties.Resources.postgresql;
@@ -228,7 +228,7 @@ namespace NovenaLibrary.Presenter.ConfigurationEditor
                 var databaseConnection = new DatabaseConnectionFactory().CreateDbConnection(databaseType, connectionString);
 
                 // if no exception, then show message box with success message
-                databaseConnection.userSignIn();
+                databaseConnection.UserSignIn();
                 MessageBox.Show("Connection test was successful!", "Success", MessageBoxButtons.OK);
             }
             catch (Exception ex)

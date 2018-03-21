@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using NovenaLibrary.Presenter.SqlCreator;
 using System.ComponentModel;
 using NovenaLibrary.Config;
 using System.Data;
-using NovenaLibrary.SqlGenerators;
+using QueryBuilder.SqlGenerators;
 
 namespace NovenaLibrary.View.SqlCreator
 {
@@ -27,9 +23,8 @@ namespace NovenaLibrary.View.SqlCreator
         int? HighlightedCriteriaIndex { get; }
         Dictionary<string, DataTable> SQLResult { get; set; } // make readonly
         bool GroupBy { get; }
-        string Limit { get; }
+        long? Limit { get; }
         Criteria SelectedCriteria { get; set; }
         void CloseForm();
-        // add dgv eventually, but it is a complex type
     }
 }

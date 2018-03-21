@@ -1,9 +1,6 @@
-﻿using NovenaLibrary.Repositories;
+﻿using QueryBuilder.DatabaseConnections;
+using QueryBuilder.Config;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NovenaLibrary.View.LogIn;
 using NovenaLibrary.Config;
 using System.Windows.Forms;
@@ -80,7 +77,7 @@ namespace NovenaLibrary.Presenter.LogIn
             try
             {
                 // TODO:  later try adding ability to see if user is superuser by querying on user table in database
-                dbConnection.userSignIn();
+                dbConnection.UserSignIn();
                 _view.CloseForm();
             }
             catch (Exception ex)

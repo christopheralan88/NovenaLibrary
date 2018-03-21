@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovenaLibrary", "NovenaLibrary\NovenaLibrary.csproj", "{00C82FD3-2177-4C68-99DC-C71682DD83A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovenaLibraryTests", "NovenaLibraryTests\NovenaLibraryTests.csproj", "{A5656E7E-B6F7-4FB6-BE5F-0648DF6A8193}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NovenaLibraryTests1", "NovenaLibraryTests1\NovenaLibraryTests1.csproj", "{021FE492-E44C-436F-B0AA-2A4A49AB56AE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{00C82FD3-2177-4C68-99DC-C71682DD83A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00C82FD3-2177-4C68-99DC-C71682DD83A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00C82FD3-2177-4C68-99DC-C71682DD83A2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A5656E7E-B6F7-4FB6-BE5F-0648DF6A8193}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A5656E7E-B6F7-4FB6-BE5F-0648DF6A8193}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A5656E7E-B6F7-4FB6-BE5F-0648DF6A8193}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A5656E7E-B6F7-4FB6-BE5F-0648DF6A8193}.Release|Any CPU.Build.0 = Release|Any CPU
+		{021FE492-E44C-436F-B0AA-2A4A49AB56AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{021FE492-E44C-436F-B0AA-2A4A49AB56AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{021FE492-E44C-436F-B0AA-2A4A49AB56AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{021FE492-E44C-436F-B0AA-2A4A49AB56AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

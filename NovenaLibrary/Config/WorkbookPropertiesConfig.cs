@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
 using Excel = Microsoft.Office.Interop.Excel;
-using NovenaLibrary.Exceptions;
-using System.Runtime.InteropServices;
-using NovenaLibrary.SqlGenerators;
+using QueryBuilder.SqlGenerators;
 using System.Xml.Serialization;
 using System.IO;
 using System.Xml;
@@ -18,7 +12,7 @@ namespace NovenaLibrary.Config
     public class WorkbookPropertiesConfig
     {
         private Excel.Workbook activeWorkbook;
-        [XmlElement] public string Limit { get; set; }
+        [XmlElement] public long Limit { get; set; }
         [XmlElement] public string CurrentSQL { get; set; }
         [XmlElement] public string SelectedTable { get; set; }
         [XmlArray("Criteria")] public List<Criteria> Criteria { get; set; }
@@ -63,7 +57,7 @@ namespace NovenaLibrary.Config
             try
             {
                 var bookPropertiesConfig = (WorkbookPropertiesConfig)serializer.Deserialize(stringReader);
-                if (bookPropertiesConfig.Limit == null) bookPropertiesConfig.Limit = "1000000"; // 1 million.
+                if (bookPropertiesConfig.Limit == 0) bookPropertiesConfig.Limit = 1000000; // 1 million.
                 return bookPropertiesConfig;
             }
             catch (InvalidOperationException)

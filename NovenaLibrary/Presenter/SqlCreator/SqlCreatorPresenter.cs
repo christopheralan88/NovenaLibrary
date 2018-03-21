@@ -4,16 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NovenaLibrary.View;
-using NovenaLibrary.Repositories;
-using NovenaLibrary.Config;
+using QueryBuilder.DatabaseConnections;
+using QueryBuilder.Config;
 using System.Data;
 using System.ComponentModel;
 using System.Windows.Forms;
-using NovenaLibrary.SqlGenerators;
+using QueryBuilder.SqlGenerators;
 using NovenaLibrary.View.ColumnItems;
 using NovenaLibrary.View.SqlCreator;
-using NovenaLibrary.Exceptions;
-using System.Text.RegularExpressions;
+using QueryBuilder.Exceptions;
 
 namespace NovenaLibrary.Presenter.SqlCreator
 {
@@ -59,7 +58,7 @@ namespace NovenaLibrary.Presenter.SqlCreator
         public void OnCBoxTableIndexChanged()
         {
             var table = _view.AvailableTablesText;
-            tableSchema = dbConnection.getSchema(table);
+            tableSchema = dbConnection.GetColumns(table);
 
             var columnList = (from row in tableSchema.AsEnumerable()
                               select row.Field<string>("COLUMN_NAME")).ToList();
@@ -155,14 +154,14 @@ namespace NovenaLibrary.Presenter.SqlCreator
             var table = _view.AvailableTablesText;
             var criteria = _view.Criteria.ToList();
             var groupBy = _view.GroupBy;
-            var limit = _view.Limit;
+            var limit = (_view.Limit != null) ? (long)_view.Limit : 1000000;
             var query = new Query("main").SetTableSchema(tableSchema).SetColumns(columns).SetTable(table).SetCriteria(criteria).SetGroupBy(groupBy).SetLimit(limit);
 
             try
             {
                 string sql = sqlGenerator.CreateSql(query);
 
-                DataTable dt = dbConnection.query(sql);
+                DataTable dt = dbConnection.Query(sql);
                 if (dt.Rows.Count > 0)
                 {
                     _view.SQLResult.Add(query.QueryName, dt);
@@ -170,7 +169,7 @@ namespace NovenaLibrary.Presenter.SqlCreator
                     _view.WorkbookPropertiesConfig.SelectedTable = _view.AvailableTablesText;
                     _view.WorkbookPropertiesConfig.SelectedColumns = _view.SelectedColumns.ToList();
                     _view.WorkbookPropertiesConfig.Criteria = _view.Criteria.ToList();
-                    _view.WorkbookPropertiesConfig.Limit = _view.Limit;
+                    _view.WorkbookPropertiesConfig.Limit = (_view.Limit != null) ? (long)_view.Limit : 1000000;
                     _view.CloseForm();
                 }
                 else
@@ -183,10 +182,10 @@ namespace NovenaLibrary.Presenter.SqlCreator
                 MessageBox.Show(ex.Message, "Bad SQL", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            finally
-            {
-                RemoveSqlGeneratorCharactersFromCriteria(_view.WorkbookPropertiesConfig.Criteria);
-            }
+            //finally
+            //{
+            //    RemoveSqlGeneratorCharactersFromCriteria(_view.WorkbookPropertiesConfig.Criteria);
+            //}
             
         }
 
@@ -199,7 +198,7 @@ namespace NovenaLibrary.Presenter.SqlCreator
         {
             // get available tables
             var sql = _view.AppConfig.AvailableTablesSql;
-            var dt = dbConnection.query(sql);
+            var dt = dbConnection.Query(sql);
 
             //TODO:  Handle when an empty or null datatable is returned by query() method.
 
@@ -215,7 +214,7 @@ namespace NovenaLibrary.Presenter.SqlCreator
             _view.AvailableTablesText = _view.WorkbookPropertiesConfig.SelectedTable;
 
             // set available columns list box and Column combo box in dgv
-            var dtAvailableColumns = dbConnection.getSchema(_view.AvailableTablesText);
+            var dtAvailableColumns = dbConnection.GetColumns(_view.AvailableTablesText);
 
             var availableColumnsList = (from row in dtAvailableColumns.AsEnumerable()
                                         select row.Field<string>("COLUMN_NAME")).ToList();
@@ -240,17 +239,19 @@ namespace NovenaLibrary.Presenter.SqlCreator
             MessageBox.Show(message);
         }
 
-        private void RemoveSqlGeneratorCharactersFromCriteria(IList<Criteria> criteria)
-        {
-            // Remove characters that were added by SqlGenerators...I wish I didn't have to do this :(.
-            foreach (var crit in criteria)
-            {
-                crit.Filter = crit.Filter.Replace("(", "");
-                crit.Filter = crit.Filter.Replace(")", "");
-                crit.Filter = crit.Filter.Replace("'", "");
-                crit.Filter = crit.Filter.Trim();
-            }
-        }
+        //private void RemoveSqlGeneratorCharactersFromCriteria(IList<Criteria> criteria)
+        //{
+        //    // Remove characters that were added by SqlGenerators...I wish I didn't have to do this :(.
+        //    for (var i=0; i<criteria.Count; i++)
+        //    {
+        //        var theCriteria = criteria[i];
+
+        //        theCriteria.Filter = theCriteria.Filter.Replace("(", "");
+        //        theCriteria.Filter = theCriteria.Filter.Replace(")", "");
+        //        theCriteria.Filter = theCriteria.Filter.Replace("'", "");
+        //        theCriteria.Filter = theCriteria.Filter.Trim();
+        //    }
+        //}
 
     }
 }

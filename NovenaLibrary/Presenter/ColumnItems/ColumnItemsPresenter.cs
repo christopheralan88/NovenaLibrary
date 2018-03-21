@@ -1,18 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NovenaLibrary.View.ColumnItems;
-using NovenaLibrary.Repositories;
-using NovenaLibrary.SqlGenerators;
-using NovenaLibrary.View;
+using QueryBuilder.DatabaseConnections;
+using QueryBuilder.SqlGenerators;
+using QueryBuilder.Exceptions;
 using System.Data;
 using System.Windows.Forms;
 using System.ComponentModel;
 using NovenaLibrary.Utilities;
-using NovenaLibrary.Config;
-using NovenaLibrary.Exceptions;
 
 namespace NovenaLibrary.Presenter.ColumnItems
 {
@@ -23,7 +18,7 @@ namespace NovenaLibrary.Presenter.ColumnItems
         private string _table;
         private IDatabaseConnection _dbConnection;
         private BaseSqlGenerator _sqlGenerator;
-        private int currentOffset = 0;
+        private long currentOffset = 0;
         private DataTable _tableSchema;
 
         public ColumnItemsPresenter(IColumnItemsView view, string column, string table, 
@@ -37,7 +32,7 @@ namespace NovenaLibrary.Presenter.ColumnItems
 
             try
             {
-                _tableSchema = _dbConnection.getSchema(table);
+                _tableSchema = _dbConnection.GetColumns(table);
             }
             catch (Exception ex)
             {
@@ -96,11 +91,13 @@ namespace NovenaLibrary.Presenter.ColumnItems
 
         public void OnNext()
         {
-            currentOffset += int.Parse(_view.PageSize);
+            if (_view.PageSize != null) {
+                currentOffset += (long)_view.PageSize;
 
-            TogglePriorAndNextButtonsEnabled(); 
+                TogglePriorAndNextButtonsEnabled();
 
-            GetColumnItems();
+                GetColumnItems();
+            }
         }
 
         public void OnOk()
@@ -112,11 +109,13 @@ namespace NovenaLibrary.Presenter.ColumnItems
 
         public void OnPrior()
         {
-            currentOffset -= int.Parse(_view.PageSize);
+            if (_view.PageSize != null) {
+                currentOffset -= (long)_view.PageSize;
 
-            TogglePriorAndNextButtonsEnabled();
+                TogglePriorAndNextButtonsEnabled();
 
-            GetColumnItems();
+                GetColumnItems();
+            }
         }
 
         public void OnRemove()
@@ -131,8 +130,7 @@ namespace NovenaLibrary.Presenter.ColumnItems
         {
             var columns = new List<string>() { _column };
             var asc = _view.Ascending;
-            var limit = _view.PageSize;
-            var offset = currentOffset.ToString();
+            var limit = (_view.PageSize != null) ? (long)_view.PageSize : 1000000;
             var query = new Query("column items").SetTableSchema(_tableSchema)
                                                  .SetDistinct(true)
                                                  .SetColumns(columns)
@@ -140,13 +138,13 @@ namespace NovenaLibrary.Presenter.ColumnItems
                                                  .SetOrderBy(true)
                                                  .SetAscending(asc)
                                                  .SetLimit(limit)
-                                                 .SetOffset(offset);
+                                                 .SetOffset(currentOffset);
 
             try
             {
                 var sql = _sqlGenerator.CreateSql(query);
 
-                var dt = _dbConnection.query(sql);
+                var dt = _dbConnection.Query(sql);
 
                 BindingList<string> columnItemsList = new BindingList<string>();
                 foreach (DataRow row in dt.Rows)

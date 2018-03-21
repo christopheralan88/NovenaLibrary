@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using NovenaLibrary.Presenter.ColumnItems;
 using NovenaLibrary.Utilities;
 using NovenaLibrary.Config;
+using QueryBuilder.Config;
 using NovenaLibrary.View.SqlCreator;
 
 namespace NovenaLibrary.View.ColumnItems
@@ -90,9 +91,18 @@ namespace NovenaLibrary.View.ColumnItems
             set { but_next_page.Enabled = value; }
         }
 
-        public string PageSize
+        public long? PageSize
         {
-            get { return cbox_paging_limit.Text; }
+            get {
+                long parsedPageSize;
+                var success = long.TryParse(cbox_paging_limit.Text, out parsedPageSize);
+
+                if (success) {
+                    return parsedPageSize;
+                } else {
+                    return null;
+                }
+            }
         }
 
         public bool PriorButtonEnabled

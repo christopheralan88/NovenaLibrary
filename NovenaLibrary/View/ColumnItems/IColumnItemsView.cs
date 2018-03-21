@@ -14,7 +14,7 @@ namespace NovenaLibrary.View.ColumnItems
         string SearchCriteria { get; }
         bool Ascending { get; }
         bool Descending { get; }
-        string PageSize { get; }
+        long? PageSize { get; }
         BindingList<string> AvailableItems { get; set; }
         BindingList<string> SelectedItems { get; set; }
         BindingList<string> HighlightedAvailableItems { get; }
